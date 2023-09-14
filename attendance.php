@@ -74,7 +74,7 @@ if(mysqli_num_rows($result_attendance) > 0){
 
 
 
-
+//Subok langg
 ?>
 
 <!DOCTYPE html>
