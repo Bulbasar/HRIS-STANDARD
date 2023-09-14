@@ -39,7 +39,7 @@
 
     // $db = mysqli_connect($server, $user, $pass, $database);
     include 'config.php';
-   //dsadsadsad
+
 
     if(!empty($_GET['status'])){
         switch($_GET['status']){
