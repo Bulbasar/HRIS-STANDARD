@@ -4,6 +4,7 @@
 //test
 //Tndsnfdsfnds
 ///tyyrera
+//Eto dagdag
    session_start();
    //    $empid = $_SESSION['empid'];
       if (!isset($_SESSION['username'])) {
