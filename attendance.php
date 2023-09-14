@@ -37,7 +37,7 @@
     // $database = "hris_db";
 
     // $db = mysqli_connect($server, $user, $pass, $database);
-    include 'config.php';
+    include 'config.php'; //chester 
 
 
     if(!empty($_GET['status'])){
