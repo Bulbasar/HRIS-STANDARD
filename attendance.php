@@ -1,13 +1,7 @@
 
 <?php
 
-//test
-//dito din
-//Tndsnfdsfnds
-///tyyrera
-//Eto dagdag
    session_start();
-   //fito ako
    //    $empid = $_SESSION['empid'];
       if (!isset($_SESSION['username'])) {
        header("Location: login.php");
@@ -74,10 +68,6 @@ if(mysqli_num_rows($result_attendance) > 0){
     
 }
 // FOR ATTENDANCE AUTO REFRESHER ABSENT END
-
-
-
-//Subok langg
 ?>
 
 <!DOCTYPE html>
