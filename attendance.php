@@ -5,6 +5,7 @@
 //dito din
 //Tndsnfdsfnds
 ///tyyrera
+//Eto dagdag
    session_start();
    //fito ako
    //    $empid = $_SESSION['empid'];
