@@ -2,9 +2,11 @@
 <?php
 
 //test
+//dito din
 //Tndsnfdsfnds
 ///tyyrera
    session_start();
+   //fito ako
    //    $empid = $_SESSION['empid'];
       if (!isset($_SESSION['username'])) {
        header("Location: login.php");
