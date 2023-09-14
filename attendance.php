@@ -3,6 +3,7 @@
 
 //test
 //Tndsnfdsfnds
+///tyyrera
    session_start();
    //    $empid = $_SESSION['empid'];
       if (!isset($_SESSION['username'])) {
