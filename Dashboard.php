@@ -130,12 +130,7 @@
 //     $query_run = mysqli_query($conn, $query);    
 // } 
 
-
-
-
-
 //     mysqli_close($conn);
-
 ?>
 
 
