@@ -15,9 +15,9 @@
 // }
 
 
-$servername = "172.16.2.45";
+$servername = "https://node7894-slash.user.edgecloudph.com/";
  $username = "root";
- $password = "RAKabo64657";
+ $password = "GILfgt16112";
  $dbname = "hris_db";
 
 $conn = mysqli_connect($servername, $username, $password, $dbname);
