@@ -31,106 +31,106 @@
  
 
     
-//     $sql = "SELECT COUNT(*) AS employee_count FROM employee_tb WHERE classification != 3";
-//     $result = mysqli_query($conn, $sql);
+    $sql = "SELECT COUNT(*) AS employee_count FROM employee_tb WHERE classification != 3";
+    $result = mysqli_query($conn, $sql);
 
-//     $row = mysqli_fetch_assoc($result);
-//     $employee_count = $row["employee_count"];
+    $row = mysqli_fetch_assoc($result);
+    $employee_count = $row["employee_count"];
 
-//    include 'Data Controller/Dashboard/fetchHoliday.php'; //para sa pag fetch ng holidays using API
-//    include 'Data Controller/Dashboard/fetchCalendar.php';
+   include 'Data Controller/Dashboard/fetchHoliday.php'; //para sa pag fetch ng holidays using API
+   include 'Data Controller/Dashboard/fetchCalendar.php';
 
-// // FOR ATTENDANCE AUTO REFRESHER ABSENT
-//     $_query_attendance = "SELECT * FROM attendances";
-//     $result_attendance = mysqli_query($conn, $_query_attendance);
-//     if(mysqli_num_rows($result_attendance) > 0){
-//         include ('Data Controller/Attendance/absent_refreshed.php'); // para mag generate ng automatic absent feature    
-//     }
-// // FOR ATTENDANCE AUTO REFRESHER ABSENT END
+// FOR ATTENDANCE AUTO REFRESHER ABSENT
+    $_query_attendance = "SELECT * FROM attendances";
+    $result_attendance = mysqli_query($conn, $_query_attendance);
+    if(mysqli_num_rows($result_attendance) > 0){
+        include ('Data Controller/Attendance/absent_refreshed.php'); // para mag generate ng automatic absent feature    
+    }
+// FOR ATTENDANCE AUTO REFRESHER ABSENT END
    
 
 
-// //     // for payroll holiday rule for holiday computations
-//    $query_check = "SELECT * FROM settings_tb";
-//    $result = mysqli_query($conn, $query_check);
+//     // for payroll holiday rule for holiday computations
+   $query_check = "SELECT * FROM settings_tb";
+   $result = mysqli_query($conn, $query_check);
 
-//    if(mysqli_num_rows($result) <= 0){
-//     $query = "INSERT INTO settings_tb (`holiday_pay`) VALUES ('Default')";
-//     $query_run = mysqli_query($conn, $query);      
-//    } 
-// //    // for payroll holiday rule for holiday computations END
-
-
-//    // may error
-//    $query = "SELECT * FROM settings_company_tb";
-//    $result = mysqli_query($conn, $query);
-
-//    if (mysqli_num_rows($result) <= 0){
-//     //    $row = mysqli_fetch_assoc($result);
-
-//        $query = "INSERT INTO settings_company_tb (`col_salary_settings`)
-//        VALUES ('Fixed Salary')";
-//        $query_run = mysqli_query($conn, $query);   
-//    }
+   if(mysqli_num_rows($result) <= 0){
+    $query = "INSERT INTO settings_tb (`holiday_pay`) VALUES ('Default')";
+    $query_run = mysqli_query($conn, $query);      
+   } 
+//    // for payroll holiday rule for holiday computations END
 
 
+   // may error
+   $query = "SELECT * FROM settings_company_tb";
+   $result = mysqli_query($conn, $query);
+
+   if (mysqli_num_rows($result) <= 0){
+    //    $row = mysqli_fetch_assoc($result);
+
+       $query = "INSERT INTO settings_company_tb (`col_salary_settings`)
+       VALUES ('Fixed Salary')";
+       $query_run = mysqli_query($conn, $query);   
+   }
 
 
-// // //CLASSIFICATION AUTO INSERT
-
-// //    //para sa holiday payroll computation kasi need na Regular ang employee para  may holiday pay
-// $query = "SELECT * FROM classification_tb WHERE classification = 'Regular'";
-// $result = mysqli_query($conn, $query);
-
-// if(mysqli_num_rows($result) <= 0) {
-//     // Position does not exist, insert the new record
-//     $query = "INSERT INTO classification_tb (`id`, `classification`) VALUES (1, 'Regular')";
-//     $query_run = mysqli_query($conn, $query);    
-// } 
 
 
-// // //para sa holiday payroll computation kasi need na Regular ang employee para  may holiday pay
-// $query = "SELECT * FROM classification_tb WHERE classification = 'Internship/OJT'";
-// $result = mysqli_query($conn, $query);
+// //CLASSIFICATION AUTO INSERT
 
-// if(mysqli_num_rows($result) <= 0) {
-//     // Position does not exist, insert the new record
-//     $query = "INSERT INTO classification_tb (`id`, `classification`) VALUES (2, 'Internship/OJT')";
-//     $query_run = mysqli_query($conn, $query);    
-// } 
+//    //para sa holiday payroll computation kasi need na Regular ang employee para  may holiday pay
+$query = "SELECT * FROM classification_tb WHERE classification = 'Regular'";
+$result = mysqli_query($conn, $query);
 
-
-// $query = "SELECT * FROM classification_tb WHERE classification = 'Pakyawan'";
-// $result = mysqli_query($conn, $query);
-
-// if(mysqli_num_rows($result) <= 0) {
-//     // Position does not exist, insert the new record
-//     $query = "INSERT INTO classification_tb (`id`,`classification`) VALUES (3, 'Pakyawan')";
-//     $query_run = mysqli_query($conn, $query);    
-// } 
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO classification_tb (`id`, `classification`) VALUES (1, 'Regular')";
+    $query_run = mysqli_query($conn, $query);    
+} 
 
 
-// //error
-// $query = "SELECT * FROM positionn_tb WHERE position = 'Pakyawan'";
-// $result = mysqli_query($conn, $query);
+// //para sa holiday payroll computation kasi need na Regular ang employee para  may holiday pay
+$query = "SELECT * FROM classification_tb WHERE classification = 'Internship/OJT'";
+$result = mysqli_query($conn, $query);
 
-// if(mysqli_num_rows($result) <= 0) {
-//     // Position does not exist, insert the new record
-//     $query = "INSERT INTO positionn_tb (`id`,`position`) VALUES (1,'Pakyawan')";
-//     $query_run = mysqli_query($conn, $query);    
-// } 
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO classification_tb (`id`, `classification`) VALUES (2, 'Internship/OJT')";
+    $query_run = mysqli_query($conn, $query);    
+} 
 
 
-// $query = "SELECT * FROM dept_tb WHERE col_deptname = 'Pakyawan'";
-// $result = mysqli_query($conn, $query);
+$query = "SELECT * FROM classification_tb WHERE classification = 'Pakyawan'";
+$result = mysqli_query($conn, $query);
 
-// if(mysqli_num_rows($result) <= 0) {
-//     // Position does not exist, insert the new record
-//     $query = "INSERT INTO dept_tb (`col_ID`,`col_deptname`) VALUES (1,'Pakyawan')";
-//     $query_run = mysqli_query($conn, $query);    
-// } 
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO classification_tb (`id`,`classification`) VALUES (3, 'Pakyawan')";
+    $query_run = mysqli_query($conn, $query);    
+} 
 
-//     mysqli_close($conn);
+
+//error
+$query = "SELECT * FROM positionn_tb WHERE position = 'Pakyawan'";
+$result = mysqli_query($conn, $query);
+
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO positionn_tb (`id`,`position`) VALUES (1,'Pakyawan')";
+    $query_run = mysqli_query($conn, $query);    
+} 
+
+
+$query = "SELECT * FROM dept_tb WHERE col_deptname = 'Pakyawan'";
+$result = mysqli_query($conn, $query);
+
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO dept_tb (`col_ID`,`col_deptname`) VALUES (1,'Pakyawan')";
+    $query_run = mysqli_query($conn, $query);    
+} 
+
+    mysqli_close($conn);
 ?>
 
 
@@ -140,23 +140,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="vendors/feather/feather.css">
-    <link rel="stylesheet" href="vendors/ti-icons/themify-icons.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css">
-    <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css">
-    <script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css"> -->
-    <!-- Link to the MDI CSS file -->
-    <!-- <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css"> -->
-    <!-- Import the MDI font files using @font-face -->
-    <!-- inject:css -->
-    <!-- <link rel="stylesheet" href="bootstrap/vertical-layout-light/style.css"> -->
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
     <script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css">

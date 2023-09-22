@@ -15,16 +15,16 @@
 // }
 
 
-$servername = "180.232.110.182";
+ $servername = "180.232.110.182";
  $username = "root";
  $password = "RAKabo64657";
  $dbname = "hris_db";
 
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+ $conn = mysqli_connect($servername, $username, $password, $dbname);
 
-if(!$conn){
+ if(!$conn){
     echo '<script type="text/javascript">';
     echo 'alert("Connection Failed.");';
     echo '</script>';
     die;
-}
+ }

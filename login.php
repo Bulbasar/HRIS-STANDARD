@@ -19,9 +19,9 @@ if(isset($_POST['signIn'])){
         $_SESSION['password'] = $row_Superadmin['password'];
         $_SESSION['userType'] = $row_Superadmin['userType'];
         $_SESSION['role'] = $row_Superadmin['role'];
-        // $_SESSION['empid'] = $row['empid'];
+        $_SESSION['empid'] = $row['empid'];
         
-        header("Location: Dashboard"); // Redirect to admin dashboard
+        header("Location: Dashboard");
         exit();
     } else {
         $select_users = mysqli_query($conn, "SELECT * FROM employee_tb WHERE BINARY `username`='$username' AND `password`='$password'");
