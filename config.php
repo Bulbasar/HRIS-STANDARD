@@ -15,7 +15,7 @@
 // }
 
 
- $servername = "https://node7894-slash.user.edgecloudph.com/";
+ $servername = "node7894-slash.user.edgecloudph.com";
  $username = "root";
  $password = "GILfgt16112";
  $dbname = "hris_db";
