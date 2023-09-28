@@ -233,7 +233,7 @@ session_start();
 
 
 <!------------------------------------Main Panel of data table------------------------------------------------->
-    <div class="main-panel mt-5" style="margin-left: 19%; position: absolute; top: 30px;">
+    <div class="main-panel mt-5" style="margin-left: 2%;">
         <div class=" mt-5">
           <div class="card" style="box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17); width:1500px; height:800px; border-radius:20px;">
             <div class="card-body">  

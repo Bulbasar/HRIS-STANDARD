@@ -100,51 +100,57 @@
                         <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
 
                         <!----------Overtime Notif----------->
-                        <?php
-                          include 'config.php';
-                          date_default_timezone_set('Asia/Manila');
+                       <?php
+                              include 'config.php';
+                              date_default_timezone_set('Asia/Manila');
 
-                          $startDate = date('Y-m-d', strtotime('last Monday'));
-                          $endDate = date('Y-m-d', strtotime('next Sunday'));
+                              $startDate = date('Y-m-d', strtotime('last Monday'));
+                              $endDate = date('Y-m-d', strtotime('next Sunday'));
 
-                          $query = "SELECT COUNT(*) AS employee_ot, MAX(`date_filed`) AS last_pending FROM overtime_tb WHERE `status` = 'Pending' AND DATE(`date_filed`) BETWEEN '$startDate' AND '$endDate'";
-                          $query_run = mysqli_query($conn, $query);
+                              $query = "SELECT COUNT(*) AS employee_ot, MAX(`date_filed`) AS last_pending FROM overtime_tb WHERE `status` = 'Pending' AND DATE(`date_filed`) BETWEEN '$startDate' AND '$endDate'";
+                              $query_run = mysqli_query($conn, $query);
 
-                          if (mysqli_num_rows($query_run) > 0) {
-                            $OT_row = mysqli_fetch_assoc($query_run);
-                            $employeeOT = $OT_row['employee_ot'];
-                            $lastPending = $OT_row['last_pending'];
-                            
-                            $now = time(); // Current timestamp
-                            $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
-                            $timeDiff = $now - $pendingTime; // Difference in seconds
+                              $lastPending = null; // Initialize $lastPending with null
 
-                            if ($timeDiff < 60) {
-                              $formattedTime = 'Just now';
-                            } elseif ($timeDiff < 3600) {
-                              $minutes = floor($timeDiff / 60);
-                              $formattedTime = $minutes . ' minute(s) ago';
-                            } else {
-                              $hours = floor($timeDiff / 3600);
-                              if ($hours < 24) {
-                                $formattedTime = $hours . ' hour(s) ago';
-                              } else {
-                                $days = floor($hours / 24);
-                                $formattedTime = $days . ' day(s) ago';
+                              if (mysqli_num_rows($query_run) > 0) {
+                                  $OT_row = mysqli_fetch_assoc($query_run);
+                                  $employeeOT = $OT_row['employee_ot'];
+                                  $lastPending = $OT_row['last_pending'];
+
+                                  $now = time(); // Current timestamp
+                                  $formattedTime = ''; // Initialize $formattedTime
+
+                                  if ($lastPending !== null) { // Check if $lastPending is not null
+                                      $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
+                                      $timeDiff = $now - $pendingTime; // Difference in seconds
+
+                                      if ($timeDiff < 60) {
+                                          $formattedTime = 'Just now';
+                                      } elseif ($timeDiff < 3600) {
+                                          $minutes = floor($timeDiff / 60);
+                                          $formattedTime = $minutes . ' minute(s) ago';
+                                      } else {
+                                          $hours = floor($timeDiff / 3600);
+                                          if ($hours < 24) {
+                                              $formattedTime = $hours . ' hour(s) ago';
+                                          } else {
+                                              $days = floor($hours / 24);
+                                              $formattedTime = $days . ' day(s) ago';
+                                          }
+                                      }
+                                  }
                               }
-                            }
-                          }
 
-                          $hideDropdown = true;
+                              $hideDropdown = true;
 
-                          $queryHide = "SELECT `status` FROM overtime_tb WHERE `status` = 'Pending' AND DATE(`date_filed`) BETWEEN '$startDate' AND '$endDate'";
-                          $query_run_hide = mysqli_query($conn, $queryHide);
-                          $rowsOT = mysqli_fetch_assoc($query_run_hide);
+                              $queryHide = "SELECT `status` FROM overtime_tb WHERE `status` = 'Pending' AND DATE(`date_filed`) BETWEEN '$startDate' AND '$endDate'";
+                              $query_run_hide = mysqli_query($conn, $queryHide);
+                              $rowsOT = mysqli_fetch_assoc($query_run_hide);
 
-                          if ($rowsOT > 0) {
-                            $hideDropdown = false;
-                          }
-                          ?>
+                              if ($rowsOT > 0) {
+                                  $hideDropdown = false;
+                              }
+                              ?>
 
                           <?php if (!$hideDropdown): ?>
                           <a class="dropdown-item preview-item">
@@ -164,50 +170,56 @@
 
                       <!----------Undertime Notif----------->
                       <?php
-                            include 'config.php';
-                            date_default_timezone_set('Asia/Manila');
+                          include 'config.php';
+                          date_default_timezone_set('Asia/Manila');
 
-                            $startDate = date('Y-m-d', strtotime('last Monday'));
-                            $endDate = date('Y-m-d', strtotime('next Sunday'));
+                          $startDate = date('Y-m-d', strtotime('last Monday'));
+                          $endDate = date('Y-m-d', strtotime('next Sunday'));
 
-                            $query = "SELECT COUNT(*) AS employee_ut, MAX(`date_file`) AS last_pending FROM undertime_tb WHERE `status` = 'Pending' AND DATE(`date_file`) BETWEEN '$startDate' AND '$endDate'";
-                            $query_run = mysqli_query($conn, $query);
+                          $query = "SELECT COUNT(*) AS employee_ut, MAX(`date_file`) AS last_pending FROM undertime_tb WHERE `status` = 'Pending' AND DATE(`date_file`) BETWEEN '$startDate' AND '$endDate'";
+                          $query_run = mysqli_query($conn, $query);
 
-                            if (mysqli_num_rows($query_run) > 0) {
+                          $lastPending = null; // Initialize $lastPending with null
+
+                          if (mysqli_num_rows($query_run) > 0) {
                               $UT_row = mysqli_fetch_assoc($query_run);
                               $employeeUT = $UT_row['employee_ut'];
                               $lastPending = $UT_row['last_pending'];
-                              
+
                               $now = time(); // Current timestamp
-                              $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
-                              $timeDiff = $now - $pendingTime; // Difference in seconds
+                              $formattedTime = ''; // Initialize $formattedTime
 
-                              if ($timeDiff < 60) {
-                                $formattedTime = 'Just now';
-                              } elseif ($timeDiff < 3600) {
-                                $minutes = floor($timeDiff / 60);
-                                $formattedTime = $minutes . ' minute(s) ago';
-                              } else {
-                                $hours = floor($timeDiff / 3600);
-                                if ($hours < 24) {
-                                  $formattedTime = $hours . ' hour(s) ago';
-                                } else {
-                                  $days = floor($hours / 24);
-                                  $formattedTime = $days . ' day(s) ago';
-                                }
+                              if ($lastPending !== null) { // Check if $lastPending is not null
+                                  $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
+                                  $timeDiff = $now - $pendingTime; // Difference in seconds
+
+                                  if ($timeDiff < 60) {
+                                      $formattedTime = 'Just now';
+                                  } elseif ($timeDiff < 3600) {
+                                      $minutes = floor($timeDiff / 60);
+                                      $formattedTime = $minutes . ' minute(s) ago';
+                                  } else {
+                                      $hours = floor($timeDiff / 3600);
+                                      if ($hours < 24) {
+                                          $formattedTime = $hours . ' hour(s) ago';
+                                      } else {
+                                          $days = floor($hours / 24);
+                                          $formattedTime = $days . ' day(s) ago';
+                                      }
+                                  }
                               }
-                            }
+                          }
 
-                            $hideDropdown = true;
+                          $hideDropdown = true;
 
-                            $queryHide = "SELECT `status` FROM undertime_tb WHERE `status` = 'Pending' AND DATE(`date_file`) BETWEEN '$startDate' AND '$endDate'";
-                            $query_run_hide = mysqli_query($conn, $queryHide);
-                            $rowsUT = mysqli_fetch_assoc($query_run_hide);
+                          $queryHide = "SELECT `status` FROM undertime_tb WHERE `status` = 'Pending' AND DATE(`date_file`) BETWEEN '$startDate' AND '$endDate'";
+                          $query_run_hide = mysqli_query($conn, $queryHide);
+                          $rowsUT = mysqli_fetch_assoc($query_run_hide);
 
-                            if ($rowsUT > 0) {
+                          if ($rowsUT > 0) {
                               $hideDropdown = false;
-                            }
-                            ?>
+                          }
+                          ?>
 
                             <?php if (!$hideDropdown): ?>
                             <a class="dropdown-item preview-item">
@@ -227,50 +239,56 @@
 
                         <!----------WFH Notif----------->
                         <?php
-                            include 'config.php';
-                            date_default_timezone_set('Asia/Manila');
+                          include 'config.php';
+                          date_default_timezone_set('Asia/Manila');
 
-                            $startDate = date('Y-m-d', strtotime('last Monday'));
-                            $endDate = date('Y-m-d', strtotime('next Sunday'));
+                          $startDate = date('Y-m-d', strtotime('last Monday'));
+                          $endDate = date('Y-m-d', strtotime('next Sunday'));
 
-                            $query = "SELECT COUNT(*) AS employee_wfh, MAX(`date_file`) AS last_pending FROM wfh_tb WHERE `status` = 'Pending' AND DATE(`date_file`) BETWEEN '$startDate' AND '$endDate'";
-                            $query_run = mysqli_query($conn, $query);
+                          $query = "SELECT COUNT(*) AS employee_wfh, MAX(`date_file`) AS last_pending FROM wfh_tb WHERE `status` = 'Pending' AND DATE(`date_file`) BETWEEN '$startDate' AND '$endDate'";
+                          $query_run = mysqli_query($conn, $query);
 
-                            if (mysqli_num_rows($query_run) > 0) {
+                          $lastPending = null; // Initialize $lastPending with null
+
+                          if (mysqli_num_rows($query_run) > 0) {
                               $WFH_row = mysqli_fetch_assoc($query_run);
                               $employeeWFH = $WFH_row['employee_wfh'];
                               $lastPending = $WFH_row['last_pending'];
-                              
+
                               $now = time(); // Current timestamp
-                              $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
-                              $timeDiff = $now - $pendingTime; // Difference in seconds
+                              $formattedTime = ''; // Initialize $formattedTime
 
-                              if ($timeDiff < 60) {
-                                $formattedTime = 'Just now';
-                              } elseif ($timeDiff < 3600) {
-                                $minutes = floor($timeDiff / 60);
-                                $formattedTime = $minutes . ' minute(s) ago';
-                              } else {
-                                $hours = floor($timeDiff / 3600);
-                                if ($hours < 24) {
-                                  $formattedTime = $hours . ' hour(s) ago';
-                                } else {
-                                  $days = floor($hours / 24);
-                                  $formattedTime = $days . ' day(s) ago';
-                                }
+                              if ($lastPending !== null) { // Check if $lastPending is not null
+                                  $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
+                                  $timeDiff = $now - $pendingTime; // Difference in seconds
+
+                                  if ($timeDiff < 60) {
+                                      $formattedTime = 'Just now';
+                                  } elseif ($timeDiff < 3600) {
+                                      $minutes = floor($timeDiff / 60);
+                                      $formattedTime = $minutes . ' minute(s) ago';
+                                  } else {
+                                      $hours = floor($timeDiff / 3600);
+                                      if ($hours < 24) {
+                                          $formattedTime = $hours . ' hour(s) ago';
+                                      } else {
+                                          $days = floor($hours / 24);
+                                          $formattedTime = $days . ' day(s) ago';
+                                      }
+                                  }
                               }
-                            }
+                          }
 
-                            $hideDropdown = true;
+                          $hideDropdown = true;
 
-                            $queryHide = "SELECT `status` FROM wfh_tb WHERE `status` = 'Pending' AND DATE(`date_file`) BETWEEN '$startDate' AND '$endDate'";
-                            $query_run_hide = mysqli_query($conn, $queryHide);
-                            $rowsWFH = mysqli_fetch_assoc($query_run_hide);
+                          $queryHide = "SELECT `status` FROM wfh_tb WHERE `status` = 'Pending' AND DATE(`date_file`) BETWEEN '$startDate' AND '$endDate'";
+                          $query_run_hide = mysqli_query($conn, $queryHide);
+                          $rowsWFH = mysqli_fetch_assoc($query_run_hide);
 
-                            if ($rowsWFH > 0) {
+                          if ($rowsWFH > 0) {
                               $hideDropdown = false;
-                            }
-                            ?>
+                          }
+                          ?>
 
                             <?php if (!$hideDropdown): ?>
                             <a class="dropdown-item preview-item">
@@ -290,49 +308,55 @@
 
                       <!----------Official Business Notif----------->
                       <?php
-                          include 'config.php';
-                          date_default_timezone_set('Asia/Manila');
+                            include 'config.php';
+                            date_default_timezone_set('Asia/Manila');
 
-                          $startDate = date('Y-m-d', strtotime('last Monday'));
-                          $endDate = date('Y-m-d', strtotime('next Sunday'));
+                            $startDate = date('Y-m-d', strtotime('last Monday'));
+                            $endDate = date('Y-m-d', strtotime('next Sunday'));
 
-                          $query = "SELECT COUNT(*) AS employee_OB, MAX(`_dateTime`) AS last_pending FROM emp_official_tb WHERE `status` = 'Pending' AND DATE(`_dateTime`) BETWEEN '$startDate' AND '$endDate'";
-                          $query_run = mysqli_query($conn, $query);
+                            $query = "SELECT COUNT(*) AS employee_OB, MAX(`_dateTime`) AS last_pending FROM emp_official_tb WHERE `status` = 'Pending' AND DATE(`_dateTime`) BETWEEN '$startDate' AND '$endDate'";
+                            $query_run = mysqli_query($conn, $query);
 
-                          if (mysqli_num_rows($query_run) > 0) {
-                            $OB_row = mysqli_fetch_assoc($query_run);
-                            $employeeOB = $OB_row['employee_OB'];
-                            $lastPending = $OB_row['last_pending'];
-                            
-                            $now = time(); // Current timestamp
-                            $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
-                            $timeDiff = $now - $pendingTime; // Difference in seconds
+                            $lastPending = null; // Initialize $lastPending with null
 
-                            if ($timeDiff < 60) {
-                              $formattedTime = 'Just now';
-                            } elseif ($timeDiff < 3600) {
-                              $minutes = floor($timeDiff / 60);
-                              $formattedTime = $minutes . ' minute(s) ago';
-                            } else {
-                              $hours = floor($timeDiff / 3600);
-                              if ($hours < 24) {
-                                $formattedTime = $hours . ' hour(s) ago';
-                              } else {
-                                $days = floor($hours / 24);
-                                $formattedTime = $days . ' day(s) ago';
-                              }
+                            if (mysqli_num_rows($query_run) > 0) {
+                                $OB_row = mysqli_fetch_assoc($query_run);
+                                $employeeOB = $OB_row['employee_OB'];
+                                $lastPending = $OB_row['last_pending'];
+
+                                $now = time(); // Current timestamp
+                                $formattedTime = ''; // Initialize $formattedTime
+
+                                if ($lastPending !== null) { // Check if $lastPending is not null
+                                    $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
+                                    $timeDiff = $now - $pendingTime; // Difference in seconds
+
+                                    if ($timeDiff < 60) {
+                                        $formattedTime = 'Just now';
+                                    } elseif ($timeDiff < 3600) {
+                                        $minutes = floor($timeDiff / 60);
+                                        $formattedTime = $minutes . ' minute(s) ago';
+                                    } else {
+                                        $hours = floor($timeDiff / 3600);
+                                        if ($hours < 24) {
+                                            $formattedTime = $hours . ' hour(s) ago';
+                                        } else {
+                                            $days = floor($hours / 24);
+                                            $formattedTime = $days . ' day(s) ago';
+                                        }
+                                    }
+                                }
                             }
-                          }
 
-                          $hideDropdown = true;
+                            $hideDropdown = true;
 
-                          $queryHide = "SELECT `status` FROM emp_official_tb WHERE `status` = 'Pending' AND DATE(`_dateTime`) BETWEEN '$startDate' AND '$endDate'";
-                          $query_run_hide = mysqli_query($conn, $queryHide);
-                          $rowsOB = mysqli_fetch_assoc($query_run_hide);
+                            $queryHide = "SELECT `status` FROM emp_official_tb WHERE `status` = 'Pending' AND DATE(`_dateTime`) BETWEEN '$startDate' AND '$endDate'";
+                            $query_run_hide = mysqli_query($conn, $queryHide);
+                            $rowsOB = mysqli_fetch_assoc($query_run_hide);
 
-                          if ($rowsOB > 0) {
-                            $hideDropdown = false;
-                          }
+                            if ($rowsOB > 0) {
+                                $hideDropdown = false;
+                            }
                           ?>
 
                           <?php if (!$hideDropdown): ?>
@@ -361,30 +385,35 @@
                             $query = "SELECT COUNT(*) AS employee_DTR, MAX(`_dateTime`) AS last_pending FROM emp_dtr_tb WHERE `status` = 'Pending' AND DATE(`_dateTime`) BETWEEN '$startDate' AND '$endDate'";
                             $query_run = mysqli_query($conn, $query);
 
-                            if (mysqli_num_rows($query_run) > 0){
-                              $DTR_row = mysqli_fetch_assoc($query_run);
-                              $employeeDTR = $DTR_row['employee_DTR'];
-                              $lastPending = $DTR_row['last_pending'];
+                            $lastPending = null; // Initialize $lastPending with null
 
-                              $now = time(); // Current timestamp
-                              $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
-                              $timeDiff = $now - $pendingTime; // Difference in seconds
-  
-                              if ($timeDiff < 60) {
-                                $formattedTime = 'Just now';
-                              } elseif ($timeDiff < 3600) {
-                                $minutes = floor($timeDiff / 60);
-                                $formattedTime = $minutes . ' minute(s) ago';
-                              } else {
-                                $hours = floor($timeDiff / 3600);
-                                if ($hours < 24) {
-                                  $formattedTime = $hours . ' hour(s) ago';
-                                } else {
-                                  $days = floor($hours / 24);
-                                  $formattedTime = $days . ' day(s) ago';
+                            if (mysqli_num_rows($query_run) > 0) {
+                                $DTR_row = mysqli_fetch_assoc($query_run);
+                                $employeeDTR = $DTR_row['employee_DTR'];
+                                $lastPending = $DTR_row['last_pending'];
+
+                                $now = time(); // Current timestamp
+                                $formattedTime = ''; // Initialize $formattedTime
+
+                                if ($lastPending !== null) { // Check if $lastPending is not null
+                                    $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
+                                    $timeDiff = $now - $pendingTime; // Difference in seconds
+
+                                    if ($timeDiff < 60) {
+                                        $formattedTime = 'Just now';
+                                    } elseif ($timeDiff < 3600) {
+                                        $minutes = floor($timeDiff / 60);
+                                        $formattedTime = $minutes . ' minute(s) ago';
+                                    } else {
+                                        $hours = floor($timeDiff / 3600);
+                                        if ($hours < 24) {
+                                            $formattedTime = $hours . ' hour(s) ago';
+                                        } else {
+                                            $days = floor($hours / 24);
+                                            $formattedTime = $days . ' day(s) ago';
+                                        }
+                                    }
                                 }
-                              }
-                              
                             }
 
                             $hideDropdown = true;
@@ -394,9 +423,11 @@
                             $rowsDTR = mysqli_fetch_assoc($query_run_hide);
 
                             if ($rowsDTR > 0) {
-                              $hideDropdown = false;
-                          }
-                          ?>
+                                $hideDropdown = false;
+                            }
+                            ?>
+
+
                           <?php if (!$hideDropdown): ?>
                           <a class="dropdown-item preview-item">
                           <div class="preview-thumbnail">

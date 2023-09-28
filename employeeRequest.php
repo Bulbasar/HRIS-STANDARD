@@ -185,6 +185,7 @@ session_start();
         <form action="actions/Employee List/empreq.php" method="post">
             <div class="table-responsive mt-3" style="width: 98%; margin:auto">
                 <input type="hidden" name="name_reqType" id="id_reqType">
+                <input type="hidden" name="emp_req_id" id="id_emp">
                 <table id="order-listing" class="table" style="width: 100%;" >
                     <thead >   
                         <th style="display: none;"> ID </th>  
@@ -449,7 +450,7 @@ $(document).ready(function() {
         }).get();
 
         console.log(data);
-                                    //id_colId
+        $('#id_emp').val(data[0]);
         $('#id_reqType').val(data[6]);
     });
 });

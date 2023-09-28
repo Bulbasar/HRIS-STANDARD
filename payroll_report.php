@@ -29,6 +29,10 @@ include_once 'config.php';
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
 
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -205,23 +209,12 @@ include_once 'config.php';
                                                             </form>
                                                         </td>
                                                     </tr>
+                                            </table>
+                                         </div>    
+                               <div class="report-container d-flex flex-row" id="pdf-content">
+    <!-- Your content here -->
+</div>
 
-                                     </table>
-                               </div>    
-
-                               <!-- <div class="modal fade" id="ViewReport" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg" style="width: 2000px;">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Payroll Report</h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                                <div class="modal-body" id="report-modal-body">
-                                                    
-                                                </div>
-                                           </div>
-                                        </div>
-                                    </div> -->
                             
                     <div class="export-section">
                         <div class="export-sec">
@@ -232,8 +225,11 @@ include_once 'config.php';
                                     <input type="hidden" name="endDate" value="<?php echo $prb_row['cutoff_enddate']; ?>">
                                 <button class="excel downloadcsv" id="export-csv-btn">CSV</button>
                             </form>
-                            <p class="lbl_exprt_contnt">|</p>
-                            <button class="pdf" onclick="makePDF()">PDF</button>
+                            <!-- <p class="lbl_exprt_contnt">|</p> -->
+                                    <!-- <input type="hidden" name="cutoffID" value="<?php echo $prb_row['cutoff_ID']; ?>">
+                                    <input type="hidden" name="startDate" value="<?php echo $prb_row['cutoff_startdate']; ?>">
+                                    <input type="hidden" name="endDate" value="<?php echo $prb_row['cutoff_enddate']; ?>"> -->
+
                         </div>
                     </div>
                      <?php
@@ -245,19 +241,10 @@ include_once 'config.php';
         </div>
       </div>
    
+            <div class="report-container d-flex flex-row" id="pdf-content">
+                <!-- Your existing content here -->
+            </div>
 
-<script>
-$(document).ready(function () {
-    $('.downloadcsv').click(function () {
-        var employeeId = $("input[name='employeeId']").val();
-        var minDate = $("input[name='minDate']").val();
-        var maxDate = $("input[name='maxDate']").val();
-
-        // Use window.location to trigger the download
-        window.location.href = 'actions/Daily Time Records/download.php?employeeId=' + employeeId + '&minDate=' + minDate + '&maxDate=' + maxDate;
-    });
-});
-</script>
 
 
 <!---Script sa pagpindot ng view report button nakaspecific data--->
@@ -282,79 +269,77 @@ $(document).ready(function () {
 
 <!-------------------------------------------------TABLE END------------------------------------------->
 
-<!--PDF Exporting-->
-<script>
-window.html2canvas = html2canvas;
-window.jsPDF = window.jspdf.jsPDF;
-
-function makePDF() {
-    html2canvas(document.querySelector("#order-listing"), {
-        allowTaint: true,
-        useCORS: true,
-        scale: 0.7
-    }).then(canvas => {
-        var img = canvas.toDataURL("Payroll Attendance Report");
-        
-        // Set the PDF to landscape mode
-        var doc = new jsPDF({
-            orientation: 'landscape'
-        });
-
-        doc.setFont('Arial');
-        doc.getFontSize(11);
-        doc.addImage(img, 'PNG', 10, 10, 0,0);
-        doc.save("Payroll Report.pdf");
-    });
-}
-</script>
-<!--CSV Exporting-->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- <script>
-$(document).ready(function() {
-    // Export button click event
-    $('#export-csv-btn').click(function() {
-        // Create a CSV content
-        var csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "Employee ID, Name , Month, StartDate, EndDate , CutOffNumber, WorkingDays, Overtime, Allowance, LeavePay, HolidayPay, TotalSalary, SSSDeduction, Philhealth, TinDeduction, PagibigDeduction, OtherDeduction, Late, Undertime, Absences, TotalDeduction, FinalTotalSalary,\n";
 
-        // Loop through table rows and append data
-        $('#order-listing tbody tr').each(function() {
-            var EmployeeID = $(this).find('td:nth-child(1)').text();
-            var Name = $(this).find('td:nth-child(2)').text();
-            var Month = $(this).find('td:nth-child(3)').text();
-            var StartDate = $(this).find('td:nth-child(4)').text();
-            var EndDate = $(this).find('td:nth-child(5)').text();
-            var CutOffNumber = $(this).find('td:nth-child(6)').text();
-            var WorkingDays = $(this).find('td:nth-child(7)').text();
-            var Overtime = $(this).find('td:nth-child(8)').text();
-            var Allowance = $(this).find('td:nth-child(9)').text();
-            var LeavePay = $(this).find('td:nth-child(10)').text();
-            var HolidayPay = $(this).find('td:nth-child(11)').text();
-            var TotalSalary = $(this).find('td:nth-child(12)').text();
-            var SSSDeduction = $(this).find('td:nth-child(13)').text();
-            var Philhealth = $(this).find('td:nth-child(14)').text();
-            var TinDeduction = $(this).find('td:nth-child(15)').text();
-            var PagibigDeduction = $(this).find('td:nth-child(16)').text();
-            var OtherDeduction = $(this).find('td:nth-child(17)').text();
-            var Late = $(this).find('td:nth-child(18)').text();
-            var Undertime = $(this).find('td:nth-child(19)').text();
-            var Absences = $(this).find('td:nth-child(20)').text();
-            var TotalDeduction = $(this).find('td:nth-child(21)').text();
-            var FinalTotalSalary = $(this).find('td:nth-child(22)').text();
-            csvContent += EmployeeID + "," + Name + "," + Month + ","  + StartDate + ","  + EndDate + ","  + CutOffNumber + ","  + WorkingDays + "," + Overtime + "," + Allowance + "," + LeavePay + "," + HolidayPay + "," + TotalSalary + "," + SSSDeduction + "," + Philhealth + "," + TinDeduction + "," + PagibigDeduction + "," + OtherDeduction + "," + Late + "," + Undertime + "," + Absences + "," + TotalDeduction + "," + FinalTotalSalary + "," + other +"\n";
-        });
-
-        // Create a CSV blob and trigger a download
-        var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "Payroll Reports.csv");
-        document.body.appendChild(link);
-        link.click();
+<!--CSV Exporting-->
+<script>
+$(document).ready(function () {
+    $('.downloadcsv').click(function () {
+        var employeeId = $("input[name='employeeId']").val();
+        var minDate = $("input[name='minDate']").val();
+        var maxDate = $("input[name='maxDate']").val();
     });
 });
-</script> -->
+</script>
 
+<!--Pdf Exporting--->
+<script>
+$(document).ready(function() {
+  $("#export-pdf-btn").click(function() {
+    // Get the content to export
+    var contentToExport = $("#pdf-content").html();
+    
+    // Send content to generate_pdf.php using AJAX
+    $.ajax({
+      type: "POST",
+      url: "generate_pdf.php",
+      data: {
+        content: contentToExport
+      },
+      success: function(response) {
+        // Handle the response, e.g., you can open the generated PDF in a new tab
+        window.open(response, "_blank");
+      }
+    });
+  });
+});
+
+
+// document.getElementById("export-pdf-btn").addEventListener("click", exportPDF);
+
+// function exportPDF() {
+//     // Create a new jsPDF instance
+//     var pdf = new jsPDF('landscape');
+
+//     // Fetch the content from PayReport.php using AJAX
+//     var xhr = new XMLHttpRequest();
+//     xhr.open("GET", "PayReport.php", true);
+
+//     xhr.onreadystatechange = function () {
+//         if (xhr.readyState === 4 && xhr.status === 200) {
+//             var payReportContent = xhr.responseText;
+
+//             // Create a temporary element to hold the specific content
+//             var tempContainer = document.createElement("div");
+//             tempContainer.innerHTML = payReportContent;
+
+//             // Find the content with the specific ID
+//             var pdfContent = tempContainer.querySelector("#pdf-content");
+
+//             if (pdfContent) {
+//                 // Add the specific content to the PDF
+//                 pdf.fromHTML(pdfContent, 10, 10);
+//                 // Save the PDF with a filename
+//                 pdf.save("Payroll_Report.pdf");
+//             } else {
+//                 alert("Content with ID 'pdf-content' not found.");
+//             }
+//         }
+//     };
+
+//     xhr.send();
+// }
+</script>
 <!----------------------Script sa dropdown chain--------------------------->        
 <script>
 // Kapag nagbago ang pagpili sa select department dropdown
@@ -557,7 +542,7 @@ $(document).ready(function() {
     <script src="skydash/template.js"></script>
     <script src="skydash/settings.js"></script>
     <script src="skydash/todolist.js"></script>
-     <script src="main.js"></script>
+    <script src="main.js"></script>
     <script src="bootstrap js/data-table.js"></script>
 
 

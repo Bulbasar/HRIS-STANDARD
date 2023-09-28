@@ -1,104 +1,10 @@
 <?php
-session_start();
-if(!isset($_SESSION['username'])){
-    header("Location: login.php"); 
-} else {
-    // Check if the user's role is not "admin"
-    if($_SESSION['role'] != 'admin'){
-        // If the user's role is not "admin", log them out and redirect to the logout page
-        session_unset();
-        session_destroy();
-        header("Location: logout.php");
-        exit();
-    }else {
-        include 'config.php';
-        include 'user-image.php';
-    }
-}
+include '../../config.php';
 
-include_once 'config.php';
+require('fpdf/fpdf.php'); // Include the fpdf library
 
-// NiRetrieve ko ang decode JSON data galing empListForm.php para mapalitan din ang label ng allowance
-$data = json_decode(file_get_contents('php://input'), true);
-
-// Update session variables with the new labels (if they are set)
-if (isset($data['newTranspoLabel'])) {
-    $_SESSION['newTranspoLabel'] = $data['newTranspoLabel'];
-}
-if (isset($data['newMealLabel'])) {
-    $_SESSION['newMealLabel'] = $data['newMealLabel'];
-}
-if (isset($data['newInternetLabel'])) {
-    $_SESSION['newInternetLabel'] = $data['newInternetLabel'];
-}
-
-// Define default labels or use session data
-$newTranspoLabel = isset($_SESSION['newTranspoLabel']) ? $_SESSION['newTranspoLabel'] : '';
-$newMealLabel = isset($_SESSION['newMealLabel']) ? $_SESSION['newMealLabel'] : '';
-$newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInternetLabel'] : '';
-//End ng ajax para label
-?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-
-    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css">
-
-        <!-- skydash -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
-
-
-    <link rel="stylesheet" href="skydash/feather.css">
-    <link rel="stylesheet" href="skydash/themify-icons.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css">
-    <link rel="stylesheet" href="skydash/vendor.bundle.base.css">
-
-    <link rel="stylesheet" href="skydash/style.css">
-
-    <script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
-   
-
-    <link rel="stylesheet" href="css/try.css">
-
-
-    <link rel="stylesheet" href="css/try.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/payroll_reportResponsive.css">
-    <title>Payroll Report</title>
-</head>
-<body>
-<header>
-</header>
-
-
-                        <div class="card">
-                          <div class="card-body">
-                             <div class="row">
-                                <div class="col-6">
-                                    <p style="font-size: 25px; padding: 10px">Payroll Report</p>
-                                </div>
-                                <div class="col-6 mt-1 text-end">
-                                    <a href="payroll_report.php" style="text-decoration: none;" class="btn btn-outline-primary">Back</a>
-                                    <button class="btn btn-outline-danger" id="export-pdf-btn" onclick="exportPDF()">PDF</button>
-                                </div>
-                            </div>
-
-                            <?php
-                            if (isset($_POST['cutoffID']) && isset($_POST['startDate']) && isset($_POST['endDate'])) {
-                            $cutoffID = $_POST['cutoffID'];
+if (isset($_POST['cutoffID']) && isset($_POST['startDate']) && isset($_POST['endDate'])) {
+    $cutoffID = $_POST['cutoffID'];
                             $startDate = $_POST['startDate'];
                             $endDate = $_POST['endDate'];
 
@@ -147,7 +53,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
 
                     while ($row = mysqli_fetch_assoc($query_run)) {
                         ?>
-                        <div class="report-container d-flex flex-row" id="pdf-content">
+                        <div class="report-container d-flex flex-row">
                                 <div class="table-responsive" id="table-responsiveness" style="width: 500px;">
                                     <table class="table table-bordered">
                                         <thead style="background-color: #cecece">
@@ -240,151 +146,19 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                         </div>
                         <?php
                     }
-                }
-                ?>
-            </div>
-          </div>
-   
-          
 
-<script>
-window.html2canvas = html2canvas;
-window.jsPDF = window.jspdf.jsPDF;
+    // Create a PDF instance
+    $pdf = new FPDF();
+    $pdf->AddPage();
 
-function exportPDF() {
-        var pdf = new jsPDF('landscape');
+    // Add content to the PDF (modify this as per your data)
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->Cell(0, 10, 'Employee ID: ' . $row['empid'], 0, 1);
+    $pdf->Cell(0, 10, 'Name: ' . $row['full_name'], 0, 1);
+    // Add more data here
 
-        var payslipContainers = document.querySelectorAll(".report-container");
-
-        payslipContainers.forEach(function (payslipContainer, index) {
-            html2canvas(payslipContainer, {
-                allowTaint: true,
-                useCORS: true,
-                scrollY: -window.scrollY,
-                scrollX: -window.scrollX,
-                scale: 1
-            }).then(canvas => {
-                if (index > 0) {
-                    pdf.addPage('landscape');
-                }
-
-                var img = canvas.toDataURL("image/png");
-                pdf.addImage(img, 'PNG', 7, 13, pdf.internal.pageSize.getWidth() - 14, pdf.internal.pageSize.getHeight() - 26);
-
-                if (index === payslipContainers.length - 1) {
-                    pdf.save("Payroll_report.pdf");
-                }
-            });
-        });
-    } 
-</script>
-
-<script>
- //HEADER RESPONSIVENESS SCRIPT
- 
- 
-$(document).ready(function() {
-  // Toggle the submenu visibility on click (for mobile devices)
-  $('.nav-link').on('click', function(e) {
-    if ($(window).width() <= 390) {
-      e.preventDefault();
-      $(this).siblings('.sub-menu').slideToggle();
-    }
-  });
-
-  // Hamburger button functionality
-  $('.responsive-bars-btn').on('click', function() {
-    if ($(window).width() <= 390) {
-      $('#sidebar').toggleClass('active-sidebars');
-    }
-  });
-});
-
-
-$(document).ready(function() {
-  // Toggle the submenu visibility on click (for mobile devices)
-  $('.nav-links').on('click', function(e) {
-    if ($(window).width() <= 500) {
-      e.preventDefault();
-      $(this).siblings('.sub-menu').slideToggle();
-    }
-  });
-
-  // Hamburger button functionality
-  $('.responsive-bars-btn').on('click', function() {
-    if ($(window).width() <= 500) {
-      $('#sidebar').toggleClass('active-sidebar');
-    }
-  });
-});
-
-
-</script>
-
-
-    <script> 
-     $('.header-dropdown-btn').click(function(){
-        $('.header-dropdown .header-dropdown-menu').toggleClass("show-header-dd");
-    });
-
-//     $(document).ready(function() {
-//     $('.navbar-toggler').click(function() {
-//     $('.nav-title').toggleClass('hide-title');
-//     $('.dashboard-container').toggleClass('move-content');
-  
-//   });
-// });
- $(document).ready(function() {
-    var isHamburgerClicked = false;
-
-    $('.navbar-toggler').click(function() {
-    $('.nav-title').toggleClass('hide-title');
-    // $('.dashboard-container').toggleClass('move-content');
-    isHamburgerClicked = !isHamburgerClicked;
-
-    if (isHamburgerClicked) {
-      $('#schedule-list-container').addClass('move-content');
-    } else {
-      $('#schedule-list-container').removeClass('move-content');
-
-      // Add class for transition
-      $('#schedule-list-container').addClass('move-content-transition');
-      // Wait for transition to complete before removing the class
-      setTimeout(function() {
-        $('#schedule-list-container').removeClass('move-content-transition');
-      }, 800); // Adjust the timeout to match the transition duration
-    }
-  });
-});
- 
-
-//     $(document).ready(function() {
-//   $('.navbar-toggler').click(function() {
-//     $('.nav-title').toggleClass('hide-title');
-//   });
-// });
-
-
-    </script>
-
-
-<script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap4.min.js"></script>
-
-<script src="vendors/datatables.net/jquery.dataTables.js"></script>
-<script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-
-        <!--skydash-->
-<script src="skydash/vendor.bundle.base.js"></script>
-<script src="skydash/off-canvas.js"></script>
-<script src="skydash/hoverable-collapse.js"></script>
-<script src="skydash/template.js"></script>
-<script src="skydash/settings.js"></script>
-<script src="skydash/todolist.js"></script>
-<script src="main.js"></script>
-<script src="bootstrap js/data-table.js"></script>
-
-<script src="vendors/datatables.net/jquery.dataTables.js"></script>
-<script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-</body>
-</html>
+    // Output the PDF to the browser
+    $pdf->Output();
+    exit;
+}
+?>

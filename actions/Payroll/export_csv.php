@@ -90,8 +90,8 @@ if (isset($_POST['cutoffID']) && isset($_POST['startDate']) && isset($_POST['end
         $csvRow = array(
             $row['empid'],
             $row['full_name'],
-            number_format($row['total_earnings'], 2),
-            number_format($row['total_deduction'], 2),
+            $row['total_earnings'],
+            $row['total_deduction'],
             $row['net_pay'],
             $row['working_days'],
             $row['basic_hours'],

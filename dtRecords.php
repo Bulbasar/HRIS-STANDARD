@@ -130,7 +130,7 @@ if(!empty($_GET['status'])){
                 <div class="btn-section" style="margin-left:70px;">
                      <!-- Button trigger modal -->
                     <button class="up-btn" data-bs-toggle="modal" data-bs-target="#upload_dtr_btn">Upload DTR File</button>
-                    <button class="down-btn" id="downloadBtn">Download CSV</button>
+                    <button class="down-btn" id="downloadBtn">Download Template</button>
                 </div>
                 </div>
 <!------------------------------------------------- End Of Header -------------------------------------------> 
@@ -196,7 +196,7 @@ if(!empty($_GET['status'])){
 
 <!-------------------------------------------------TABLE START------------------------------------------->
                         <div class="table-responsive" id="table-responsiveness">
-                             <table id="order-listing" class="table mt-2">
+                        <table id="order-listing" class="table mt-2">
                                 <thead>
                                     <tr>
                                         <th>Employee ID</th>
@@ -221,62 +221,67 @@ if(!empty($_GET['status'])){
                                     $dateFrom = $_GET['date_from'] ?? '';
                                     $dateTo = $_GET['date_to'] ?? '';
 
-                                    $query = "SELECT attendances.id,
-                                        attendances.status,
-                                        employee_tb.empid,
-                                        CONCAT(employee_tb.fname, ' ', employee_tb.lname) AS `full_name`,
-                                        attendances.date,
-                                        MIN(attendances.date) AS min_date, 
-                                        MAX(attendances.date) AS max_date,
-                                        dept_tb.col_deptname,
-                                        empschedule_tb.schedule_name,
-                                        attendances.time_in,
-                                        attendances.time_out,
-                                        CONCAT(
-                                        FLOOR( 
-                                            SUM(TIME_TO_SEC(attendances.late)) / 3600
-                                        ),
-                                        'H:',
-                                        FLOOR(
-                                            (
-                                                SUM(TIME_TO_SEC(attendances.late)) % 3600
-                                            ) / 60
-                                        ),
-                                        'M'
+                                $query = "SELECT
+                                    employee_tb.empid,
+                                    CONCAT(employee_tb.fname, ' ', employee_tb.lname) AS `full_name`,
+                                    MIN(attendances.date) AS min_date, 
+                                    MAX(attendances.date) AS max_date,
+                                    dept_tb.col_deptname,
+                                    CONCAT(
+                                    FLOOR( 
+                                        SUM(TIME_TO_SEC(attendances.late)) / 3600
+                                    ),
+                                    'H:',
+                                    FLOOR(
+                                        (
+                                            SUM(TIME_TO_SEC(attendances.late)) % 3600
+                                        ) / 60
+                                    ),
+                                    'M'
                                     ) AS total_hours_minutesLATE,
-                                        attendances.early_out,
-                                        attendances.overtime,
-                                        CONCAT(
-                                        FLOOR(
-                                            SUM(TIME_TO_SEC(attendances.total_work)) / 3600
+                                    CONCAT(
+                                    FLOOR( 
+                                        SUM(TIME_TO_SEC(attendances.early_out)) / 3600
+                                    ),
+                                    'H:',
+                                    FLOOR(
+                                        (
+                                            SUM(TIME_TO_SEC(attendances.early_out)) % 3600
+                                        ) / 60
+                                    ),
+                                    'M'
+                                    ) AS total_hours_minutesUT,
+                                    CONCAT(
+                                    FLOOR( 
+                                        SUM(TIME_TO_SEC(attendances.overtime)) / 3600
+                                    ),
+                                    'H:',
+                                    FLOOR(
+                                        (
+                                            SUM(TIME_TO_SEC(attendances.overtime)) % 3600
+                                        ) / 60
+                                    ),
+                                    'M'
+                                    ) AS total_hours_minutesOT,
+                                    CONCAT(
+                                    FLOOR(
+                                        SUM(TIME_TO_SEC(attendances.total_work)) / 3600
+                                        
+                                    ),
+                                    'H:',
+                                    FLOOR(
+                                        (
+                                            SUM(TIME_TO_SEC(attendances.total_work)) % 3600
                                             
-                                        ),
-                                        'H:',
-                                        FLOOR(
-                                            (
-                                                SUM(TIME_TO_SEC(attendances.total_work)) % 3600
-                                                
-                                            ) / 60
-                                        ),
-                                        'M'
+                                        ) / 60
+                                    ),
+                                    'M'
                                     ) AS total_hoursWORK
-                                        FROM employee_tb
-                                        INNER JOIN attendances ON employee_tb.empid = attendances.empid
-                                        INNER JOIN dept_tb ON employee_tb.department_name = dept_tb.col_ID
-                                        INNER JOIN empschedule_tb ON employee_tb.empid = empschedule_tb.empid 
-                                        GROUP BY attendances.empid, YEAR(attendances.date), MONTH(attendances.date)";
-
-                                        if (!empty($department) && $department != 'All Department') {
-                                            $query .= " AND dept_tb.col_deptname = '$department'";
-                                        }
-
-                                        if (!empty($employee) && $employee != 'All Employee') {
-                                            $query .= " AND employee_tb.empid = '$employee'";
-                                        }
-
-                                        if (!empty($dateFrom) && !empty($dateTo)) {
-                                            $query .= " AND attendances.date BETWEEN '$dateFrom' AND '$dateTo'";
-                                        }
+                                    FROM employee_tb
+                                    INNER JOIN attendances ON employee_tb.empid = attendances.empid
+                                    INNER JOIN dept_tb ON employee_tb.department_name = dept_tb.col_ID
+                                    GROUP BY attendances.empid, CONCAT(employee_tb.fname, ' ', employee_tb.lname),
+                                    dept_tb.col_deptname,  YEAR(attendances.date), MONTH(attendances.date)";
 
                                     $result = mysqli_query($conn, $query);
                                     while ($row = mysqli_fetch_assoc($result)) {
@@ -311,8 +316,8 @@ if(!empty($_GET['status'])){
                                             <td style="font-weight: 400;"><?php echo $row['max_date']; ?></td>
                                             <td style="font-weight: 400;"><?php echo $row['col_deptname']; ?></td>
                                             <td style="font-weight: 400;"><?php echo $row['total_hours_minutesLATE']; ?></td>
-                                            <td style="font-weight: 400;"><?php echo $row['early_out']; ?></td>
-                                            <td style="font-weight: 400;"><?php echo $row['overtime']; ?></td>
+                                            <td style="font-weight: 400;"><?php echo $row['total_hours_minutesUT']; ?></td>
+                                            <td style="font-weight: 400;"><?php echo $row['total_hours_minutesOT']; ?></td>
                                             <td style="font-weight: 400;"><?php echo $row['total_hoursWORK']; ?></td>
                                             <td style="font-weight: 400;">    <button class="btn btn-primary viewdtrecords" data-bs-toggle="modal" data-bs-target="#ViewdtrReport" 
                                                 data-employee-id="<?php echo $row['empid']; ?>"

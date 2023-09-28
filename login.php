@@ -19,7 +19,7 @@ if(isset($_POST['signIn'])){
         $_SESSION['password'] = $row_Superadmin['password'];
         $_SESSION['userType'] = $row_Superadmin['userType'];
         $_SESSION['role'] = $row_Superadmin['role'];
-        $_SESSION['empid'] = $row['empid'];
+        // $_SESSION['empid'] = $row['empid'];
         
         header("Location: Dashboard"); // Redirect to admin dashboard
         exit();
