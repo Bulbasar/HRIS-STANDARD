@@ -9,7 +9,7 @@
             session_unset();
             session_destroy();
             header("Location: logout.php");
-            echo "<script> alert('Something went wrong.'); </script>";
+            // echo "<script> alert('Something went wrong.'); </script>";
             exit();
         }
     }

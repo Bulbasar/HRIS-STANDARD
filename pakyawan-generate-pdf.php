@@ -37,6 +37,12 @@ session_start();
 <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
@@ -298,9 +304,7 @@ session_start();
                       include 'config.php';
 
                       $sql = "SELECT * FROM pakyawan_based_work_tb 
-                      INNER JOIN piece_rate_tb ON pakyawan_based_work_tb.unit_type = piece_rate_tb.id
-                      WHERE pakyawan_based_work_tb.employee = $pakyawan_empid  
-                      AND `start_date` >= '$pakyawStart_cutoff' 
+                      WHERE `start_date` >= '$pakyawStart_cutoff' 
                       AND `end_date` <= '$pakyawEnd_cutoff'";
 
                       $result = $conn->query($sql);
@@ -309,16 +313,11 @@ session_start();
                       if($result->num_rows > 0){
                         while($row = $result->fetch_assoc()){
                           
-                          $unit_rate = $row['unit_rate'];
-                          $unit_work = $row['unit_work'];
-                          
-                          $amount = $unit_rate * $unit_work;
-
 
                           echo "
                           <div class='box-data w-100 mt-3 d-flex flex-row justify-content-between align-items-center pl-3 pr-3'>
-                          <p style='color: #656464'>".$row['unit_type']."</p>
-                          <p style='color: #656464'> ".$unit_work." </p>
+                          <p style='color: #656464'>".$row['unit_type_text']."</p>
+                          <p style='color: #656464'> </p>
                           <p style='color: #656464' class='mr-4'>₱ ".$row['work_pay']."</p>
                           </div>";
                         }

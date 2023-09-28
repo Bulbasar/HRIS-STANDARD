@@ -54,7 +54,7 @@
                 const dailyRate = basicSalary / workingDays;
                 document.getElementById('daily_rate').value = dailyRate.toFixed(2);
             } else {
-                document.getElementById('daily_rate').value = '';
+                // document.getElementById('daily_rate').value = '';
             }
         }
 
@@ -67,7 +67,7 @@
                 const basicSalary = workingDays * dailyRate;
                 document.getElementById('basic_salary').value = basicSalary.toFixed(2);
             } else {
-                document.getElementById('basic_salary').value = '';
+                // document.getElementById('basic_salary').value = '';
             }
         }
 

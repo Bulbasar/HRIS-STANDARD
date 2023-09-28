@@ -34,6 +34,12 @@ session_start();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -265,8 +271,8 @@ session_start();
                                         // Generate the HTML table row
                                         echo "<tr>
                                                 <td style= 'display: none;'>$dept_id</td>
-                                                <td>$dept_name</td>
-                                                <td>$emp_count</td>
+                                                <td style='font-weight: 400'>$dept_name</td>
+                                                <td style='font-weight: 400'>$emp_count</td>
                                                 <td>
                                                     <button type='submit' name='view_data' class= 'border-0 viewbtn' title = 'View' style=' background: transparent;'>
                                                     <i class='fa-solid fa-eye fs-5 me-3'></i>

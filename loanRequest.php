@@ -58,6 +58,12 @@
 <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
@@ -119,68 +125,24 @@
     }
     table {
                 display: block;
-                overflow-x: auto;
+                overflow-x: hidden;
                 white-space: nowrap;
                 max-height: 450px;
                 height: 450px;
                 
                 
             }
-            thead{
-                display: table;
-                width: 100%;
-            }
             tbody {
                 display: table;
                 width: 100%;
             }
+            tr {
+                width: 100% !important;
+                display: table !important;
+                table-layout: fixed !important;
+            }
 
-            #table-responsiveness{
-    overflow-y: hidden !important;
-   }
-
-   table thead th:nth-child(1){
-    width: 15%;
-   }
-
-   table tbody tr td:nth-child(1){
-    width: 15%;
-   }
-
-
-   table thead th:nth-child(2){
-    width: 15%;
-   }
-
-   table tbody tr td:nth-child(2){
-    width: 15%;
-   }
-
-
-   table thead th:nth-child(3){
-    width: 10%;
-   }
-
-   table tbody tr td:nth-child(3){
-    width: 10%;
-   }
-
-   table thead th:nth-child(4){
-    width: 13%;
-   }
-
-   table tbody tr td:nth-child(4){
-    width: 13%;
-   }
-
-   table thead th:nth-child(5){
-    width: 13%;
-   }
-
-   table tbody tr td:nth-child(5){
-    width: 13%;
-   }
-
+      
    .approveBtn{
     border: none; background-color: #70C170; height: 2.5em; width: 6.5em; color: white; border-radius: 0.3em
    }
@@ -203,31 +165,33 @@
                 <!-- <input class="employeeList-search" type="text" placeholder="&#xF002; Search" style="font-family:Arial, FontAwesome" id="search"/> -->
             </div>
 
-            <div class="table-responsive" id="table-responsiveness" style="width: 95%; height: 100%; margin:auto; margin-top: 30px; overflow-y: hidden;">
-            <table id="order-listing" class="table table-responsive" style="width: 100%;">
+            <div class="table-responsive" id="table-responsiveness" style="width: 100%; margin:auto; margin-top: 30px; padding: 1em;">
+            <table id="order-listing" class="table" style="width: 100%; ">
                 <thead style="background-color: #f4f4f4;">
                     <th>Name</th>
                     <th style="" >Loan Type</th>
                     <th>Loan Date</th>
-                    <th>Date Files</th>
+                    <th>Forecasted End Date</th>
                     <th>Payable Amount</th>
                     <th>Amortization</th>
                     <th>Balance</th>
                     <th>Status</th>
                     <th>Action</th>
+                    <th class='d-none'>id</th>
                 </thead>
                 <tbody>
                     <?php 
                        $db = mysqli_connect("localhost", "root", "" , "hris_db");
                        $result = $db->query("SELECT payroll_loan_tb.id,
-                                        payroll_loan_tb.loan_type,
+                                        payroll_loan_tb.start_date,
                                         payroll_loan_tb.cutoff_no,
                                         payroll_loan_tb.remarks,
-                                        payroll_loan_tb.loan_date,
+                                        payroll_loan_tb.loan_type,
                                         payroll_loan_tb.payable_amount,
                                         payroll_loan_tb.amortization,
                                         payroll_loan_tb.applied_cutoff,
                                         payroll_loan_tb.timestamp,
+                                        payroll_loan_tb.end_date,
                                         payroll_loan_tb.status,
                                         CONCAT(
                                              employee_tb.`fname`,
@@ -236,39 +200,52 @@
                                             ) AS `full_name` 
                                 FROM payroll_loan_tb
                                 INNER JOIN employee_tb ON employee_tb.empid = payroll_loan_tb.empid
-                                ORDER BY loan_date ASC");
+                                ORDER BY `payroll_loan_tb`.`start_date` ASC");
                         
                         if($result->num_rows > 0){
                             while($row = $result->fetch_assoc()){ 
+                                $status = $row['status'];
+                                $id = $row['id'];
                                
                     ?>
                     <tr>  
                         <td style="font-weight: 400"><?php echo $row['full_name']?></td> 
                         <td style="font-weight: 400"><?php echo $row['loan_type']?></td>
-                        <td style="font-weight: 400"><?php echo $row['loan_date']?></td>
-                        <td style="font-weight: 400"><?php echo $row['timestamp']?></td>
+                        <td style="font-weight: 400"><?php echo $row['start_date']?></td>
+                        <td style="font-weight: 400"><?php echo $row['end_date']?></td>
                         <td style="font-weight: 400"><?php echo $row['payable_amount']?></td>
                         <td style="font-weight: 400"><?php echo $row['amortization']?></td>
                         <td style="font-weight: 400"><?php echo $row['payable_amount']?></td>
-                        <td style="font-weight: 400; <?php echo ($row['status'] === 'Pending') ? 'color: red;' : 'color: green;' ?> <?php echo ($row['status'] === 'Rejected') ? 'color: orange;' : 'color: green;' ?>">
-                            <?php echo $row['status'] ?>
-                        </td>
-                        <form method="POST" >
-                            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                            <td>
-                                <?php if ($row['status'] === 'Approved' || $row['status'] === 'Rejected' || $row['status'] === 'Cancelled'): ?>
-                                    <button class="approveBtn" id="approveBtn" name="status" value="Approved" style="display: none;" disabled>
-                                            Approve
-                                          </button>
-                                <button class="rejectBtn" id="rejectBtn" name="status" value="Rejected" style="display: none;" disabled>
-                                            Reject
-                                          </button>
-                                          <?php else: ?>
-                                <button class="approveBtn" id="approveBtn" name="status" value="Approved" >Approve</button>
-                                <button class="rejectBtn" id="rejectBtn" name="status" value="Rejected" >Reject</button>
-                                <?php endif; ?>
-                            </td>
-                        </form>
+                        
+                        <?php 
+                            if($status == 'Pending'){ ?>
+                                <td style="font-weight: 500; color: red">Pending</td>
+                        <?php 
+                            } else if ($status == 'Approved'){ ?>
+                                <td style="font-weight: 500; color: green">Approved</td>
+                        <?php 
+                            }else if($status == 'Rejected'){?>
+                                <td style="font-weight: 500; color: orange">Rejected</td>
+                        <?php
+                            }
+                                
+                        ?>
+                                
+                        <?php 
+                            if($status == 'Pending'){ ?>
+                               <td class="">
+                                    <button type="button" class="btn btn-success p-3 sched-update" style="margin-left:-3em; color: white" data-bs-toggle='modal' data-bs-target='#schedUpdate' id='sched-update'>Approve</button>
+                                    <button type="button" class="btn btn-danger p-3 reject" style="color: white" data-bs-toggle='modal' data-bs-target='#reject'>Reject</button>
+                               </td>
+                        <?php        
+                            }else{  ?>
+                            
+                            <td><p class="p-2"></p></td>
+                        
+                        <?php
+                            }
+                        ?>
+                        <td class="d-none"><?php echo $id ?></td>
                     </tr>
                     <?php 
                             }
@@ -284,6 +261,53 @@
         </div>
     </div>
 
+
+    <!-- Approve -->
+
+    <div class="modal fade" id="schedUpdate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="title" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Approve Loan Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="actions/Loan Request/approve.php" method="POST">
+                <input type="hidden" name="id" id="id">
+                <input type="hidden" name="status" value="Approved">
+                <h3 class="d-flex jutify-content-center align-items-center">Are you sure?</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn border border-dark" data-bs-dismiss="modal">No</button>
+                <button type="submit" name="approve" class="btn btn-primary">Yes</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    </form>
+
+    <!-- reject -->
+    <div class="modal fade" id="reject" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="title" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Reject Loan Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="actions/Loan Request/reject.php" method="POST">
+                <input type="hidden" name="id" id="ids">
+                <input type="hidden" name="status" value="Rejected">
+                <h3 class="d-flex jutify-content-center align-items-center">Are you sure?</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn border border-dark" data-bs-dismiss="modal">No</button>
+                <button type="submit" name="reject" class="btn btn-primary">Yes</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    </form>
   
 <script>
    function handleButtonClick(button){
@@ -291,6 +315,45 @@
    }
 </script>
 
+
+<script> 
+        $(document).ready(function(){
+                $('.sched-update').on('click', function(){
+                                    $('#schedUpdate').modal('show');
+                                    $tr = $(this).closest('tr');
+
+                                    var data = $tr.children("td").map(function () {
+                                        return $(this).text();
+                                    }).get();
+
+                                    console.log(data);
+                                    //id_colId
+                                    $('#id').val(data[9]);
+                                    
+                                });
+                            });
+            
+    </script>
+
+    
+<script> 
+        $(document).ready(function(){
+                $('.reject').on('click', function(){
+                                    $('#reject').modal('show');
+                                    $tr = $(this).closest('tr');
+
+                                    var data = $tr.children("td").map(function () {
+                                        return $(this).text();
+                                    }).get();
+
+                                    console.log(data);
+                                    //id_colId
+                                    $('#ids').val(data[9]);
+                                    
+                                });
+                            });
+            
+    </script>
 
 
 

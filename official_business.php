@@ -35,6 +35,12 @@ session_start();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
@@ -269,7 +275,7 @@ session_start();
                     include 'config.php';
 
                     // Fetch all values of empid and date from the database
-                    $sql = "SELECT `empid`, CONCAT(`fname`, ' ',`lname`) AS `full_name` FROM employee_tb";
+                    $sql = "SELECT `empid`, CONCAT(`fname`, ' ',`lname`) AS `full_name` FROM employee_tb WHERE classification != 3";
                     $result = mysqli_query($conn, $sql);
 
                     $employeeID = isset($_GET['empid']) ? ($_GET['empid']): '';

@@ -47,6 +47,12 @@
 <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
@@ -74,6 +80,7 @@
 
 <link rel="stylesheet" href="css/try.css">
     <link rel="stylesheet" href="css/styles.css"> 
+    <link rel="stylesheet" href="css/hardware.css">
     <title>Employee List</title>
 </head>
 <body>
@@ -122,13 +129,14 @@
       background-color: <?= $status === 'Inactive' ? 'red' : 'green' ?>;
       transition: background-color 0.3s;
     } */
+
 </style>
 
     <div class="empList-container">
         <div class="empList-title">
             <h1>Employee List</h1>
         </div>
-        <div class="empList-create-search" style="">
+        <div class="empList-create-search" >
             
     
 
@@ -146,13 +154,13 @@
                     $status_filter = $_POST['status_filter'];
                 }
                 ?>
-                <select name="status_filter" id="status-filter-select" class="form-control" style="color: black">
+                <select name="status_filter" id="status-filter-select" class="form-select" style="color: black">
                     <option value="All"<?php if ($status_filter === 'All') echo ' selected'; ?>>All</option>
                     <option value="Active"<?php if ($status_filter === 'Active') echo ' selected'; ?>>Active</option>
                     <option value="Inactive"<?php if ($status_filter === 'Inactive') echo ' selected'; ?>>Inactive</option>
                 </select>
                 </div>
-                <button type="submit" class="ml-5 btn btn-primary h-25 mt-4" style="">Go</button>
+                <button type="submit" class="ml-5 btn btn-primary h-25 mt-4" >Go</button>
             </div>
         
         </form>
@@ -234,6 +242,7 @@
                             <th>Status</th>
                             <th>Details</th>
                             <th>Action</th>
+                            <th>Biometrics</th>
                             <th class="d-none">empid</th>
                         </thead>
                         <tbody id="myTable">
@@ -250,13 +259,13 @@
                                             INNER JOIN positionn_tb ON employee_tb.empposition = positionn_tb.id
                                             INNER JOIN dept_tb ON employee_tb.department_name = dept_tb.col_ID
                                         INNER JOIN classification_tb ON employee_tb.classification = classification_tb.id
-                                        AND employee_tb.status = '$status_filter'";
+                                        AND employee_tb.status = '$status_filter' ORDER BY empid ASC ";
                             } elseif($status_filter === "All") {
                                 // If the selected filter is "All" or not set, show all employees
                                 $query = "SELECT * FROM employee_tb
                                             INNER JOIN positionn_tb ON employee_tb.empposition = positionn_tb.id
                                             INNER JOIN dept_tb ON employee_tb.department_name = dept_tb.col_ID
-                                        INNER JOIN classification_tb ON employee_tb.classification = classification_tb.id";
+                                        INNER JOIN classification_tb ON employee_tb.classification = classification_tb.id ORDER BY empid ASC ";
                             }
                         } else {
                             // Default filter status when the form is first loaded
@@ -265,7 +274,7 @@
                                             INNER JOIN positionn_tb ON employee_tb.empposition = positionn_tb.id
                                             INNER JOIN dept_tb ON employee_tb.department_name = dept_tb.col_ID
                                     INNER JOIN classification_tb ON employee_tb.classification = classification_tb.id
-                                    AND employee_tb.status = '$status_filter'";
+                                    AND employee_tb.status = '$status_filter' ORDER BY empid ASC ";
                         }
                     
                             $result = $conn->query($query);
@@ -364,7 +373,7 @@
                                         'philhealth_amount' => 'Philhealth Amount',
                                         'bank_name' => 'Bank Name',
                                         'bank_number' => 'Bank Number',
-                                        'emp_img_url' => 'Image'
+                                        'user_profile' => 'Image'
                                         
                                     );
 
@@ -372,7 +381,7 @@
                                     $incomplete = false;
                                     $details = '';
                                     foreach ($row as $key => $value) {
-                                        if (($key !== 'user_profile' && $key !== 'work_frequency') && (empty($value) || is_null($value) || $value === "0" || $value === 0)) {
+                                        if (($key !== 'emp_img_url' && $key !== 'work_frequency') && (empty($value) || is_null($value) || $value === "0" || $value === 0)) {
                                             // Map the original column name to the new name using the $columnMapping array
                                             $columnDisplayName = isset($columnMapping[$key]) ? $columnMapping[$key] : $key;
                                             $details .= "<p><strong>$columnDisplayName:</strong> No value</p>";
@@ -406,6 +415,27 @@
 
                                     echo "</td>";
                                     echo "<td class='d-none'>".$cmpny_empid."</td>";
+                                    echo "<td>";
+                                    require_once './SpecialFolders/BiometricsData/Employee.php';
+                                    try {
+                                        $employee = new Employee('12345', '192.168.0.143:8090');
+                                    } catch (Exception $e) {
+                                        echo 'no biometrics found';
+                                    }
+        
+                                    if ($employee->IsEmployeeExist($row['empid'])) {
+                                        echo "<button class='btn btn-secondary'  style='text-decoration:none; text-align:center; height: 3.5em; width: 6em' onclick='updateBiometrics(" . strval($row['empid'] !== null ? $row['empid'] : '0') . ")'> Update </button>";
+                                    } else if (!$employee->IsEmployeeExist($row['empid'])) {
+                                        echo "<button class='btn btn-primary' style='text-decoration:none; text-align:center; height: 3.5em; width: 6em' onclick='addBiometrics(" . strval($row['empid'] !== null ? $row['empid'] : 0) . ")'> Add </button>";
+                                    } else if ($employee->IsEmployeeExist($row['empid']) == null) {
+                                        echo "Biometrics error";
+                                    }
+        
+        
+                                    // NOTE: MATAGAL MAGLOLOAD (O BAKA HINDI NA NGA) TONG MODULE PAG DI NAKABUKAS YUNG HARDWARE (NEED TO OPEN BIOMETRICS HARDWARE).....
+        
+        
+                                    echo "</td>";
                                     echo "</tr>";
                                 }
                             } else {
@@ -415,6 +445,204 @@
                             ?>
                         </tbody>
                     </table>
+
+                     <!-- biometrics data add window -->
+            <div id="add-biometrics-modal" class="modal modal-add">
+                <div class="modal-content add-content" style="width: 30%; height: 60%;">
+                    <!-- Settings Window -->
+                    <span class="close fs-1" id="close_btn">&times;</span>
+
+                    <h3 class="p-4" >Add to Biometrics</h3>
+
+                    <!-- Change Password -->
+                    <form action="SpecialFolders/BiometricsData/biometrics-controller.php" id="form-details" class="form-flex-box" method="POST">
+
+                    </form>
+                </div>
+            </div>
+
+          
+
+
+            <script>
+          
+                  close = document.getElementById("close_btn");
+
+               
+
+                close.addEventListener("click", function(){
+                   hideBtn = document.getElementById("add-biometrics-modal");
+
+                   hideBtn.style.display = 'none';
+                });
+            </script>
+
+            <!-- Biometrics Update window -->
+            <div id="update-biometrics-modal" class="modal" >
+                <div class="modal-content update-content">
+                    <!-- Settings Window -->
+                    <span class="close fs-1" id="close_btn_update">&times;</span>
+
+                    <h3 class="p-3">Update Biometrics</h3>
+                    
+
+                    <!-- Change Password -->
+                    <div id="button-containers" class="w-100">
+
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                 close = document.getElementById("close_btn_update");
+
+                close.addEventListener("click", function(){
+                   hideBtn = document.getElementById("update-biometrics-modal");
+
+                   hideBtn.style.display = 'none';
+                });
+            </script>
+
+            <!-- modal window js -->
+            <script type="text/javascript">
+                addBiometrics = (empid) => {
+                    var modal = document.getElementById('add-biometrics-modal');
+                    console.log("Empid: " + empid);
+                    modal.style.display = 'block';
+
+                    fetch(`SpecialFolders/BiometricsData/personDetails.php?empid=${empid}`)
+                        .then(res => res.text())
+                        .then(resData => {
+                            console.log(resData);
+                            document.getElementById('form-details').innerHTML = resData;
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        })
+                }
+
+                var closeAddBtn = document.getElementsByClassName('close')[0]
+
+                closeAddBtn.addEventListener('click', () => {
+                    var modal = document.getElementsByClassName('modal')[0]
+                    modal.style.display = 'none';
+                    console.log('closed');
+                });
+
+
+                window.addEventListener('click', (e) => {
+                    var modal = document.getElementsByClassName('modal')[0]
+                    if (e.target == modal) {
+                        modal.style.display = 'none';
+                    }
+                })
+
+                closeModal = () => {
+                    // var modal = document.getElementById('device-settings-modal')
+                    var modal = document.getElementsByClassName('modal')[0]
+                    modal.style.display = 'none';
+                    console.log('closed');
+                }
+            </script>
+
+
+            <!-- JS for Update window -->
+            <script type="text/javascript">
+                updateBiometrics = (empid) => {
+                    var modal = document.getElementById('update-biometrics-modal');
+
+                    console.log("Empid: ", empid);
+                    modal.style.display = 'block';
+                    fetch(`SpecialFolders/BiometricsData/addBiometrics?empid=${empid}`)
+                        .then(res => res.text())
+                        .then(resData => {
+                            console.log(resData)
+                            document.getElementById('button-containers').innerHTML = resData
+                        })
+                }
+
+                var closeAddBtn = document.getElementsByClassName('close')[1]
+
+                closeAddBtn.addEventListener('click', () => {
+                    var modal = document.getElementsByClassName('modal')[1]
+                    modal.style.display = 'none';
+                    console.log('closed');
+                });
+
+
+                window.addEventListener('click', (e) => {
+                    var modal = document.getElementsByClassName('modal')[1]
+                    if (e.target == modal) {
+                        modal.style.display = 'none';
+                    }
+                })
+
+                closeModal = () => {
+                    // var modal = document.getElementById('device-settings-modal')
+                    var modal = document.getElementsByClassName('modal')[1]
+                    modal.style.display = 'none';
+                    console.log('closed');
+                }
+            </script>
+
+            <script type="text/javascript">
+                //Add Face to Biometrics Hardware
+                function addFace(empid) {
+
+                    if (checkDigits(empid) === 1) {
+                        // console.log(checkDigits(200))
+                        empid = "00" + empid.toString();
+                    }
+                    if (checkDigits(empid) === 2) {
+                        empid = "0" + empid.toString();
+                    }
+
+                    // console.log(`face for: ${empid}`);
+                    fetch(`http://192.168.0.143:8090/face/takeImg?pass=12345&personId=${empid}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(res => res.json())
+                        .then(data => {
+                            alert(data.msg)
+                        })
+                }
+
+
+                // Add fingerprint to Biometrics Hardware
+                function addFingerprint(empid) {
+
+                    if (checkDigits(empid) === 1) {
+                        // console.log(checkDigits(200))
+                        empid = "00" + empid.toString();
+                    }
+                    if (checkDigits(empid) === 2) {
+                        empid = "0" + empid.toString();
+                    }
+
+                    // console.log(`fingerprint for: ${empid.toString()}`);
+
+                    fetch(`http://192.168.0.143:8090/face/fingerRegist?pass=12345&personId=${empid}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            // body: JSON.stringify(empid)
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log(data.msg);
+                            alert(data.msg);
+                        })
+                }
+
+                function checkDigits(int) {
+                    return int.toString().length;
+                }
+            </script>
+
+
 
         </div>
     </div>

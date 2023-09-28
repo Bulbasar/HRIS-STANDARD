@@ -1,5 +1,5 @@
 <?php
-
+// error_reporting();
 include 'config.php';
 
 // Check if there is a file uploaded
@@ -34,7 +34,9 @@ if(count($_POST) > 0){
     $dailyRate_update = number_format($dailyRate_update, 2);
     $dailyRate_update = str_replace(',', '', $dailyRate_update); // Remove comma
 
-    mysqli_query($conn, "UPDATE employee_tb SET fname='".$_POST['fname']."',mname='".$_POST['mname']."', lname='".$_POST['lname']."',contact='".$_POST['contact']."',cstatus='".$_POST['cstatus']."',gender='".$_POST['gender']."',empdob='".$_POST['empdob']."',empsss='".$_POST['empsss']."',emptin='".$_POST['emptin']."',emppagibig='".$_POST['emppagibig']."',empphilhealth='".$_POST['empphilhealth']."',empbranch='".$_POST['empbranch']."',department_name='".$_POST['department_name']."',empbsalary='".$_POST['empbsalary']."', drate='". $dailyRate_update ."', otrate='".$_POST['otrate']."', empdate_hired='".$_POST['empdate_hired']."',emptranspo='".$_POST['emptranspo']."',empmeal='".$_POST['empmeal']."',empinternet='".$_POST['empinternet']."',empposition='".$_POST['empposition']."', role='".$_POST['role']."',email='".$_POST['email']."', company_email='".$_POST['comp_email']."',sss_amount='".$_POST['sss_amount']."', tin_amount='".$_POST['tin_amount']."', pagibig_amount='".$_POST['pagibig_amount']."', philhealth_amount='".$_POST['philhealth_amount']."', classification='".$_POST['classification']."', bank_name='".$_POST['bank_name']."', bank_number='".$_POST['bank_number']."'".$emp_img_url.", company_code='".$_POST['company_code']."'
+    $SuperProfile = $_FILES['profile_super']['tmp_name'] ? addslashes(file_get_contents($_FILES['profile_super']['tmp_name'])) : '';
+
+    mysqli_query($conn, "UPDATE employee_tb SET fname='".$_POST['fname']."',mname='".$_POST['mname']."', lname='".$_POST['lname']."',contact='".$_POST['contact']."',cstatus='".$_POST['cstatus']."',gender='".$_POST['gender']."',empdob='".$_POST['empdob']."',empsss='".$_POST['empsss']."',emptin='".$_POST['emptin']."',emppagibig='".$_POST['emppagibig']."',empphilhealth='".$_POST['empphilhealth']."',empbranch='".$_POST['empbranch']."',department_name='".$_POST['department_name']."',empbsalary='".$_POST['empbsalary']."', drate='". $dailyRate_update ."', otrate='".$_POST['otrate']."', empdate_hired='".$_POST['empdate_hired']."',emptranspo='".$_POST['emptranspo']."',empmeal='".$_POST['empmeal']."',empinternet='".$_POST['empinternet']."',empposition='".$_POST['empposition']."', role='".$_POST['role']."',email='".$_POST['email']."', company_email='".$_POST['comp_email']."',sss_amount='".$_POST['sss_amount']."', tin_amount='".$_POST['tin_amount']."', pagibig_amount='".$_POST['pagibig_amount']."', philhealth_amount='".$_POST['philhealth_amount']."', classification='".$_POST['classification']."', bank_name='".$_POST['bank_name']."', bank_number='".$_POST['bank_number']."'".$emp_img_url.", company_code='".$_POST['company_code']."', user_profile = '".$SuperProfile."'
     WHERE id ='".$_POST['id']."'");
 
     mysqli_query($conn, "UPDATE assigned_company_code_tb SET company_code_id='".$_POST['company_code']."' WHERE empid = '".$_POST['empid']."' ");
@@ -113,8 +115,9 @@ else
         exit();
     } else{
         include 'config.php';
-        $userId = $_SESSION['id'];
-       
+        @$userId = $_SESSION['id'];
+        // echo $userId;
+
         $iconResult = mysqli_query($conn, "SELECT id, emp_img_url FROM employee_tb WHERE id = '$userId'");
         $iconRow = mysqli_fetch_assoc($iconResult);
 
@@ -163,7 +166,12 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -215,9 +223,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
     //    }
     ?>
     <style>
-      .deduction-move{
-
-}
+      
 .multiselect-dropdown{
     width: 420px !important;
     height: 50px !important;
@@ -286,11 +292,11 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                     
                                     <div class="emp-lname">
                                         <label for="lname">Last Name</label><br>
-                                        <input type="text" name="lname" id="" placeholder="Middle Name" value="<?php echo $row['lname']; ?>" style="border: black 1px solid;">
+                                        <input type="text" name="lname" id="" placeholder="Last Name" value="<?php echo $row['lname']; ?>" style="border: black 1px solid;">
                                     </div>
                                     <div class="emp-fname mt-3">
                                         <label for="fname">Middle Name</label><br>
-                                        <input type="text" class="" name="mname" id="" placeholder="First Name" value="<?php echo $row['mname']; ?>" style="border: black 1px solid; margin-top: 0.2em"> 
+                                        <input type="text" class="" name="mname" id="" placeholder="Middle Name" value="<?php echo $row['mname']; ?>" style="border: black 1px solid; margin-top: 0.2em"> 
                                     </div>
                                     <div class="emp-dob">
                                         <label for="empdob">Date of Birth</label><br>
@@ -313,9 +319,17 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                         <input type="email" name="email" id="" placeholder="Email Address" value="<?php echo $row['email'] ?>" pattern="[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}" title="Must be a valid email." style="border: black 1px solid;">
                                     </div>
 
+                                    <?php 
+                                        $sql ="SELECT * FROM settings_company_tb";
+                                        $result = mysqli_query($conn, $sql);
+                                        $settingRow = mysqli_fetch_assoc($result);
+
+                                        $company_code = $settingRow['email_domain'];
+
+                                    ?>
                                     <div class="emp-email">
                                         <label for="email">Company Email</label><br>
-                                        <input type="text" name="comp_email" id="" placeholder="Email Address" value="<?php echo $row['company_email'] ?>" pattern="[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}" title="Must be a valid email." style="border: black 1px solid;">
+                                        <input type="text" name="comp_email" id="" placeholder="Email Address" value="<?php echo $company_code ?>" pattern="[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}" title="Must be a valid email." style="border: black 1px solid;">
                                     </div>
 
                                     <div class="emp-datehired">
@@ -332,8 +346,8 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                         </select>
                                     </div>
                                 </div>
-                                <div class="emp-list-info-second-container"> 
-                                    <div class="emp-head mt-1">
+                                <div class="emp-list-info-second-container "> 
+                                    <div class="emp-head mt-1 ">
                                         <?php
                                         if(!empty($row['emp_img_url'])) {
                                             $image_url = $row['emp_img_url'];
@@ -392,7 +406,11 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                         <h2 style="font-size: 1.3em; color: gray; font-style:italic"><?php echo $position ?></h2>
                                         <p class="" style="margin-top: -3px; color: black; font-weight: 500">Status: <span style="<?php if($row['status'] == 'Active'){echo "color: green"; }else{echo "color:red"; } ?>"><?php echo $row['status'] ?></span></p>
                                         
-                                        <div class="emp-stats" style="">
+                                        <div class="emp-stats" >
+
+                                            <div class="input-group mt-2">
+                                            <input type="file" class="form-control" name="profile_super" accept="image/jpeg, image/png, image/webp" value="" >
+                                            </div>
                                         
                                         <!-- <h4 style="margin-top: 9px; margin-left: 50px;">Status: </h4>
                                         <input type="text" name="status" id="status" value="<?php if(isset($row['status']) && !empty($row['status'])) { echo $row['status']; } else { echo 'Inactive'; }?>" style="width: 65px; border: none; margin-top: 1px; margin-left: 4px; font-weight: 500; outline: none; color: <?php echo ($row['status'] === 'Active') ? 'green' : 'red'; ?>;" readonly>
@@ -553,7 +571,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                             <h1>Employment Credentials</h1>
                             </div>
                             <div class="emp-empInfo-first-container">
-                                <div class="empInfo-empid" style="">
+                                <div class="empInfo-empid" >
                                     <label for="empid">Employee ID</label><br>
                                     <div class="" style="display:flex; flex-direction: row">
                                     <?php
@@ -567,10 +585,10 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                             $options .= "<option value='".$rows['id']."' ".$selected." >" .$rows['company_code'].  "</option>";
                                         }
                                         ?>
-                                        <select name="company_code" id="" value="<?php echo $cmpny_row['company_code_name']?>" style="width: 15%">
+                                        <select name="company_code" id="" value="<?php echo $cmpny_row['company_code_name']?>" style="width: 25%">
                                             <?php echo $options ?>
                                         </select>
-                                        <input type="text" name="empid" id="" placeholder="Employee ID" value="<?php echo $row['empid'] ?>" readonly class="form-control" style="height:50px; width: 75%">
+                                        <input type="text" name="empid" id="" placeholder="Employee ID" value="<?php echo $empid ?>" readonly class="form-control" style="height:50px; width: 65%">
                                     </div>
                                 </div>
                                 <div class="empInfo-position">
@@ -764,14 +782,24 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                             <div class="emp-title" style="display:flex; flex-direction:space-row; align-items: center; justify-content:space-between; width: 1440px;">
                                 <h1>Employment Payroll Details</h1>
                             </div>
+
+                            <?php 
+                                $bsql = "SELECT * FROM employee_tb WHERE `empid` = '$empid'";
+                                $bresult = mysqli_query($conn, $bsql);
+                                $brow = mysqli_fetch_assoc($bresult);
+
+                                $bank_name = $brow['bank_name'];
+                                $bank_number = $brow['bank_number'];
+                                
+                            ?>
                             <div class="emp-payroll-first-container">
                                 <div class="payroll-bank-name">
                                     <label for="bank_name">Bank Name</label><br>
-                                    <input type="text" name="bank_name" id="" placeholder="N/A" value="<?php echo $row['bank_name']?>" style="border: black 1px solid;">
+                                    <input type="text" name="bank_name" id="" placeholder="N/A" value="<?php echo $bank_name ?>" style="border: black 1px solid;">
                                 </div>
                                 <div class="payroll-bank_no">
                                     <label for="bank_number">Bank Account Number</label><br>
-                                    <input type="text" name="bank_number" id="" placeholder="N/A"  value="<?php echo $row['bank_number']?>" style="border: black 1px solid;">
+                                    <input type="text" name="bank_number" id="" placeholder="N/A"  value="<?php echo $bank_number?>" style="border: black 1px solid;">
                                 </div>
                             </div>
                         </div>

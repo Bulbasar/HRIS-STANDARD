@@ -37,7 +37,12 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
     <title>Employee Request</title>
-
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
 
    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

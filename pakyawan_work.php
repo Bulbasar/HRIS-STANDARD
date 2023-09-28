@@ -38,7 +38,12 @@ session_start();
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
@@ -63,7 +68,7 @@ session_start();
     <link rel="stylesheet" href="css/try.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/piece_rate.css">
-    <title>HRIS | Schedule</title>
+    <title>HRIS | Work Load</title>
     <script>
         function closeErrorMessage() {
             document.getElementById('error-message').style.display = 'none';
@@ -87,7 +92,7 @@ session_start();
 
     <!-- insert modal -->
 
-    <form action="Data Controller/Pakyawan/workload_insert.php" method="POST">
+    <form action="Data Controller/Pakyawan/insert_workload.php" method="POST">
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateLabel" aria-hidden="true">
           <div class="modal-dialog">
               <div class="modal-content">
@@ -117,16 +122,38 @@ session_start();
                         <select name="employee" id="employeeDropdown" class="form-select" style="color: black" required>
                             <option value="" disabled selected>Select Employee</option> 
                             <?php echo $options; ?>
-                        </select>
+                        </select><br>
 
                         
 
-                        <label for="" class="mt-3">Unit Type:</label>
-                        <select name="unit_type" id="unitTypeDropdown" class="form-select" style="color: black" required>
-                            <option value="" disabled selected>Select Unit Type</option> 
-                        </select><br>
+                        <!-- <label for="" class="mt-3">Unit Type:</label>
+                        <select name="unit_type"  class="form-select" style="color: black" required>
+                            <option value="" disabled selected>Select Unit Type</option>
+                            <div id="selectedPieceDisplay"></div>
+                        </select><br> -->
 
-                   
+                        <div id="unitTypeDropdown">
+                        </div>
+     
+                    <label for="frequency">Frequency</label><br>
+                    <input type="text" id="frequencyInput" name="work_frequency" readonly class="form-control"required ><br>
+
+                    <label for="">Start Date</label><br>
+                    <input type="date" required name="start_date" class="form-control" id="startDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required><br>
+
+                    <label for="">End Date</label><br>
+                    <input type="date" required name="end_date" class="form-control" id="endDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="endDate" required>   
+
+                    <!-- <label for="">Unit Type</label><br> -->
+                    <input class="form-control type_unit d-none" type="text" name="unit_type_text" id="">
+
+
+                    <label for="" class="mt-3">Work Pay</label><br>
+                    <input type="text" name="work_pay" id="unit_work" class="form-control unit_work" readonly required>
+
+
+                    
+                    <!-- <p id="workPay" class="mt-2"></p> -->
 
                     <script>
                         const employeeDropdown = document.getElementById("employeeDropdown");
@@ -140,30 +167,96 @@ session_start();
                                 .then(response => response.text())
                                 .then(data => {
                                     unitTypeDropdown.innerHTML = data;
-                                })
+
+                                    function updateTotal() {
+                                    const checkboxes = unitTypeDropdown.querySelectorAll('.checkbox-item:checked');
+                                    let netTotal = 0;
+                                    let unitTypes = []; // Initialize an array to store selected unit types
+
+                                    checkboxes.forEach(checkbox => {
+                                        const quantityInput = checkbox.closest('tr').querySelector('.quantity-item');
+                                        const spanElement = checkbox.closest('td').querySelector('.subtotal');
+                                        const totalAmountInput = checkbox.closest('tr').querySelector('.total-amount');
+                                        const unitTypeElement = checkbox.closest('td').querySelector('.unit_type'); // Get the unit_type element
+                                        const unit_type = unitTypeElement.textContent.trim(); // Get the text content and remove leading/trailing whitespace
+
+                                        // Log the unit_type for each checkbox
+                                        console.log('Unit type: ' + unit_type);
+
+                                        // Check if quantity is empty or not
+                                        const quantityValue = parseFloat(quantityInput.value);
+                                        if (isNaN(quantityValue) || quantityValue === 0) {
+                                            totalAmountInput.value = ''; // Clear the total-amount if quantity is empty or not a number
+                                        } else {
+                                            // Calculate the product
+                                            const spanContent = parseFloat(spanElement.textContent);
+                                            const product = quantityValue * spanContent;
+
+                                            // Set the product as the value of total-amount
+                                            totalAmountInput.value = product;
+
+                                            // Add the product to netTotal
+                                            netTotal += product;
+
+                                            // Add the unit_type value to the array
+                                            unitTypes.push(unit_type);
+                                        }
+                                    });
+
+                                    // Set the selected unit types as the value of the unitTypesInput
+                                    const unitTypesInput = document.querySelector('.type_unit');
+                                    unitTypesInput.value = unitTypes.join(', ');
+
+                                    // Set the netTotal value
+                                    const unitWorkInput = document.querySelector('.unit_work');
+                                    unitWorkInput.value = netTotal.toFixed(2);
+
+                                    // Log the netTotal
+                                    console.log('Net Total: ' + netTotal);
+                                }
+
+                                    // Add an event listener to the checkboxes
+                                    unitTypeDropdown.addEventListener('change', function(event) {
+                                        if (event.target.classList.contains('checkbox-item')) {
+                                            const quantityInput = event.target.closest('tr').querySelector('.quantity-item');
+                                            const spanElement = event.target.closest('td').querySelector('.subtotal'); // Get the <span> element
+                                            // const unit_type = event.target.closest('td').querySelector('.unit_type');
+                                          
+                                            // Enable/disable the quantity input based on checkbox state
+                                            if (event.target.checked) {
+                                                quantityInput.removeAttribute('disabled');
+                                                console.log()
+                                                
+                                            } else {
+                                                quantityInput.setAttribute('disabled', 'disabled');
+                                                quantityInput.value = ''; // Clear the value
+                                                
+                                            }
+
+                                            // console.log(unit_type.textContent);
+
+                                            // Update the total when checkboxes change
+                                            updateTotal();
+                                        }
+                                    });
+
+                                    // Add an event listener to the quantity input fields
+                                    unitTypeDropdown.addEventListener('input', function(event) {
+                                        if (event.target.classList.contains('quantity-item')) {
+                                            // Update the total when quantity input changes
+                                            updateTotal();
+                                        }
+                                    });
+
+                                    // Initial calculation when the page loads
+                                    updateTotal();
+                                }) 
                                 .catch(error => console.error('Error:', error));
                         });
                     </script>
 
-              
 
-                    
-                  
-                    <label for="frequency">Frequency</label><br>
-                    <input type="text" id="frequencyInput" name="work_frequency" readonly class="form-control"required ><br>
 
-                    <label for="">Start Date</label><br>
-                    <input type="date" required name="start_date" class="form-control" id="startDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required><br>
-
-                    <label for="">End Date</label><br>
-                    <input type="date" required name="end_date" class="form-control" id="endDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="endDate" required>   
-
-                    <label for="" class="mt-3">Unit Work:</label><br>
-                    <input type="text" name="unit_work" id="unit_work" class="form-control" oninput="updateWorkPay(this.value)" disabled required>
-
-                    
-                    
-                    <p id="workPay" class="mt-2"></p>
                     
                     <script>
                         const unitTypeDropdowns = document.getElementById("unitTypeDropdown");
@@ -233,50 +326,35 @@ session_start();
       </div>
     </form>
 
+
+
     
 
 <!-- edit modal -->
-<form action="Data Controller/Pakyawan/getData.php" method="POST">
+<form action="Data Controller/Pakyawan/dataGet.php" method="POST">
   <div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <input type="text" id="id" name="id" style="display: none;">
-          <!-- <input type="text" name="employee" id="employee_ids" style="display: block;" > -->
-          <!-- <input type="text" name="unit_type" id="unit_types" style="display: block;"> -->
-          <!-- <input type="text" name="work_frequency" id="work_frequency" style="display: block;"> -->
-          <!-- <input type="text" name="start_date" id="start_date">
-          <input type="text" name="end_date" id="end_date"> -->
           <h5 class="modal-title" id="updateLabel">Work Load</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="form-group">
+            <label for="" class="">Employee Name:</label>
+            <input type="text" id="employee_name" class="form-control" readonly><br>
+
             <label for="">Frequency</label><br>
-            <!-- <select id="editFrequency" required name="work_frequency" class='form-select form-select-m' id="frequency" aria-label='.form-select-sm example' style='cursor: pointer;' readonly>
-             
-              <option value='Daily'>Daily</option>
-              <option value='Weekly'>Weekly</option>
-            </select><br> -->
-            <input type="text" name="work_frequency" id="work_frequency" class="form-control" readonly><br>
+            <input type="text" name="work_frequency" id="work_frequency" class="form-control frequency" readonly><br>
 
             <label for="">Start Date</label><br>
-            <input type="text" required name="start_date" class="form-control" id="start_date" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" readonly><br>
+            <input type="date" required name="start_date" class="form-control start_date" id="start_date" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" ><br>
 
             <label for="">End Date</label><br>
-            <input type="text" required name="end_date" class="form-control" id="end_date" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" readonly><br>
+            <input type="date" required name="end_date" class="form-control end_date" id="end_date" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" readonly>
 
-
-            <label for="" class="">Employee Name:</label>
-            <input type="text" id="employee_name" class="form-control" readonly>
             <input type="hidden" id="employee_ids" name="employee">
-
-            <label for="" class="mt-3">Unit Type:</label>
-            <input type="text" id="unit_type" class="form-control" readonly>
-            <input type="hidden" id="unit_types" name="unit_type">
-
-            <label for="" class="mt-3">Unit Work:</label><br>
-            <input type="text" name="unit_work" id="unit_work" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0, 11);">
           </div>
         </div>
         <div class="modal-footer">
@@ -287,6 +365,7 @@ session_start();
     </div>
   </div>
 </form>
+
    
 
     <!-- delete modal -->
@@ -348,18 +427,17 @@ session_start();
       <div class="table-responsive" id="table-responsive">
         <table id="order-listing" class="table table-responsive">
           <thead>
-            <th style='display: none;'>ID</th>
-            <th style='display: none;'>Employee ID</th> 
-            <th style='display: none;'>unit type</th>
             <th>Name</th>
             <th>Unit Type</th>
-            <th>Unit Work</th>
+       
             <th>Start Date</th>
             <th>End Date</th>
-            <!-- <th>Unit Quantity</th> -->
+            
             <th>Work Pay</th>
             <th>Actions</th>
             <th style='display:none'>Frequency</th>
+            <th style='display: none;'>Employee ID</th> 
+            <th style='display: none;'>work load id</th>
           
         </thead>
         <tbody>
@@ -368,26 +446,20 @@ session_start();
 
         
 
-        $sql = "SELECT pakyaw.id, emp.work_frequency, emp.fname, emp.lname, peice.unit_type, peice.unit_quantity, pakyaw.unit_work, pakyaw.start_date, pakyaw.end_date,  pakyaw.employee, pakyaw.work_pay,  peice.id AS id_piece
-                FROM pakyawan_based_work_tb AS pakyaw
-                INNER JOIN employee_tb AS emp ON pakyaw.employee = emp.empid
-                INNER JOIN piece_rate_tb AS peice ON pakyaw.unit_type = peice.id";
+        $sql = "SELECT pakyawan_based_work_tb.id AS load_id, pakyawan_based_work_tb.work_frequency, pakyawan_based_work_tb.employee, pakyawan_based_work_tb.start_date, pakyawan_based_work_tb. end_date, pakyawan_based_work_tb.unit_type_text, pakyawan_based_work_tb.work_pay, employee_tb.empid, employee_tb.fname, employee_tb.lname FROM pakyawan_based_work_tb 
+                INNER JOIN employee_tb WHERE pakyawan_based_work_tb.employee = employee_tb.empid";
           // $sql ="SELECT * FROM pakyawan_based_work_tb";
         $result = mysqli_query($conn, $sql);
 
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<tr>";
-                echo "<td style='display: none'>" . $row['id'] . "</td>";
-                echo "<td style='display: none'>" . $row['employee'] . "</td>";
-                echo "<td style='display: none'>" . $row['id_piece'] . "</td>";
                 echo "<td style='font-weight: 400'>" . $row['fname'] . " " . $row['lname'] . "</td>";
-                echo "<td style='font-weight: 400'>" . $row['unit_type'] . "</td>";
-                echo "<td style='font-weight: 400'>" . $row['unit_work'] . "</td>";
+                echo "<td style='font-weight: 400'>" . $row['unit_type_text'] . "</td>";
+                
                 echo "<td style='font-weight: 400'>" . $row['start_date'] . "</td>";
-                echo "<td style='font-weight: 400'>".$row['end_date']."</td>";
-                // echo "<td style='font-weight: 400'>".$row['unit_quantity']."</td>";
-                echo "<td style='font-weight: 400'>".$row['work_pay']."</td>";
+                echo "<td style='font-weight: 400'>" . $row['end_date'] . "</td>";
+                echo "<td style='font-weight: 400'> ₱ ".$row['work_pay']."</td>";
                 echo "<td style='font-weight: 400'>
                             <button class='editbtn' style='margin-right: 0.6em; border: none; background-color: inherit'>
                                 <i class='fa-solid fa-pen-to-square' style='font-size: 1.4em' title='Edit' data-bs-toggle='modal' data-bs-target='#updateModal'></i>
@@ -398,6 +470,8 @@ session_start();
                             </button>
                       </td>";
                 echo "<td style='display: none'>" . $row['work_frequency'] . "</td>";  
+                echo "<td style='display: none'>" . $row['employee'] . "</td>";
+                echo "<td style='display: none'>" . $row['load_id'] . "</td>";
                 echo "</tr>";
             }
         }
@@ -479,13 +553,13 @@ function handleFrequencyChange() {
     endDateInput.disabled = true;
     endDateInput.readOnly = false;
     endDateInput.value = '';
-    console.log("haha");
+    // console.log("haha");
   } else if (selectedFrequency === 'Daily') {
     startDateInput.disabled = false;
     endDateInput.disabled = false;
     endDateInput.readOnly = true;
     updateEndDate(); // Update the end date initially
-    console.log("hehe");
+    // console.log("hehe");
   } else {
     startDateInput.disabled = false;
     endDateInput.disabled = false;
@@ -568,7 +642,7 @@ handleFrequencyChange();
 
                     console.log(data);
 
-                    $('#delete_id').val(data[0]);
+                    $('#delete_id').val(data[8]);
                     
                     
 
@@ -586,18 +660,33 @@ handleFrequencyChange();
                                         return $(this).text();
                                     }).get();
 
-                                    console.log(data);
+                                    // console.log(data);
                                     //id_colId
-                                    $('#id').val(data[0]);
-                                    $('#employee_ids').val(data[1]);
-                                    $('#unit_types').val(data[2]);
-                                    $('#employee_name').val(data[3]);
-                                    $('#unit_type').val(data[4]);
-                                    $('#unit_work').val(data[5]);
-                                    $('#start_date').val(data[6]);
-                                    $('#end_date').val(data[7]);
-                                    $('#work_frequency').val(data[10]);
+                                    $('#id').val(data[8]);
+                                    $('#employee_ids').val(data[7]);
+                                    // $('#unit_types').val(data[2]);
+                                    $('#employee_name').val(data[0]);
+                                    // $('#unit_type').val(data[4]);
+                                    // $('#unit_work').val(data[5]);
+                                    $('#start_date').val(data[2]);
+                                    $('#end_date').val(data[3]);
+                                    $('#work_frequency').val(data[6]);
                                    
+                                    const frequency = document.querySelector(".frequency").value;
+                                    const start_date = document.querySelector(".start_date");
+                                    const end_date = document.querySelector(".end_date");
+
+
+                                    if(frequency !== 'Daily'){
+                                        end_date.removeAttribute("readonly");
+                                        console.log("haha"); 
+                                    }else{
+                                      console.log("hehe");
+                                      start_date.addEventListener("change", function(){
+                                        end_date.value = start_date.value;
+                                      });
+                                    
+                                    }
                                    
                                 });
                             });

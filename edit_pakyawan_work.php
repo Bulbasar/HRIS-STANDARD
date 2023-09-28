@@ -76,7 +76,7 @@
       $empid = $_POST['empid'];
 
       // Get the piece_rate_id values from the form
-      $pieceRateIds = $_POST['piece_rate_id'];
+      @$pieceRateIds = $_POST['piece_rate_id'];
 
       // Delete the existing records for the given empid to handle the update case
       $deleteQuery = "DELETE FROM employee_pakyawan_work_tb WHERE empid = ?";
@@ -107,6 +107,12 @@
 <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
@@ -379,7 +385,7 @@
                   <div class="row">
                       <div class="form-group col">
                         <label for="">Employee ID </label><br>
-                        <div class="d-flex flex-row w-100" style="">
+                        <div class="d-flex flex-row w-100">
                           <input type="text" name="" id="" class="form-control" value="<?php echo $rows['company_code_name']; ?>" readonly style="width: 20%">
                           <input class="form-control" type="text" name="empid" id="" value="<?php echo $row['empid'] ?>" readonly style="width: 80%">
                         </div>
@@ -549,7 +555,7 @@
                   </div>        
               </div>
             </div>  
-            <div class="action-button mb-5 p-4 " style="">
+            <div class="action-button mb-5 p-4 " >
               <a href="EmployeeList.php" class="mr-3" style="text-decoration: none; font-size: 1.3em">Cancel</a>
               <button type="submit" class="btn btn-primary" style="font-size: 1.1em">Update</button>
             </div>

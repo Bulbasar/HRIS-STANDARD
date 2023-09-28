@@ -49,7 +49,6 @@ if(isset($_POST['importSubmit'])){
                     
 
     
-                $conn = mysqli_connect("localhost", "root", "", "hris_db");
                 $sql = "SELECT * FROM empschedule_tb WHERE empid = $empid";
                 $resulta = mysqli_query($conn, $sql);
                 if(mysqli_num_rows($resulta) > 0){
@@ -273,7 +272,7 @@ if(isset($_POST['importSubmit'])){
                     //     $total_work = '00:00:00';
                     //     $total_rest = '08:00:00';
                     // }
-
+ 
                     if ($currentDayOfWeek == $monday) {
                         // echo "it is monday hehe";
                         // Check if the employee is late

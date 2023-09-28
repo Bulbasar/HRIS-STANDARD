@@ -211,6 +211,7 @@ include 'config.php';
                                                             <option value='Vacation Leave'>Vacation Leave</option>
                                                             <option value='Sick Leave'>Sick Leave</option>
                                                             <option value='Bereavement Leave'>Bereavement Leave</option>
+                                                            <option value='Leave Without Pay'>Leave Without Pay</option>
                                                         </select>
                                                        
 
@@ -247,6 +248,7 @@ include 'config.php';
                                                                 <option value='Full Day'>Full Day</option>
                                                                 <option value='Half Day'>Half Day</option> 
                                                             </select>
+                                                            <div id="validation" style='color: red; font-size: 0.76em; display: none'>You cannot proceed when balance is 0</div>
                                                     </div> <!-- Second mb-3 end-->
                                                 </div> <!-- Second col-6 end-->
                                         </div>  <!-- Row end-->
@@ -301,7 +303,7 @@ include 'config.php';
                                                 </div>
 
                                                 <!---------------------------------- BREAK ------------------------------>
-                                                <div class="row">
+                                                <div class="row" id="id_wthPays">
                                                     <div class="col-6">
                                                         <div class="input-group mt-3" id="id_wthPay">
                                                             <div class="input-group-text">
@@ -635,27 +637,73 @@ include 'config.php';
 
 function leavetype() {
     let leavetype_id = document.getElementById("leavetype_id").value;
-    var selectedLeaveType = document.getElementById('leavetype_id').value;
+    // var selectedLeaveType = document.getElementById('leavetype_id').value;
     let credits = document.getElementById("credits");
+    let id_wthPay = document.getElementById("id_wthPays");
+    let validation = document.getElementById("validation");
     var balanceCredits = 0;
 
+    <?php 
+        @$vacation = $rows['col_vctionCrdt'];
+        @$sick = $rows['col_sickCrdt'];
+        @$bereavement = $rows['col_brvmntCrdt'];
+
+    ?>
+
+    // console.log(leavetype_id);
+
     if (leavetype_id === 'Vacation Leave') {
-        document.getElementById("id_leavePeriod").disabled = false;
         credits.style.display = "block";
-        balanceCredits = <?php echo $rows['col_vctionCrdt']; ?>;
+        id_wthPay.style.display = "block";
+        balanceCredits = <?php if(empty($vacation)){ echo '0'; }else{ echo $vacation; } ?>;
         console.log("this is vacation leave");
+        if(balanceCredits == '0'){
+            document.getElementById("id_leavePeriod").disabled = true;
+            validation.style.display = "block";
+        }else{
+            document.getElementById("id_leavePeriod").disabled = false;
+            validation.style.display = "none";
+        }
     }
     else if (leavetype_id === 'Sick Leave') {
         document.getElementById("id_leavePeriod").disabled = false;
         credits.style.display = "block";
-        balanceCredits = <?php echo $rows['col_sickCrdt']; ?>;
+        id_wthPay.style.display = "block";
+        balanceCredits = <?php if(empty($sick)){ echo '0'; }else{ echo $sick; } ?>;
         console.log("this is sick leave");
+
+        if(balanceCredits == '0'){
+            document.getElementById("id_leavePeriod").disabled = true;
+            validation.style.display = "block";
+        }else{
+            document.getElementById("id_leavePeriod").disabled = false;
+            validation.style.display = "none";
+        }
     }
     else if (leavetype_id === 'Bereavement Leave') {
         document.getElementById("id_leavePeriod").disabled = false;
         credits.style.display = "block";
-        balanceCredits = <?php echo $rows['col_brvmntCrdt']; ?>;
+        id_wthPay.style.display = "block";
+        balanceCredits = <?php if(empty($bereavement)){ echo '0'; }else{ echo $bereavement; } ?>;
         console.log("this is bereavement leave");
+        
+        if(balanceCredits == '0'){
+            document.getElementById("id_leavePeriod").disabled = true;
+            validation.style.display = "block";
+        }else{
+            document.getElementById("id_leavePeriod").disabled = false;
+            validation.style.display = "none";
+        }
+
+    }else if(leavetype_id === 'Leave Without Pay'){
+        // console.log("checked");
+        checkbox = document.getElementById("checkbox_wthPay");
+        
+        document.getElementById("id_leavePeriod").disabled = false;
+        id_wthPay.style.display = "none";
+        credits.style.display = "none";
+        validation.style.display = "none";
+        // checkbox.checked = 'true';
     }
     else {
         document.getElementById("id_leavePeriod").disabled = true;

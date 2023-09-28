@@ -1,0 +1,58 @@
+#update-biometrics-modal {
+  display: none; /* Hide the modal by default */
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Initial background color with transparency */
+  z-index: 9999;
+}
+
+.update-content {
+  position: absolute;
+  width: 40%;
+  height: 40%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17) !important;
+  
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  cursor: pointer;
+}
+
+
+.bioBtn:hover{
+  border-radius: 50% !important;
+  background-color: #dfd9d9 !important;
+}
+
+
+
+
+#add-biometrics-modal {
+  display: none; /* Hide the modal by default */
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Initial background color with transparency */
+  z-index: 9999;
+}
+
+.add-content {
+  position: absolute;
+  width: 30% !important;
+  height: 63% !important;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17) !important;
+
+  
+}
+
