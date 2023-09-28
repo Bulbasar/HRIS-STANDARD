@@ -202,7 +202,7 @@ session_start();
                         <?php
                             include 'config.php';
 
-                            $sqls = "SELECT * FROM dept_tb";
+                            $sqls = "SELECT * FROM dept_tb WHERE col_ID != 1";
 
                             $results = mysqli_query($conn, $sqls);
 

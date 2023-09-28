@@ -67,8 +67,11 @@ if (isset($_POST['department'])) {
                         } elseif ($selectedLeaveType === 'Bereavement Leave') {
                             $creditsForLeaveType = $rowcredits['col_brvmntCrdt'];
                         }
+                        $options .= '<option value="' . $row['empid'] . '">' . $row['empid'] . " - " . $row['fname'] . " " . $row['lname'] . " -  Credits (" . $creditsForLeaveType . ")" . '</option>'; 
+                    }else{
+                        $options .= '<option>' . $row['empid'] . " - " . $row['fname'] . " " . $row['lname'] . ' - No Credits</option>';    
                     }
-                    $options .= '<option value="' . $row['empid'] . '">' . $row['empid'] . " - " . $row['fname'] . " " . $row['lname'] . " -  Credits (" . $creditsForLeaveType . ")" . '</option>';    
+                       
                 }
 
         echo '<select class="approver-dd" name="empid[]" id="multi_option" multiple  placeholder="Select Employee" data-silent-initial-value-set="false" style="display:flex; width: 380px;"> ' . $options . ' </select>';
