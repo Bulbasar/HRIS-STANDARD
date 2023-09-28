@@ -782,7 +782,7 @@
 
           <li class="nav-item" id="pakyawan_toggle" >
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-pakyawan" aria-expanded="false" aria-controls="ui-pakyawan" style="margin-top: 5px; color:white">
-              <i class="fa-solid fa-gear"></i>
+            <i class="fa-solid fa-clipboard-user"></i>
               <span class="nav-title"  style="font-size: 21px; margin-left: 15px; font-family: Arial, sans-serif; font-weight: 400" >PAKYAWAN</span>
               <i class="menu-arrow" style="color: white"></i>
             </a>
@@ -793,6 +793,7 @@
                 <li class="nav-item"> <a class="nav-link" href="pakyawan_work">SET WORK LOAD</a></li>
                 <li class="nav-item"> <a class="nav-link" href="pakyawan_payroll">PAYROLL</a></li>
                 <li class="nav-item"> <a class="nav-link" href="cash_advance">CASH ADVANCE</a></li>
+                <li class="nav-item"> <a class="nav-link" href="pakyawan_group">GROUP PAKYAWAN</a></li>
                 <input type="hidden" value="<?php echo $pakyaw_toggle ?>" id="pak_hide">
               </ul>
             </div>
@@ -807,6 +808,7 @@
               <ul class="nav flex-column sub-menu" style=" width: 100%;">
                 <li class="nav-item"> <a class="nav-link" href="settings">GENERAL SETTINGS</a></li>
                 <li class="nav-item"> <a class="nav-link" href="user_profile">USER PROFILE</a></li>
+                <li class="nav-item"> <a class="nav-link" href="hardwareSet">HARDWARE SETTINGS</a></li>
                 
               </ul>
             </div>

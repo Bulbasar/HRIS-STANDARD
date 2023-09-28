@@ -1,0 +1,27 @@
+#update-biometrics-modal {
+    display: none; /* Hide the modal by default */
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3); /* Initial background color with transparency */
+    z-index: 9999;
+}
+
+.update-content {
+    position: absolute;
+    width: 40%;
+    height: 60%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    cursor: pointer;
+}
+

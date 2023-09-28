@@ -7,7 +7,7 @@ include 'config.php';
 
 if (count($_POST) > 0) {
     mysqli_query($conn, "UPDATE payroll_loan_tb
-                         SET loan_type='".$_POST['loan_type']."', year='".$_POST['year']."', month='".$_POST['month']."', cutoff_no='".$_POST['cutoff_no']."', remarks='".$_POST['remarks']."', loan_date='".$_POST['loan_date']."', payable_amount='".$_POST['payable_amount']."', amortization='".$_POST['amortization']."', applied_cutoff='".$_POST['applied_cutoff']."', loan_status='".$_POST['loan_status']."' WHERE id='".$_POST['id']."'");
+                         SET loan_type='".$_POST['loan_type']."', year='".$_POST['year']."', month='".$_POST['month']."', cutoff_no='".$_POST['cutoff_no']."', remarks='".$_POST['remarks']."', loan_date='".$_POST['loan_date']."', payable_amount='".$_POST['payable_amount']."', amortization='".$_POST['amortization']."', applied_cutoff='".$_POST['applied_cutoff']."', start_date ='".$_POST['start_date']."', end_date ='".$_POST['end_date']."' WHERE id='".$_POST['id']."'");
     header("Location: loanRequest.php");
 }
 
@@ -72,7 +72,7 @@ $loanrows = mysqli_fetch_assoc($resultb);
                     <label for="loan_type">Loan Type</label><br>
                     <input type="text" name="loan_type" value="<?php echo $loanrow['loan_type']; ?>" id="" readonly class="form-control" style="height:50px;">
                 </div>
-                <div class="form-group">
+                <div class="form-group d-none">
                     <label for="year">Year</label><br>
                     <select name="year" class="form-control" style="height:50px; color: black">
                         <?php
@@ -84,7 +84,39 @@ $loanrows = mysqli_fetch_assoc($resultb);
                         ?>
                     </select>
                 </div>
-                <div class="form-group">
+
+                <!-- hidden type  -->
+                <?php 
+                    $currentTimestamp = time();
+                    $currentDate = date('Y-m-d', $currentTimestamp); 
+
+                    $currentMonthText = date('F');
+
+                    $currentYear = date('Y');
+
+                    include 'config.php';
+                    // $empid = $_SESSION['empid'];
+
+                    $sql = "SELECT * FROM payroll_loan_tb WHERE id ='".$_GET['id']."'";
+                        $result = mysqli_query($conn, $sql);
+                        $row = mysqli_fetch_assoc($result);
+
+                        $start_date = $row['start_date'];
+                        $end_date = $row['end_date'];
+                    ?>
+
+                    <div id="dateError" style="color: red;"></div>
+                    <!-- <label for="loan_date">Loan Date</label><br> -->
+                    <!-- <input type="date" class="d-none" name="loan_date"  style="height:50px;" id="loan_date" value="<?php echo $currentDate ?>" > -->
+                    <input type="date" class="d-none" name="start_date" value="<?php echo $start_date ?>" >
+                    <!-- <input type="text" class="d-none" name="loan_status" value="PENDING"> -->
+                    <input type="text" class="d-none" value="<?php echo $currentMonthText ?>" id="">
+                    <input type="text" class="d-none" value="<?php echo $currentYear ?>" id="">
+                    <input type="date" class="d-none" name="end_date" id="endFourMonths" value="<?php echo $end_date ?>">
+                    <input type="text" class="d-none"value="<?php echo 'Pending'; ?>" id="">
+
+
+                <div class="form-group d-none">
                     <label for="month">Month</label>
                     <select name="month" id="" class="form-control" style="height:50px; color: black">
                         <option value="January" <?php if($loanrow['month'] == 'January') echo 'selected'; ?>>January</option>
@@ -104,7 +136,7 @@ $loanrows = mysqli_fetch_assoc($resultb);
                 <div class="form-group cutoff-no" style="display:flex; flex-direction: row; height: 100px;">
                     <div>
                         <label for="">Cutoff No.</label><br>
-                        <select name="cutoff_no" id="cutoff_no" class="form-control" style="width: 378px; height:50px; color: black" onchange="calculate()">
+                        <select name="cutoff_no" id="cutoff_no" class="form-select" style="width: 378px; height:50px; color: black" onchange="calculate()">
                         <option value="1" <?php if ($loanrow['cutoff_no'] == '1') echo 'selected'; ?>>1</option>
                         <option value="2" <?php if ($loanrow['cutoff_no'] == '2') echo 'selected'; ?>>2</option>
                         <option value="4" <?php if ($loanrow['cutoff_no'] == '4') echo 'selected'; ?>>4</option>
@@ -122,7 +154,7 @@ $loanrows = mysqli_fetch_assoc($resultb);
                 </div>
             </div>
             <div class="col-6" style="padding: 0 30px 0 30px;">
-                <div class="form-group">
+                <div class="form-group d-none">
                     <label for="loan_date">Loan Date</label><br>
                     <input type="date" name="loan_date" class="form-control" style="height:50px;" id="" value="<?php echo $loanrow['loan_date'];?>">
                 </div>
@@ -138,7 +170,7 @@ $loanrows = mysqli_fetch_assoc($resultb);
                 </div>
                 <div class="form-group">
                     <label for="applied_cutoff">Applied Cutoff</label><br>
-                    <select name="applied_cutoff" class="form-control" style="height:50px;color: black" id="">
+                    <select name="applied_cutoff" class="form-select" style="height:50px;color: black" id="cutoff">
                         <option value="Every Cutoff" <?php if ($loanrow['applied_cutoff'] == 'Every Cutoff') echo 'selected'; ?>>Every Cutoff</option>
                         <option value="First Cutoff" <?php if ($loanrow['applied_cutoff'] == 'First Cutoff') echo 'selected'; ?>>First Cutoff</option>
                         <option value="Last Cutoff" <?php if ($loanrow['applied_cutoff'] == 'Last Cutoff') echo 'selected'; ?>>Last Cutoff</option>
@@ -235,6 +267,546 @@ $loanrows = mysqli_fetch_assoc($resultb);
         </div>
     </div>
 
+    <script>
+//sa col_BAL_amount is if it reaches 0 then get the current date and display it sa end date
+
+
+function getHalfOfMonth() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the first day of the current month
+  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentMonth, 1);
+
+  // Calculate the last day of the current month
+  const lastDayOfMonth = new Date(currentDate.getFullYear(), currentMonth + 1, 0);
+
+  // Calculate the middle day of the current month
+  const middleDayOfMonth = new Date(
+    currentDate.getFullYear(),
+    currentMonth,
+    Math.floor((firstDayOfMonth.getDate() + lastDayOfMonth.getDate()) / 2)
+  );
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    middleDayOfMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (middleDayOfMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    middleDayOfMonth.getFullYear();
+
+  return formattedDate;
+}
+
+function getEndOfMonth() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the last day of the current month
+  const lastDayOfMonth = new Date(currentDate.getFullYear(), currentMonth + 1, 0);
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    lastDayOfMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (lastDayOfMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    lastDayOfMonth.getFullYear();
+
+  return formattedDate;
+}
+
+function getHalfOfNextMonth() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the first day of the next month
+  const firstDayOfNextMonth = new Date(currentDate.getFullYear(), currentMonth + 1, 1);
+
+  // Calculate the last day of the next month
+  const lastDayOfNextMonth = new Date(currentDate.getFullYear(), currentMonth + 2, 0);
+
+  // Calculate the middle day of the next month
+  const middleDayOfNextMonth = new Date(
+    firstDayOfNextMonth.getFullYear(),
+    firstDayOfNextMonth.getMonth(),
+    Math.floor((firstDayOfNextMonth.getDate() + lastDayOfNextMonth.getDate()) / 2)
+  );
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    middleDayOfNextMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (middleDayOfNextMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    middleDayOfNextMonth.getFullYear();
+
+  return formattedDate;
+}
+function getEndOfNextMonth() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the first day of the next month
+  const firstDayOfNextMonth = new Date(currentDate.getFullYear(), currentMonth + 1, 1);
+
+  // Calculate the last day of the next month
+  const lastDayOfNextMonth = new Date(currentDate.getFullYear(), currentMonth + 2, 0);
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    lastDayOfNextMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (lastDayOfNextMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    lastDayOfNextMonth.getFullYear();
+
+  return formattedDate;
+}
+
+function getHalfOfTwoMonthsAhead() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the target month, which is the current month + 2
+  const targetMonth = currentMonth + 2;
+
+  // Create a Date object for the first day of the target month
+  const firstDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth, 1);
+
+  // Create a Date object for the last day of the target month
+  const lastDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth + 1, 0);
+
+  // Calculate the middle day of the target month
+  const middleDayOfTargetMonth = new Date(
+    firstDayOfTargetMonth.getFullYear(),
+    firstDayOfTargetMonth.getMonth(),
+    Math.floor((firstDayOfTargetMonth.getDate() + lastDayOfTargetMonth.getDate()) / 2)
+  );
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    middleDayOfTargetMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (middleDayOfTargetMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    middleDayOfTargetMonth.getFullYear();
+
+  return formattedDate;
+}
+
+function getEndOfTwoMonthsAhead() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the target month, which is the current month + 2
+  const targetMonth = currentMonth + 2;
+
+  // Create a Date object for the first day of the target month
+  const firstDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth, 1);
+
+  // Create a Date object for the last day of the target month
+  const lastDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth + 1, 0);
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    lastDayOfTargetMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (lastDayOfTargetMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    lastDayOfTargetMonth.getFullYear();
+
+  return formattedDate;
+}
+
+function getHalfOfThreeMonthsAhead() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the target month, which is the current month + 3
+  const targetMonth = currentMonth + 3;
+
+  // Create a Date object for the first day of the target month
+  const firstDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth, 1);
+
+  // Create a Date object for the last day of the target month
+  const lastDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth + 1, 0);
+
+  // Calculate the middle day of the target month
+  const middleDayOfTargetMonth = new Date(
+    firstDayOfTargetMonth.getFullYear(),
+    firstDayOfTargetMonth.getMonth(),
+    Math.floor((firstDayOfTargetMonth.getDate() + lastDayOfTargetMonth.getDate()) / 2)
+  );
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    middleDayOfTargetMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (middleDayOfTargetMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    middleDayOfTargetMonth.getFullYear();
+
+  return formattedDate;
+}
+
+function getEndOfThreeMonthsAhead() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the target month, which is the current month + 3
+  const targetMonth = currentMonth + 3;
+
+  // Create a Date object for the first day of the target month
+  const firstDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth, 1);
+
+  // Create a Date object for the last day of the target month
+  const lastDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth + 1, 0);
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    lastDayOfTargetMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (lastDayOfTargetMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    lastDayOfTargetMonth.getFullYear();
+
+  return formattedDate;
+}
+
+function getHalfOfFourMonthsAhead() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the target month, which is the current month + 4
+  const targetMonth = currentMonth + 4;
+
+  // Create a Date object for the first day of the target month
+  const firstDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth, 1);
+
+  // Create a Date object for the last day of the target month
+  const lastDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth + 1, 0);
+
+  // Calculate the middle day of the target month
+  const middleDayOfTargetMonth = new Date(
+    firstDayOfTargetMonth.getFullYear(),
+    firstDayOfTargetMonth.getMonth(),
+    Math.floor((firstDayOfTargetMonth.getDate() + lastDayOfTargetMonth.getDate()) / 2)
+  );
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    middleDayOfTargetMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (middleDayOfTargetMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    middleDayOfTargetMonth.getFullYear();
+
+  return formattedDate;
+}
+
+function getEndOfFourMonthsAhead() {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Get the current month (0-based index, so January is 0, February is 1, etc.)
+  const currentMonth = currentDate.getMonth();
+
+  // Calculate the target month, which is the current month + 4
+  const targetMonth = currentMonth + 4;
+
+  // Create a Date object for the first day of the target month
+  const firstDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth, 1);
+
+  // Create a Date object for the last day of the target month
+  const lastDayOfTargetMonth = new Date(currentDate.getFullYear(), targetMonth + 1, 0);
+
+  // Format the date as "dd/mm/yyyy"
+  const formattedDate =
+    lastDayOfTargetMonth.getDate().toString().padStart(2, '0') +
+    '/' +
+    (lastDayOfTargetMonth.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    lastDayOfTargetMonth.getFullYear();
+
+  return formattedDate;
+
+  
+}
+
+// const endOfFourMonthsAhead = getEndOfFourMonthsAhead; // No parentheses here
+
+// // Log the constant
+// console.log(endOfFourMonthsAhead);
+// Example usage:
+
+const currentDate = new Date();
+const currentDay = currentDate.getDate();
+
+const halfMonth = getHalfOfMonth();
+const endMonth = getEndOfMonth();
+const halfOneMonth = getHalfOfNextMonth();
+const endOneMonth = getEndOfNextMonth();
+const halfTwoMonth = getHalfOfTwoMonthsAhead();
+const endTwoMonth = getEndOfTwoMonthsAhead();
+const halfThreeMonth = getHalfOfThreeMonthsAhead();
+const endThreeMonth = getEndOfThreeMonthsAhead();
+const halfFourMonth = getHalfOfFourMonthsAhead();
+const endFourMonth = getEndOfFourMonthsAhead();
+const endFourMonthsInput = document.getElementById("endFourMonths");
+
+// Set the value of the input element to the endDate
+// endFourMonthsInput.value = halfMonth;
+
+// console.log("haha", currentDay);
+
+
+const cutoff_no = document.getElementById("cutoff_no");
+
+const cutoff = document.getElementById("cutoff");
+
+cutoff.addEventListener("change", function(){
+    appliedCutoff = cutoff.value; //cutoff type
+    cutoffNo = cutoff_no.value; //cutoff number
+
+    // console.log(appliedCutoff);
+
+    if(cutoffNo == '1' && appliedCutoff == 'Every Cutoff'){
+        // endFourMonthsInput.value = halfMonth;
+        if (currentDay >= 15){
+          endFourMonthsInput.value = `${endMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = halfMonth;
+          endFourMonthsInput.value = `${halfMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if(cutoffNo == '2' && appliedCutoff == 'Every Cutoff'){
+        // endFourMonthsInput.value = endMonth;
+        if (currentDay >= 15){
+          // endFourMonthsInput.value = halfOneMonth;
+          endFourMonthsInput.value = `${halfOneMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endMonth;
+          endFourMonthsInput.value = `${endMonth.split('/').reverse().join('-')}`;
+        }
+    }else if (cutoffNo == '4' && appliedCutoff == 'Every Cutoff'){
+        // endFourMonthsInput.value = endOneMonth;
+        if (currentDay >= 15){
+          // endFourMonthsInput.value = halfTwoMonth;
+          endFourMonthsInput.value = `${halfTwoMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endOneMonth;
+          endFourMonthsInput.value = `${endOneMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '1' && appliedCutoff == 'First Cutoff'){
+      if (currentDay >= 15){
+          // endFourMonthsInput.value = halfOneMonth;
+          endFourMonthsInput.value = `${halfOneMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = halfMonth;
+          endFourMonthsInput.value = `${halfMonth.split('/').reverse().join('-')}`;
+        }
+
+    } else if (cutoffNo == '2' && appliedCutoff == 'First Cutoff'){
+      if (currentDay >= 15){
+          // endFourMonthsInput.value = halfTwoMonth;
+          endFourMonthsInput.value = `${halfTwoMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = halfOneMonth;
+          endFourMonthsInput.value = `${halfOneMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '4' && appliedCutoff == 'First Cutoff'){
+      if (currentDay >= 15){
+          // endFourMonthsInput.value = halfFourMonth;
+          endFourMonthsInput.value = `${halfFourMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = halfThreeMonth;
+          endFourMonthsInput.value = `${halfThreeMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '1' && appliedCutoff == 'Last Cutoff'){
+      if (currentDay >= 20 && currentDay <= 30) {
+          // endFourMonthsInput.value = endOneMonth;
+          endFourMonthsInput.value = `${endOneMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endMonth;
+          endFourMonthsInput.value = `${endMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '2' && appliedCutoff == 'Last Cutoff'){
+      if (currentDay >= 20 && currentDay <= 30) {
+          // endFourMonthsInput.value = endTwoMonth;
+          endFourMonthsInput.value = `${endTwoMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endOneMonth;
+          endFourMonthsInput.value = `${endOneMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '4' && appliedCutoff == 'Last Cutoff'){
+      if (currentDay >= 20 && currentDay <= 30) {
+          // endFourMonthsInput.value = endFourMonth;
+          endFourMonthsInput.value = `${endFourMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endThreeMonth;
+          endFourMonthsInput.value = `${endThreeMonth.split('/').reverse().join('-')}`;
+        }
+    }
+});
+
+
+cutoff_no.addEventListener("change", function(){
+    appliedCutoff = cutoff.value; //cutoff type
+    cutoffNo = cutoff_no.value; //cutoff number
+
+    // console.log(appliedCutoff);
+
+    if(cutoffNo == '1' && appliedCutoff == 'Every Cutoff'){
+        // endFourMonthsInput.value = halfMonth;
+        if (currentDay >= 15){
+          endFourMonthsInput.value = `${endMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = halfMonth;
+          endFourMonthsInput.value = `${halfMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if(cutoffNo == '2' && appliedCutoff == 'Every Cutoff'){
+        // endFourMonthsInput.value = endMonth;
+        if (currentDay >= 15){
+          // endFourMonthsInput.value = halfOneMonth;
+          endFourMonthsInput.value = `${halfOneMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endMonth;
+          endFourMonthsInput.value = `${endMonth.split('/').reverse().join('-')}`;
+        }
+    }else if (cutoffNo == '4' && appliedCutoff == 'Every Cutoff'){
+        // endFourMonthsInput.value = endOneMonth;
+        if (currentDay >= 15){
+          // endFourMonthsInput.value = halfTwoMonth;
+          endFourMonthsInput.value = `${halfTwoMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endOneMonth;
+          endFourMonthsInput.value = `${endOneMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '1' && appliedCutoff == 'First Cutoff'){
+      if (currentDay >= 15){
+          // endFourMonthsInput.value = halfOneMonth;
+          endFourMonthsInput.value = `${halfOneMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = halfMonth;
+          endFourMonthsInput.value = `${halfMonth.split('/').reverse().join('-')}`;
+        }
+
+    } else if (cutoffNo == '2' && appliedCutoff == 'First Cutoff'){
+      if (currentDay >= 15){
+          // endFourMonthsInput.value = halfTwoMonth;
+          endFourMonthsInput.value = `${halfTwoMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = halfOneMonth;
+          endFourMonthsInput.value = `${halfOneMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '4' && appliedCutoff == 'First Cutoff'){
+      if (currentDay >= 15){
+          // endFourMonthsInput.value = halfFourMonth;
+          endFourMonthsInput.value = `${halfFourMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = halfThreeMonth;
+          endFourMonthsInput.value = `${halfThreeMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '1' && appliedCutoff == 'Last Cutoff'){
+      if (currentDay >= 20 && currentDay <= 30) {
+          // endFourMonthsInput.value = endOneMonth;
+          endFourMonthsInput.value = `${endOneMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endMonth;
+          endFourMonthsInput.value = `${endMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '2' && appliedCutoff == 'Last Cutoff'){
+      if (currentDay >= 20 && currentDay <= 30) {
+          // endFourMonthsInput.value = endTwoMonth;
+          endFourMonthsInput.value = `${endTwoMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endOneMonth;
+          endFourMonthsInput.value = `${endOneMonth.split('/').reverse().join('-')}`;
+        }
+
+    }else if (cutoffNo == '4' && appliedCutoff == 'Last Cutoff'){
+      if (currentDay >= 20 && currentDay <= 30) {
+          // endFourMonthsInput.value = endFourMonth;
+          endFourMonthsInput.value = `${endFourMonth.split('/').reverse().join('-')}`;
+        }else{
+          // endFourMonthsInput.value = endThreeMonth;
+          endFourMonthsInput.value = `${endThreeMonth.split('/').reverse().join('-')}`;
+        }
+    }
+});
+
+
+
+
+
+
+// // Example usage:
+// console.log(`Half of four months ahead is: ${getHalfOfFourMonthsAhead()}`);
+
+
+// // Example usage:
+// console.log(`End of three months ahead is: ${getEndOfThreeMonthsAhead()}`);
+
+
+// // Example usage:
+// console.log(`Half of three months ahead is: ${getHalfOfThreeMonthsAhead()}`);
+
+// // Example usage:
+// console.log(`Half of two months ahead is: ${getHalfOfTwoMonthsAhead()}`);
+
+// // Example usage:
+// console.log(`End of the next month is: ${getEndOfNextMonth()}`);
+
+// // Example usage:
+// console.log(`Half of the next month is: ${getHalfOfNextMonth()}`);
+
+// // Example usage:
+// console.log(`End of the current month is: ${getEndOfMonth()}`);
+
+// // Example usage:
+// console.log(`Half of the current month is: ${getHalfOfMonth()}`);
+
+
+    </script>
 
 
     <!-- <div class="loan-forecast-container" id="loanFormModal">

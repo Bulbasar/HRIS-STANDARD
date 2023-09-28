@@ -66,6 +66,13 @@ include ("config.php");
     <link rel="stylesheet" href="css/branch.css"/>
     <link rel="stylesheet" href="css/branchResponsive.css"/>
 
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
+
     <title>Branch</title>
 
 </head>

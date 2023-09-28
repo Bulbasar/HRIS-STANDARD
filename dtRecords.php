@@ -60,7 +60,12 @@ if(!empty($_GET['status'])){
 <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
@@ -150,7 +155,7 @@ if(!empty($_GET['status'])){
               <?php
                 include('config.php');
 
-                $sql = "SELECT col_ID, col_deptname FROM dept_tb";
+                $sql = "SELECT col_ID, col_deptname FROM dept_tb WHERE col_ID != 1 ";
                 $result = mysqli_query($conn, $sql);
                 
                 $Department = isset($_GET['department_name']) ? ($_GET['department_name']) : '';

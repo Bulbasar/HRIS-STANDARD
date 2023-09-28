@@ -37,6 +37,12 @@ session_start();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
@@ -140,7 +146,7 @@ session_start();
                     <?php
                         include 'config.php';
 
-                        $sqls = "SELECT * FROM dept_tb";
+                        $sqls = "SELECT * FROM dept_tb WHERE col_ID != 1";
 
                         $results = mysqli_query($conn, $sqls);
 
@@ -163,6 +169,46 @@ session_start();
                         </select>
                     </div>
                 </div>
+
+
+                 
+       <script>
+            $(document).ready(function() {
+                $('#multi_option').change(function() {
+                    var selectedValue = $(this).val();
+                    
+                    // Send selectedValue to a PHP script via AJAX
+                    $.ajax({
+                        type: 'POST',
+                        url: 'update_selected_department.php', // Create this PHP file to handle the AJAX request
+                        data: { department: selectedValue },
+                        success: function(response) {
+                            $('#selectedDepartment').text(response); // Update the value in the <p> tag
+
+                            // Fetch employee options based on the selected department
+                            $.ajax({
+                                type: 'POST',
+                                url: 'sched_employee_options.php', // Create this PHP file to generate employee options
+                                data: { department: response },
+                                success: function(employeeOptions) {
+                                    // Update the employee dropdown with new options
+                                    $('#employeeDropdown').html(employeeOptions);
+                                    console.log('Employee options updated successfully.');
+
+                                    // Collect selected employee IDs
+                                    var selectedEmployeeIDs = $('#multi_option').val();
+                                    console.log('Selected Employee IDs:', selectedEmployeeIDs);
+
+                                    // Now submit the form with the selected employee IDs
+                                
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+
 
                 <div class="row">
                     <div class="col-6">

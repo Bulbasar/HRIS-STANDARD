@@ -47,7 +47,12 @@ session_start();
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Company Settings</title>
-
+      <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
       <script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
       <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css">
@@ -204,7 +209,7 @@ session_start();
                         <div class="logo_emp_head">
                           <img src="data:<?php echo $image_type; ?>;base64,<?php echo $image_data; ?>">
                           <div class="photo_upload">
-                            <input type="file" name="photo" accept="image/jpeg, image/png, image/webp" value="">
+                            <input type="file" name="photo" accept="image/jpeg, image/png, image/webp" >
                             <p class="file_guidance">Please upload a JPG, PNG, or WebP file.</p>
                           </div>
                         </div>

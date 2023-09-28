@@ -132,6 +132,22 @@
     width: 13%;
    }
 
+   table thead th:nth-child(6){
+    width: 13%;
+   }
+
+   table tbody tr td:nth-child(6){
+    width: 13%;
+   }
+
+   table thead th:nth-child(7){
+    width: 8%;
+   }
+
+   table tbody tr td:nth-child(7){
+    width: 8%;
+   }
+
      .pending {
         color: red;
     }
@@ -164,12 +180,13 @@
                     <th>Name</th>
                     <th style="" >Loan Type</th>
                     <th>Loan Date</th>
-                    <th>Date Files</th>
+                    <th>Forcasted End Date</th>
                     <th>Payable Amount</th>
                     <th>Amortization</th>
                     <th>Balance</th>
                     <th>Status</th>
                     <th>Action</th>
+                    
                 </thead>
                 <tbody>
                     <?php 
@@ -181,7 +198,8 @@
                                         payroll_loan_tb.loan_type,
                                         payroll_loan_tb.cutoff_no,
                                         payroll_loan_tb.remarks,
-                                        payroll_loan_tb.loan_date,
+                                        payroll_loan_tb.start_date,
+                                        payroll_loan_tb.end_date,
                                         payroll_loan_tb.payable_amount,
                                         payroll_loan_tb.amortization,
                                         payroll_loan_tb.applied_cutoff,
@@ -195,35 +213,47 @@
                                 FROM payroll_loan_tb
                                 INNER JOIN employee_tb ON employee_tb.empid = payroll_loan_tb.empid
                                 WHERE payroll_loan_tb.empid = '$empid'
-                                ORDER BY payroll_loan_tb.loan_date ASC
+                                ORDER BY payroll_loan_tb.start_date ASC
                                 ");
                                 
                         
                         if($result->num_rows > 0){
                             while($row = $result->fetch_assoc()){ 
-                               
+                               $status = $row['status'];
+                               $id = $row['id'];
                     ?>
                     <tr>  
                         <td style="font-weight: 400"><?php echo $row['full_name']?></td> 
                         <td style="font-weight: 400"><?php echo $row['loan_type']?></td>
-                        <td style="font-weight: 400"><?php echo $row['loan_date']?></td>
-                        <td style="font-weight: 400"><?php echo $row['timestamp']?></td>
+                        <td style="font-weight: 400"><?php echo $row['start_date']?></td>
+                        <td style="font-weight: 400"><?php echo $row['end_date']?></td>
                         <td style="font-weight: 400"><?php echo $row['payable_amount']?></td>
                         <td style="font-weight: 400"><?php echo $row['amortization']?></td>
                         <td style="font-weight: 400"><?php echo $row['payable_amount']?></td>
                         <td style="font-weight: 400; <?php echo ($row['status'] === 'Pending') ? 'color: red;' : 'color: green;' ?>">
-    <?php echo $row['status'] ?>
-</td>
-                        <td style="font-weight: 400; outline:none;"><button style="border: none; background-color:inherit; outline:none;"><a href="editLoanRequestForm.php?id=<?php echo $row['id']?>" style="text-decoration:none;">Edit</a></button></td>
-                    </tr>
-                    <?php 
-                            }
-                        } else{
-                            ?>
-                          
-                          <?php  
-                        }     
-                        ?>
+                            <?php echo $row['status'] ?>
+                        </td>
+                        <?php 
+                                    if($status == 'Approved'){ ?>
+                                       <td style="font-weight: 400; outline:none;"></td>
+                                    <?php    
+                                    }else{  ?>
+                                        <td style="font-weight: 400; outline:none;"><button style="border: none; background-color:inherit; outline:none;"><a href="editLoanRequestForm.php?id=<?php echo $row['id']?>" style="text-decoration:none;">Edit</a></button></td>
+                                    <?php
+                                    }
+                                    ?>
+
+                      
+                            </tr>
+                            <?php 
+                                    }
+                                } else{
+                                    ?>
+                                  
+                                  <?php  
+                                }     
+                                ?>
+                        </tbody>
                 </tbody>
             </table>
             </div>

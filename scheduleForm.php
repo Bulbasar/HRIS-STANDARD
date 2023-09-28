@@ -36,7 +36,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+<?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
@@ -153,7 +158,7 @@
                         <?php
                             include 'config.php';
 
-                            $sqls = "SELECT * FROM dept_tb";
+                            $sqls = "SELECT * FROM dept_tb WHERE col_ID != 1";
 
                             $results = mysqli_query($conn, $sqls);
 
@@ -197,9 +202,9 @@
                                     ?>
 
                                 <label for="schedule_name">Schedule Type</label><br>
-                                <select name="schedule_name" id="" class="form-select">
-
-                                
+                                <select name="schedule_name" id="sched" class="form-select">
+                                    <option value="" selected disabled>Select Schedule Type</option>
+                                    <!-- <option value=""></option> -->
                                     <?php echo $options; ?>
                                 </select>
                         </div>
@@ -227,7 +232,7 @@
                             <label for="" class="mt-2">Shifting Schedule</label>
                             
                         </div> -->
-                        <div class="w-100 mt-3" id="radBtn" style="display:block"> 
+                        <div class="w-100 mt-3" id="radBtn" style="display:none"> 
                             <div class="form-check ml-4">
                                 <input class="form-check-input fs-5"  type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                                 <label class="form-check-label fs-5" for="flexRadioDefault1" style="margin-left: -0.1em">
@@ -245,6 +250,21 @@
                             </div>
                         </div>
                     
+                        <script>
+                            sched = document.getElementById("sched");
+
+                            sched.addEventListener("change", function(){
+                                radBtn = document.getElementById("radBtn");
+                                schedule = sched.value;
+
+                                if(schedule == ''){
+                                    radBtn.style.display = 'none';
+                                }else{
+                                    radBtn.style.display = 'block';
+                                }
+
+                            });
+                        </script>
 
                         <script>
                         var radio1 = document.getElementById("flexRadioDefault1");
@@ -522,6 +542,18 @@
                         
 
                         // Now submit the form with the selected employee IDs
+
+                        // sched = document.getElementById("multi_option");
+
+                        // sched.addEventListener("change", function(){
+                        //     radBtn = document.getElementById("radBtn");
+                        //     schedule = sched.value;
+                        //     if(schedule){
+                        //         radBtn.style.display = 'block';
+                        //     }
+                            
+                           
+                        // });
                        
                     }
                 });

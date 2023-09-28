@@ -13,8 +13,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
     $employee = $_POST["employee"];
-    $unit_type = $_POST["unit_type"];
-    $unit_work = $_POST["unit_work"];
+    // $unit_type = $_POST["unit_type"];
+    // $unit_work = $_POST["unit_work"];
+    $unit_type_text = $_POST['unit_type_text'];
+    $work_pay = $_POST['work_pay'];
 
     $validationSql = "SELECT pakyaw.employee, pakyaw.work_frequency, pakyaw.start_date, pakyaw.end_date, pakyaw.unit_type, piece.id FROM pakyawan_based_work_tb AS pakyaw
                       INNER JOIN piece_rate_tb AS piece ON pakyaw.unit_type = piece.id

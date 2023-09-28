@@ -186,7 +186,7 @@
                     <div class="input-group mb-3 pay1">
                         <?php
                             include 'config.php';
-                            $sql = "SELECT col_ID, col_deptname FROM dept_tb";
+                            $sql = "SELECT col_ID, col_deptname FROM dept_tb WHERE col_ID != 1 ";
                             $result = mysqli_query($conn, $sql);
 
                             $options = "";
@@ -197,7 +197,7 @@
                             }
                         ?>
                         <label for="schedule_name" style="font-weight: bold">Department</label>
-                        <select name="schedule_name" id="id_select_department" class="form-control" style="width: 350px;">
+                        <select name="schedule_name" id="id_select_department" class="form-select" style="width: 350px;">
                             <option value disabled selected>Select Department</option>
                             <?php echo $options; ?>
                         </select>

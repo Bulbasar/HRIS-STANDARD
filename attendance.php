@@ -70,8 +70,8 @@ if(mysqli_num_rows($result_attendance) > 0){
 
 
 
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -79,7 +79,7 @@ if(mysqli_num_rows($result_attendance) > 0){
 <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <!-- <meta http-equiv="refresh" content="5;URL=Data Controller/Attendance/hardwareController.php" /> -->
     
 
     
@@ -107,7 +107,7 @@ if(mysqli_num_rows($result_attendance) > 0){
     <link rel="stylesheet" href="css/attendance.css">
     <!-- <link rel="stylesheet" href="css/attendanceResponsive.css"> -->
 
-    <title>HRIS | Employee List</title>
+    <title>HRIS Attendance</title>
     <script>
         function closeErrorMessage() {
             document.getElementById('error-message').style.display = 'none';
@@ -115,9 +115,18 @@ if(mysqli_num_rows($result_attendance) > 0){
         }
        
 
-// Call the checkReload function when the page loads
-window.onload = checkReload;
+            // Call the checkReload function when the page loads
+            window.onload = checkReload;
     </script>
+      
+      <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
+
+
 </head>
 <script>
       // Function to display the current date in the specified format
@@ -137,7 +146,12 @@ window.onload = checkReload;
 <body onload="displayCurrentDate()">
 
     <header>
-        <?php include("header.php")?>
+        <?php 
+        include("header.php");
+        // include("hardwareController.php");
+        
+        
+        ?>
     </header>
 
     <style>
@@ -485,13 +499,15 @@ window.onload = checkReload;
             <h1>Attendance</h1>
         </div>
 
+        <!-- <div id="hardware-content" class="d-none"></div>
+        <div id="hardware-db" class="d-none"></div> -->
         <div class="attendance-input" style="width: 100%; height: 20%;">
             <div class="att-emp-stat-container" style="height: 100%; ">
              <div class="att-emp">
                 <?php
                     include('config.php');
 
-                    $sql = "SELECT col_ID, col_deptname FROM dept_tb";
+                    $sql = "SELECT col_ID, col_deptname FROM dept_tb WHERE `col_ID` != 1";
                     $result = mysqli_query($conn, $sql);
                     
                     $Department = isset($_GET['department_name']) ? ($_GET['department_name']) : '';
@@ -1044,6 +1060,22 @@ $(document).ready(function() {
    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
 
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript">
+        // Function to load and refresh the content from hardwareController.php
+        function loadHardwareControllerContent() {
+            $("#content").load("Data Controller/Attendance/hardwareController.php", function() {
+                console.log("Content from hardwareController.php reloaded.");
+            });
+        }
+
+        // Call the function to load content initially
+        loadHardwareControllerContent();
+
+        // Call the function to refresh content every 5 seconds
+        setInterval(loadHardwareControllerContent, 5000); // 5000 milliseconds = 5 seconds
+    </script> -->
 
 
     

@@ -36,7 +36,12 @@ session_start();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Cutoff</title>
-
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
@@ -283,7 +288,7 @@ session_start();
                         <?php
                             include 'config.php';
 
-                            $sqls = "SELECT * FROM dept_tb";
+                            $sqls = "SELECT * FROM dept_tb WHERE col_ID != 1";
 
                             $results = mysqli_query($conn, $sqls);
 
@@ -473,7 +478,7 @@ session_start();
                 <?php
                             include 'config.php';
 
-                            $sqls = "SELECT * FROM dept_tb";
+                            $sqls = "SELECT * FROM dept_tb WHERE col_ID != 1";
 
                             $results = mysqli_query($conn, $sqls);
 

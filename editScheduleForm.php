@@ -87,6 +87,12 @@
 <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
@@ -165,7 +171,7 @@
     
    
     
-        <div class="modal fade" id="schedModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="title" aria-hidden="true">
+    <div class="modal fade" id="schedModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="title" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -177,7 +183,7 @@
                         <?php
                             include 'config.php';
 
-                            $sqls = "SELECT * FROM dept_tb";
+                            $sqls = "SELECT * FROM dept_tb WHERE col_ID != 1";
 
                             $results = mysqli_query($conn, $sqls);
 
@@ -192,8 +198,13 @@
                             <?php echo $option ?>
                         </select>
                     </div>
-                     <!-- <p>Selected Department ID: <span id="selectedDepartment"><?php echo @$selectedDepartment ?></span></p> -->
-                     <form action="Data Controller/Schedules/empSchedule.php" method="POST">
+
+             <!-- <p>Selected Department ID: <span id="selectedDepartment"><?php 
+            //  echo @$selectedDepartment
+              ?></span></p> -->
+                        
+                    
+                    <form action="Data Controller/Schedules/empSchedule.php" method="POST">
                     <div class="mb-3">
                         <label for="emp">Select Employee</label><br>
                           <div id="employeeDropdown">
@@ -217,7 +228,7 @@
 
                                 <label for="schedule_name">Schedule Type</label><br>
                                 <select name="schedule_name" id="" class="form-select">
-
+                                    <option value="" selected disabled>Select Schedule Type</option>
                                 
                                     <?php echo $options; ?>
                                 </select>
@@ -230,23 +241,107 @@
 
 
                             </div>
-                            <div class="w-50">
-                                <label for="from">To</label><br>
-                                <input type="date" name="sched_to" id="sched_to_id" class="form-control" onchange="datevalidate()" required>   
-                                <div id="sched_to_error" class="text-danger" style="font-size: small;"></div>
- 
-                            </div>
-                        </div>
-                        
-                        <div class="sched-modal-btn mt-5">
-                            <div>
+                            <div class="w-50" id="sample-container">
 
                             </div>
-                            <div>
+                            <!-- <div class="w-50">
+                                <label for="from">To</label><br>
+                                <input type="date" name="sched_to" id="sched_to_id" class="form-control" onchange="datevalidate()">   
+                                <div id="sched_to_error" class="text-danger" style="font-size: small;"></div>
+                               
+                            </div> -->
+
+                        </div>
+                        <!-- <div class="d-flex w-100 flex-row mt-3 align-items-center" style="height: 1em">
+                            <input class="mr-2" type="checkbox" name="" value=""  id="sample">
+                            <label for="" class="mt-2">Shifting Schedule</label>
+                            
+                        </div> -->
+                        <div class="w-100 mt-3" id="radBtn" style="display:block"> 
+                            <div class="form-check ml-4">
+                                <input class="form-check-input fs-5"  type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label fs-5" for="flexRadioDefault1" style="margin-left: -0.1em">
+                                    Shifting Schedule
+                                </label>
+                                <!-- <p id="selectedRegular">hah</p> -->
+
+                            </div>
+                            <div class="form-check ml-4 mt-2">
+                                <input class="form-check-input fs-5"  type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                                <label class="form-check-label fs-5"  for="flexRadioDefault2" style="margin-left: -0.1em">
+                                    Fixed Schedule
+                                </label>
+                                <!-- <p id="displayEmpid">s</p> -->
+                            </div>
+                        </div>
+
+                        <script>
+                            sched = document.getElementById("sched");
+
+                            sched.addEventListener("change", function(){
+                                radBtn = document.getElementById("radBtn");
+                                schedule = sched.value;
+
+                                if(schedule == ''){
+                                    radBtn.style.display = 'none';
+                                }else{
+                                    radBtn.style.display = 'block';
+                                }
+
+                            });
+                        </script>
+                    
+                        <script>
+                        var radio1 = document.getElementById("flexRadioDefault1");
+                        var radio2 = document.getElementById("flexRadioDefault2");
+                        var container = document.getElementById("sample-container");
+                        
+                        // Initial check
+                        if (radio2.checked) {
+                            createDiv(); // Create the div initially if the second radio is checked
+                        }
+
+                        radio1.addEventListener("change", function() {
+                            clearContainer();
+                            if (radio1.checked) {
+                                createDiv(); // Create the div when the first radio is checked
+                            }
+                        });
+
+                        radio2.addEventListener("change", function() {
+                            clearContainer();
+                            if (radio2.checked) {
+                                // console.log("hehe");     // Create the div when the second radio is checked
+                            }
+                        });
+
+                        function createDiv() {
+                            // Create the div element and its content
+                            var div = document.createElement("div");
+                            div.className = "w-100";
+                            div.innerHTML = `
+                                <label for="from">To</label><br>
+                                <input type="date" name="sched_to" id="sched_to_id" class="form-control" onchange="datevalidate()">
+                                <div id="sched_to_error" class="text-danger" style="font-size: small;"></div>
+                            `;
+                            
+                            // Append the created div to the container
+                            container.appendChild(div);
+                        }
+
+                        function clearContainer() {
+                            // Clear the container
+                            container.innerHTML = "";
+                        }
+                    </script>
+
+
+
+                        
+                        <div class="sched-modal-btn mt-4">
+                          
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border:none; background-color: inherit; font-size: 23px;">Close</button>
                             <button class="btn btn-primary" name="submit" type="submit">Submit</button>
-                            </div>
-                            </div>
                         </div>
                             
                     </div>

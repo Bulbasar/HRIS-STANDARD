@@ -50,7 +50,12 @@ include_once 'config.php';
    
 
     <link rel="stylesheet" href="css/try.css">
-
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
 
     <link rel="stylesheet" href="css/try.css">
     <link rel="stylesheet" href="css/payroll_report.css"/>
@@ -135,7 +140,7 @@ include_once 'config.php';
               <?php
                 include('config.php');
 
-                $sql = "SELECT col_ID, col_deptname FROM dept_tb";
+                $sql = "SELECT col_ID, col_deptname FROM dept_tb WHERE col_ID != 1";
                 $result = mysqli_query($conn, $sql);
                 
                 $Department = isset($_GET['department_name']) ? ($_GET['department_name']) : '';

@@ -50,7 +50,12 @@ $loanrows = mysqli_fetch_assoc($resultb);
 <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     

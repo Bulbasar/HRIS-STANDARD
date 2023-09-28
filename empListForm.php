@@ -53,7 +53,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     
-
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -202,7 +207,7 @@
             <div class="employeeList-modal" id="Modal">
                     <div class="employeeList-modal-content">
                         <div class="employeeList-info-container">
-                            <div class="emp-title d-flex flex-row justify-content-between" style="">
+                            <div class="emp-title d-flex flex-row justify-content-between" >
                                 <h1>Personal Information</h1>
                                 <div class="mr-2">
                                    
@@ -278,7 +283,8 @@
                                     }
                                     ?>
                                     <div style="display:flex; flex-direction: row">
-                                    <select name="company_code" id=""  style="display: flex; align-items: center; justify-content: center;width: 25%; padding: 0.2em; margin-right: 2%; height: 40px">
+                                    <select name="company_code" id=""  style="display: flex; align-items: center; justify-content: center;width: 60%; padding: 0.2em; margin-right: 2%; height: 40px">
+                                        <option value="" selected disabled>Company Code</option>
                                         <?php echo $options; ?>
                                     </select>
 
@@ -306,7 +312,7 @@
                                                     $nextEmpIDFormatted = '001';
                                                 }
                                         ?>
-                                    <input type="text" name="empid" id="form-empid" class="p-1 form-control" placeholder="Employee ID" maxlength="6" style="width: 73%; height: 2.9em" value="<?php echo $nextEmpIDFormatted; ?>" readonly>  
+                                    <input type="text" name="empid" id="form-empid" class="p-1 form-control" placeholder="Employee ID" maxlength="6" style="width: 40%; height: 2.9em" value="<?php echo $nextEmpIDFormatted; ?>" readonly>  
                                     </div>
                                     <span id="empid-error" style="color: red;"></span>
                                 </div>
@@ -361,8 +367,8 @@
                                         </select>
                                 </div>
                             </div>
-                            <div class="emp-empDetail-second-input" style=" ">
-                                <script>
+                            <div class="emp-empDetail-second-input" >
+                                <!-- <script>
                                     function calculateDailyRate() {
                                         const basicSalary = document.getElementById('empbsalary').value;
                                         const dailyRateInput = document.getElementById('drate');
@@ -375,9 +381,13 @@
                                             dailyRateInput.value = dailyRate.toFixed(2);
                                         }
                                     }
-                                </script>
-                                <div class="emp-empDetail-approver">
-                                <div>
+                                </script> -->
+                                <div class="emp-empDetail-bsalary">
+                                    <label for="empbsalary">Basic Salary</label><br>
+                                    <input type="text" id="empbsalary" name="empbsalary" required placeholder="Basic Salary" value="<?php echo isset($_GET['empbsalary']) ? $_GET['empbsalary'] : ''; ?>"  step="0.01" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0, 11);" />
+
+                                </div>
+                                <div style="display: none;" id="pakyaw_visor">
                                     <?php
                                         include 'config.php';
                                         $sql = "SELECT * FROM employee_tb WHERE `role` = 'Admin' OR `role` = 'Supervisor'";
@@ -399,7 +409,6 @@
                                         
                                     
                                     </div>
-                                </div>
                                 <div class="emp-empDetail-piece_rate" style="display:none;">
                                 <div>
                                     <?php
@@ -446,22 +455,60 @@
                                     </div>
                                 </div>
                                
-                                <div class="emp-empDetail-bsalary">
-                                    <label for="empbsalary">Basic Salary</label><br>
-                                    <input type="number" id="empbsalary" name="empbsalary" oninput="calculateDailyRate()" required placeholder="Basic Salary" value="<?php echo isset($_GET['empbsalary']) ? $_GET['empbsalary'] : ''; ?>"  step="0.01" />
+                                <div class="emp-empDetail-bsalary" id="work_form">
+                                    <label for="empbsalary">Working Days</label><br>
+                                    <input type="text" id="working_days" name="working_days" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0, 11);" required placeholder="Working Days" />
 
                                 </div>
                                 <div class="emp-empDetail-drate">
                                     <label for="drate">Daily Rate</label><br>
-                                    <input type="text" name="drate" id="drate" placeholder="Daily Rate" required readonly class="form-control" style="height: 40px;" value="<?php echo isset($_GET['drate']) ? $_GET['drate'] : ''; ?>" readonly>
+                                    <input type="text" name="drate" id="drate" placeholder="Daily Rate" required class="form-control" style="height: 40px;" value="<?php echo isset($_GET['drate']) ? $_GET['drate'] : ''; ?>" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0, 11);" >
                                 </div>
                             </div>
-                            <div class="emp-empDetail-third-input" style="width: 57%; display: flex; flex-direction: row; justify-content: space-between ">
+
+                            <script>
+                                // Function to calculate daily rate when basic salary and working days are entered
+                                function calculateDailyRate() {
+                                    const basicSalary = parseFloat(document.getElementById('empbsalary').value);
+                                    const workingDays = parseInt(document.getElementById('working_days').value);
+
+                                    if (!isNaN(basicSalary) && !isNaN(workingDays) && workingDays !== 0) {
+                                        const dailyRate = basicSalary / workingDays;
+                                        document.getElementById('drate').value = dailyRate.toFixed(2);
+                                    } else {
+                                        document.getElementById('drate').value = '';
+                                    }
+                                }
+
+                                // Function to calculate basic salary when working days and daily rate are entered
+                                function calculateBasicSalary() {
+                                    const workingDays = parseInt(document.getElementById('working_days').value);
+                                    const dailyRate = parseFloat(document.getElementById('drate').value);
+
+                                    if (!isNaN(workingDays) && !isNaN(dailyRate) && workingDays !== 0) {
+                                        const basicSalary = workingDays * dailyRate;
+                                        document.getElementById('empbsalary').value = basicSalary.toFixed(2);
+                                    } else {
+                                        document.getElementById('empbsalary').value = '';
+                                        // document.getElementById('working_days').value = '';
+                                    }
+                                }
+
+                                // Attach the calculate functions to the input fields
+                                document.getElementById('empbsalary').addEventListener('input', calculateDailyRate);
+                                document.getElementById('working_days').addEventListener('input', calculateDailyRate);
+                                document.getElementById('working_days').addEventListener('input', calculateBasicSalary);
+                                document.getElementById('drate').addEventListener('input', calculateBasicSalary);
+                            </script>
+
+
+
+                            <div class="emp-empDetail-third-input" style="width: 88.3%; display: flex; flex-direction: row; justify-content: space-between; ">
                                       
                                 <div class="emp-empDetail-dept">
                                       <?php
                                         include 'config.php';
-                                        $sql = "SELECT * FROM dept_tb";
+                                        $sql = "SELECT * FROM dept_tb WHERE `col_ID` != 1";
                                         $result = mysqli_query($conn, $sql);
 
                                         $options = "";
@@ -481,7 +528,7 @@
                                     <?php
                                                     include 'config.php';
 
-                                                     $sql = "SELECT * FROM positionn_tb";
+                                                     $sql = "SELECT * FROM positionn_tb WHERE `id` != 1";
                                                      $results = mysqli_query($conn, $sql);
              
                                                      $options = "";
@@ -495,6 +542,30 @@
                                                      <option value disabled selected>Select Position</option> 
                                                        <?php echo $options; ?>
                                                      </select>
+                                </div>
+
+                                <div id="emp_visor">
+                                    <?php
+                                        include 'config.php';
+                                        $sql = "SELECT * FROM employee_tb WHERE `role` = 'Admin' OR `role` = 'Supervisor'";
+                                        $result = mysqli_query($conn, $sql);
+
+                                        $options = "";
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            
+                                            $options .= "<option value='" . $row['empid'] . "' style='display:flex; font-size: 16px; font-style:normal;'>".$row['fname']. " ". " " ." ".$row['lname']." </option>";
+                                        }
+                                        ?>
+
+                                        
+                                        <label for="approver">Immediate Superior/Approver</label><br>
+                                        <select class="approver-dd" name="approver[]" id="approver" multiple multiselect-search="true" multiselect-select-all="true" multiselect-max-items="2" style="display:flex; width: 380px;" readonly>
+                                            <?php echo $options ?>
+                                           
+                                        </select>
+                                        
+                                    
+                                    </div>
                                 </div>
 
                             </div>
@@ -658,9 +729,11 @@
                                 <div class="emp-Access-cpassword" style="margin-left: 2%">
                                     <label for="cpassword">Confirm Password</label><br>
                                     <input type="password"  pattern="[a-zA-Z0-9]{5,}" title="Must be at least 5 characters." disabled oninput="matchPass()" oninput="showPasswordIcon(this, 'confirm-eye')" name="cpassword" id="cpass" placeholder="Confirm Password" required>
+                                    <p id="id_pValidate" style="color: red; display: none;" class="mt-2">Passwords don't match!</p>
                                     <i class="fas fa-eye show-pass" aria-hidden="true" id="confirm-eye" style="display: none;" onclick="toggleConfirmPassword()"></i>
+                                     
                                 </div>  
-                                <p  id="id_pValidate" style="margin-top: 5px; margin-right: 825px; color: red; display: none; text-align: right;">Passwords don't match!</p>
+                               
                         </div>
 
                         <!-- <div class="password_sec">
@@ -1014,6 +1087,7 @@ function matchPass(){
     var pass = document.getElementById("pass");
     var cpass = document.getElementById("cpass");
     var form = document.getElementById("myForm");
+    var work = document.getElementById("working_days")
     var governContainer = document.querySelector(".employeeList-govern-container");
   var allowanceContainer = document.querySelector(".employeeList-allowance-container");
   var scheduleInput = document.querySelector(".employeeList-schedule-input");
@@ -1024,6 +1098,9 @@ function matchPass(){
   var empPosition = document.querySelector(".emp-empDetail-jposition");
   var pakyawan = document.querySelector(".emp-empDetail-piece_rate");
   var freq = document.querySelector(".emp-empDetail-work_frequency");
+  var workingDays = document.getElementById("work_form");
+  var empVisor = document.getElementById("emp_visor");
+  var pakyawVisor = document.getElementById("pakyaw_visor");
 //   var empDetailSecondInput = document.querySelector(".emp-empDetail-second-input");
 
     classificationSelect.addEventListener("change", function() {
@@ -1043,10 +1120,15 @@ function matchPass(){
         empSalary.style.display = "none";
         empDept.style.display = "none";
         empPosition.style.display = "none";
+        workingDays.style.display = "none";
+        empVisor.style.display ="none";
         pakyawan.style.display = "block";
         freq.style.display = "block";
+        pakyawVisor.style.display = "block";
         pass.removeAttribute("disabled");
         cpass.removeAttribute("disabled");
+        work.removeAttribute("required");
+        drate.removeAttribute("required");
         empbsalary.removeAttribute("required");
         department.removeAttribute("required");
         access_id.removeAttribute("required");
@@ -1070,8 +1152,11 @@ function matchPass(){
         empSalary.style.display = "block";
         empDept.style.display = "block";
         empPosition.style.display = "block";
+        workingDays.style.display = "block";
+        empVisor.style.display = "block";
         pakyawan.style.display = "none";
         freq.style.display = "none";
+        pakyawVisor.style.display = "none";
         empbsalary.setAttribute("required");
         
       }
@@ -1100,6 +1185,7 @@ function matchPass(){
         formEmail.removeAttribute("disabled");
         pass.removeAttribute("disabled");
         cpass.removeAttribute("disabled");
+        workingDays.removeAttribute("disabled");
       } else {
         transpo.setAttribute("disabled", "disabled");
         meal.setAttribute("disabled", "disabled");
@@ -1124,6 +1210,7 @@ function matchPass(){
         formEmail.setAttribute("disabled", "disabled");
         pass.setAttribute("disabled", "disabled");
         cpass.setAttribute("disabled", "disabled");
+        workingDays.setAttribute("disabled", "disabled");
       }
     });
   });

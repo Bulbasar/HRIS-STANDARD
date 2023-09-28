@@ -36,7 +36,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -131,7 +136,8 @@
                                         }
                                 ?>
                                 <label for="schedule_name">Schedule Type</label><br>
-                                <select name="schedule_name" class="form-control" id="schedule_name" style="color: black">                               
+                                <select name="schedule_name" class="form-control" id="schedule_name" style="color: black">       
+                                <!-- <option value="" selected ></option>                         -->
                                     <?php echo $options; ?>
                                 </select>
                             </div>
@@ -177,7 +183,7 @@
                                         <?php
                                             include('config.php');
 
-                                            $sql = "SELECT col_ID, col_deptname FROM dept_tb";
+                                            $sql = "SELECT col_ID, col_deptname FROM dept_tb WHERE col_ID != 1";
                                             $result = mysqli_query($conn, $sql);
                                             
                                             $Department = isset($_GET['department_name']) ? ($_GET['department_name']) : '';
@@ -262,10 +268,30 @@
                                                             $timeEntry = "No Schedule";
                                                             $timeOut = "No Schedule";
                                                         }
-                                                
+
+                                                        $cmpny_empid = $row['empid'];
+
+                                                  $sql = "SELECT employee_tb.company_code, 
+                                                          employee_tb.empid, 
+                                                          assigned_company_code_tb.company_code_id, 
+                                                          assigned_company_code_tb.empid, 
+                                                          company_code_tb.id, 
+                                                          company_code_tb.company_code AS company_code_name 
+                                                          FROM assigned_company_code_tb 
+                                                          INNER JOIN company_code_tb ON assigned_company_code_tb.company_code_id = company_code_tb.id 
+                                                          INNER JOIN employee_tb ON assigned_company_code_tb.empid = employee_tb.empid 
+                                                          WHERE assigned_company_code_tb.empid = '$cmpny_empid' ";
+                                                          
+                                                          $cmpny_result = mysqli_query($conn, $sql); // Corrected parameter order
+                                                          $cmpny_row = mysqli_fetch_assoc($cmpny_result);
                                                         echo "
                                                         <tr class='lh-1'>
-                                                            <td style='font-weight: 400;'>" . $row["empid"] . "</td>
+                                                        <td style='font-weight: 400'>";
+
+                                                        $cmpny_code = $cmpny_row['company_code_name'] ?? '';
+                                                        echo $cmpny_code !== '' ? $cmpny_code . ' - ' . $row['empid'] : $row['empid'];
+    
+                                                        echo "</td>
                                                             <td style='font-weight: 400;'>" . $row["fname"] . " " . $row["lname"] . "</td>
                                                             <td style='font-weight: 400;'>{$timeEntry}</td>
                                                             <td style='font-weight: 400;'>{$timeOut}</td>
