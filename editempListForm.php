@@ -776,7 +776,11 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                             </div>
                         </div>
                         <div class="export">
-
+                            <div class="emp-title" style="display:flex; flex-direction:space-row; align-items: center; justify-content:space-between; width: 1440px;">
+                                <h1>Requirements</h1>
+                            </div>
+                            <div class="emp-payroll-first-container">
+                            </div> 
                         </div>
                             <div class="empList-save-btn">
                                 <div>

@@ -22,16 +22,10 @@ while (true) {
     $row = $result->fetch_assoc();
     $lastDate = $row["last_date"];
 
-    
-
     if ($lastDate >= $currentDate && $check === 'YES') {
         // Last date matches the current date, exit the loop
         break;
     }
-
-  
-
-
 
 
   // select only the latest date of attendance in each employee
@@ -63,27 +57,23 @@ while (true) {
   
         $empAttendance[] = array('empid' => $empid, 'emp_timeout' => $emp_timeout, 'emp_date' => $emp_date, 'emp_status' => $emp_status);
       }
-      foreach ($empAttendance as $emp_Att_reset){
-        $array_empid = $emp_Att_reset['empid'];
-        $array_date = $emp_Att_reset['emp_date'];
-        $array_timeout = $emp_Att_reset['emp_timeout'];
+            foreach ($empAttendance as $emp_Att_reset){
+                $array_empid = $emp_Att_reset['empid'];
+                $array_date = $emp_Att_reset['emp_date'];
+                $array_timeout = $emp_Att_reset['emp_timeout'];
 
-        
                 include 'check_restday.php'; // class to check restday
             
-              
-
                 if($rest_day === 'yes') { // if next day is restday
                     //insert status "Restday"
+                    $timeIn = '00:00:00';
 
-                    $sql = "INSERT into attendances (`status`, `empid`, `date`) 
-                    VALUES('Restday', '$array_empid', '" . $date_tommorow->format('Y-m-d') . "')";
+                    $sql = "INSERT into attendances (`status`, `empid`, `date`, `time_in`) 
+                    VALUES('Restday', '$array_empid', '" . $date_tommorow->format('Y-m-d') . "', '$timeIn')";
 
                     $result = mysqli_query($conn, $sql);
 
-                } else{ // if nextday is not restday
-
-
+                } else { // if nextday is not restday
                      if ($array_timeout != '00:00:00') { //if may time-out
 
                         $combinedDateTimeATT = $array_date . ' ' . $array_timeout;
@@ -105,7 +95,7 @@ while (true) {
                         $minutes = (int) $interval->format('%r%i');
                         $seconds = (int) $interval->format('%r%s');
 
-                     }else{ // else walang timeout
+                     } else { // else walang timeout
 
                         $combinedDateTimeATT = $array_date . ' ' . $emp_timeout;
                         $dateTime = new DateTime($combinedDateTimeATT);

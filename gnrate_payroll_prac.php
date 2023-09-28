@@ -338,53 +338,38 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
 <!----------------------------------------select button and text input--------------------------------------->
 <div class="container-select">
             <div class="input-container">
-              <p class="demm-text">Select Department</p>
-              <?php
-                include('config.php');
-
-                $sql = "SELECT col_ID, col_deptname FROM dept_tb";
-                $result = mysqli_query($conn, $sql);
-                
-                $Department = isset($_GET['department_name']) ? ($_GET['department_name']) : '';
-
-                $options = "";
-                $options .= "<option class='select-btn form-select-m' aria-label='.form-select-sm example' value='All Department'" .($Department == 'All Department' ? ' selected' : '').">All Department</option>";
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $selected = ($Department == $row['col_ID']) ? 'selected' : '';
-                    $options .= "<option value='" . $row['col_ID'] . "' " . $selected . ">" . $row['col_deptname'] . "</option>";
-                }
-                ?>
-                  <select class="select-btn form-select-m" aria-label=".form-select-sm example" name="department" id="select_department" style="padding: 10px;">
-                      <option value="" disabled selected>Select Department</option>
-                      <?php echo $options; ?>
-                  </select>
-            </div>
-                
-            <div class="input-container">
-                <p class="demm-text">Select Employee</p>
-                  <label for="employee"></label>
-                    <select  class="select-btn form-select-m" aria-label=".form-select-sm example" name="employee" id="select_employee" style="padding: 10px;" disabled>
-                        <option value="" disabled selected>Select Employee</option>
+                <p class="demm-text">Select Month</p>
+                    <select class="select-btn form-select-m" aria-label=".form-select-sm example" name="month_name" id="id_month" style="padding: 10px;">
+                        <option value="" disabled selected>Select Department</option>
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
                     </select>
-              </div>
+                </div>
+                
 
                 <div class="input-container">
                     <p class="demm-text">Date From</p>
-                    <input class="select-btn" type="date" name="date_from" id="datestart" required>
+                    <input class="select-btn" type="date" name="date_from" id="id_datefrom" required>
                 </div>
                 <div class="input-container">
                     <div class="notif">
                     <p class="demm-text">Date To</p>
                     </div>
-                    <input class="select-btn" type="date" name="date_to" id="enddate" onchange="datefunct()" required>
+                    <input class="select-btn" type="date" name="date_to" id="id_dateto" required>
                 </div>
-                <button id="arrowBtn" onclick="filterAttReport()"> &rarr; Apply Filter</button>
- </div> <!--Container Select-->
-<!----------------------------------------select button and text input--------------------------------------->
+                <button id="arrowBtn" onclick="filterPayslip()"> &rarr; Apply Filter</button>
+ </div><!--Container Select-->
 
-
-
-<!-------------------------------------------------TABLE START------------------------------------------->
                         <div class="table-responsive mt-4" id="table-responsiveness">
                              <table id="order-listing" class="table">
                                     <thead>
@@ -463,6 +448,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                     if(isset($_POST['name_btnview'])){
 
                                     $cutOffID = $_POST['name_btnview'];
+
                                     $Getcutoff = "SELECT * FROM cutoff_tb WHERE `col_ID` = '$cutOffID'";
                                     $Getrun = mysqli_query($conn, $Getcutoff);
                                     $Cutoffrow = mysqli_fetch_assoc($Getrun);
@@ -473,11 +459,6 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                     $str_date = $Cutoffrow['col_startDate'];
                                     $end_date = $Cutoffrow['col_endDate'];
                                     $Frequency = $Cutoffrow['col_frequency'];
-
-                                    $dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : '';
-                                    $dateTo = isset($_GET['date_to']) ? $_GET['date_to'] : '';
-                                    $department = $_GET['department_name'] ?? '';
-                                    $employee = $_GET['empid'] ?? '';
 
                                     $CheckEmpid = "SELECT * FROM empcutoff_tb WHERE `cutOff_ID` = '$cutOffID'";
                                     $runEmpid = mysqli_query($conn, $CheckEmpid);
@@ -1774,9 +1755,6 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                 payroll_loan_tb.loan_date,
                                 payroll_loan_tb.timestamp,
                                 SUM(allowancededuct_tb.allowance_amount) AS total_sum,
-                                dept_tb.col_ID,
-                                dept_tb.col_deptname,
-                                employee_tb.department_name,
                                 employee_tb.empid,
                                 employee_tb.emptranspo,
                                 employee_tb.empmeal,
@@ -1829,7 +1807,6 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                             FROM
                                 employee_tb
                                 INNER JOIN attendances ON employee_tb.empid = attendances.empid
-                                INNER JOIN dept_tb ON employee_tb.department_name = dept_tb.col_ID
                                 LEFT JOIN allowancededuct_tb ON employee_tb.empid = allowancededuct_tb.id_emp
                                 LEFT JOIN payroll_loan_tb ON employee_tb.empid = payroll_loan_tb.empid
 
@@ -1857,9 +1834,6 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                 payroll_loan_tb.loan_date,
                                 payroll_loan_tb.timestamp,
                                 SUM(allowancededuct_tb.allowance_amount) AS total_sum,
-                                dept_tb.col_ID,
-                                dept_tb.col_deptname,
-                                employee_tb.department_name,
                                 employee_tb.empid,
                                 employee_tb.emptranspo,
                                 employee_tb.empmeal,
@@ -1910,27 +1884,12 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                             FROM
                                 employee_tb
                                 INNER JOIN attendances ON employee_tb.empid = attendances.empid
-                                INNER JOIN dept_tb ON employee_tb.department_name = dept_tb.col_ID
                                 LEFT JOIN allowancededuct_tb ON employee_tb.empid = allowancededuct_tb.id_emp
                                 LEFT JOIN payroll_loan_tb ON employee_tb.empid = payroll_loan_tb.empid
 
                             WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave')  AND employee_tb.empid = '$EmployeeID' AND `date` BETWEEN  '$str_date' AND  '$end_date'";
                         }
-                        if (!empty($department) && $department != 'All Department') {
-                            $sql .= " AND dept_tb.col_deptname = '$department'";
-                        }
-
-                        if (!empty($employee) && $employee != 'All Employee') {
-                            $sql .= " AND employee_tb.empid = '$employee'";
-                        }
-
-                        if (!empty($dateFrom) && !empty($dateTo)) {
-                            $sql .= " AND attendances.date BETWEEN '$dateFrom' AND '$dateTo'";
-                        }
                         $result = $conn->query($sql);
-               
-                      
-                                    
                                     
                                         //read data
                                         while($row = $result->fetch_assoc()){
@@ -2260,7 +2219,44 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                 ?>
                                 </table>
                          </div>
-                                 
+      <!----------------------------------------select button and text input--------------------------------------->
+<script>
+    function filterPayslip() {
+        // Get the selected values from the dropdowns and date inputs
+        const selectedMonth = document.getElementById("id_month").value;
+        const dateFrom = new Date(document.getElementById("id_datefrom").value);
+        const dateTo = new Date(document.getElementById("id_dateto").value);
+
+        // Get the table element
+        const table = document.getElementById("order-listing");
+        const rows = table.getElementsByTagName("tr");
+
+        // Define shouldDisplay outside of the loop and set it to false initially
+        let shouldDisplay = false;
+
+        // Loop through the table rows, starting from the second row (skipping the header row)
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const cells = row.getElementsByTagName("td");
+
+            // Get the values in the table cells for month, dateFrom, and dateTo
+            const monthValue = cells[0].textContent;
+            const dateFromValue = new Date(cells[2].textContent);
+            const dateToValue = new Date(cells[3].textContent);
+
+            // Check if the row should be displayed based on filter criteria
+            shouldDisplay = (
+                (selectedMonth === "" || monthValue === selectedMonth) &&
+                (isNaN(dateFrom) || dateFromValue >= dateFrom) &&
+                (isNaN(dateTo) || dateToValue <= dateTo)
+            );
+
+            // Toggle row visibility
+            row.style.display = shouldDisplay ? "" : "none";
+        }
+    }
+</script>
+<!-------------------------------------------------TABLE START------------------------------------------->                           
                         <!-- Modal Payslip-->
                         <div class="modal fade" id="viewPayslip" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog modal-xl">
@@ -2801,7 +2797,8 @@ $(document).ready(function(){
         var LWOPDeduction = data[41];
         var Netpayslip = data[42];
         var EarnTotal = data[43];
-        var DeductTotal = data[63];
+        var DeductTotalPayslip = data[44];
+        var DeductInputhide = data[63];
         var EmployeeStats = data[45];
         var cutoffFrequency = data[46];
         var Totalworkingdays = data[47];
@@ -2840,7 +2837,7 @@ $(document).ready(function(){
         $('#deductLWOP').text(LWOPDeduction);
         $('#netpayslip').text(Netpayslip);
         $('#totalEarn').text(EarnTotal);
-        $('#totalDeduction').text(DeductTotal);
+        $('#totalDeduction').text(DeductTotalPayslip);
         $('#empstatus').text(EmployeeStats);
 
 
@@ -2879,7 +2876,7 @@ $(document).ready(function(){
         $('#deduct_UT').val(UTDeduction);
         $('#numberLWOP').val(LWOPcount);
         $('#deduct_LWOP').val(LWOPDeduction);
-        $('#totalDeductions').val(DeductTotal);
+        $('#totalDeductions').val(DeductInputhide);
         $('#netpayslips').val(Netpayslip);
         $('#id_workdays').val(Totalworkingdays);
         $('#id_cutoff_id').val(CuttoffID);
@@ -2925,58 +2922,58 @@ function openTab(evt, tabName) {
 
 <!----------------------Script sa dropdown chain--------------------------->        
 <script>
-// Kapag nagbago ang pagpili sa select department dropdown
-document.getElementById("select_department").addEventListener("change", function() {
-    var departmentID = this.value; // Kunin ang value ng selected department
+// // Kapag nagbago ang pagpili sa select department dropdown
+// document.getElementById("select_department").addEventListener("change", function() {
+//     var departmentID = this.value; // Kunin ang value ng selected department
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var employees = JSON.parse(this.responseText);
-            var employeeDropdown = document.getElementById("select_employee");
-            employeeDropdown.innerHTML = ""; // I-clear ang current options
+//     var xhttp = new XMLHttpRequest();
+//     xhttp.onreadystatechange = function() {
+//         if (this.readyState == 4 && this.status == 200) {
+//             var employees = JSON.parse(this.responseText);
+//             var employeeDropdown = document.getElementById("select_employee");
+//             employeeDropdown.innerHTML = ""; // I-clear ang current options
 
-            // I-update ang employee dropdown base sa mga nakuha na empleyado
-            if (departmentID == "All Department") {
-                // Kapag "All Department" ang napili, ipakita ang "All Employee" kasama ang detalye ng bawat empleyado
-                var allEmployeeOption = document.createElement("option");
-                allEmployeeOption.value = "All Employee";
-                allEmployeeOption.text = "All Employee";
-                employeeDropdown.appendChild(allEmployeeOption);
+//             // I-update ang employee dropdown base sa mga nakuha na empleyado
+//             if (departmentID == "All Department") {
+//                 // Kapag "All Department" ang napili, ipakita ang "All Employee" kasama ang detalye ng bawat empleyado
+//                 var allEmployeeOption = document.createElement("option");
+//                 allEmployeeOption.value = "All Employee";
+//                 allEmployeeOption.text = "All Employee";
+//                 employeeDropdown.appendChild(allEmployeeOption);
 
-                employees.forEach(function(employee) {
-                    var option = document.createElement("option");
-                    option.value = employee.empid;
-                    option.text = employee.empid + " - " + employee.fname + " " + employee.lname;
-                    employeeDropdown.appendChild(option);
-                });
-            } else {
-                // Kapag ibang department ang napili, ipakita ang mga empleyado base sa department
-                employees.forEach(function(employee) {
-                    var option = document.createElement("option");
-                    option.value = employee.empid;
-                    option.text = employee.empid + " - " + employee.fname + " " + employee.lname;
-                    employeeDropdown.appendChild(option);
-                });
-            }
+//                 employees.forEach(function(employee) {
+//                     var option = document.createElement("option");
+//                     option.value = employee.empid;
+//                     option.text = employee.empid + " - " + employee.fname + " " + employee.lname;
+//                     employeeDropdown.appendChild(option);
+//                 });
+//             } else {
+//                 // Kapag ibang department ang napili, ipakita ang mga empleyado base sa department
+//                 employees.forEach(function(employee) {
+//                     var option = document.createElement("option");
+//                     option.value = employee.empid;
+//                     option.text = employee.empid + " - " + employee.fname + " " + employee.lname;
+//                     employeeDropdown.appendChild(option);
+//                 });
+//             }
 
-            // I-enable ang employee dropdown
-            employeeDropdown.disabled = false;
-        }
-    };
-    xhttp.open("GET", "get_employees.php?departmentID=" + departmentID, true);
-    xhttp.send();
-});
+//             // I-enable ang employee dropdown
+//             employeeDropdown.disabled = false;
+//         }
+//     };
+//     xhttp.open("GET", "get_employees.php?departmentID=" + departmentID, true);
+//     xhttp.send();
+// });
 
-function filterAttReport() {
-        var department = document.getElementById('select_department').value;
-        var employee = document.getElementById('select_employee').value;
-        var dateFrom = document.getElementById('datestart').value;
-        var dateTo = document.getElementById('enddate').value;
-        var url = 'gnrate_payroll_prac.php?col_deptname=' + department + '&empid=' + employee + '&date_from=' + dateFrom + '&date_to=' + dateTo;
-        window.location.href = url;
-    }
-</script>
+// function filterAttReport() {
+//         var department = document.getElementById('select_department').value;
+//         var employee = document.getElementById('select_employee').value;
+//         var dateFrom = document.getElementById('datestart').value;
+//         var dateTo = document.getElementById('enddate').value;
+//         var url = 'gnrate_payroll_prac.php?col_deptname=' + department + '&empid=' + employee + '&date_from=' + dateFrom + '&date_to=' + dateTo;
+//         window.location.href = url;
+//     }
+// </script>
 <!----------------------Script sa dropdown chain--------------------------->      
 
 <!------------------------------------------------MESSAGE FUNCTION START------------------------------------------->

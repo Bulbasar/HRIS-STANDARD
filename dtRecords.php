@@ -130,7 +130,7 @@ if(!empty($_GET['status'])){
                 <div class="btn-section" style="margin-left:70px;">
                      <!-- Button trigger modal -->
                     <button class="up-btn" data-bs-toggle="modal" data-bs-target="#upload_dtr_btn">Upload DTR File</button>
-                    <button class="down-btn" id="downloadBtn">Download CSV</button>
+                    <button class="down-btn" id="downloadBtn">Download Template</button>
                 </div>
                 </div>
 <!------------------------------------------------- End Of Header -------------------------------------------> 
@@ -196,7 +196,7 @@ if(!empty($_GET['status'])){
 
 <!-------------------------------------------------TABLE START------------------------------------------->
                         <div class="table-responsive" id="table-responsiveness">
-                             <table id="order-listing" class="table mt-2">
+                        <table id="order-listing" class="table mt-2">
                                 <thead>
                                     <tr>
                                         <th>Employee ID</th>

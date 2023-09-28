@@ -832,7 +832,55 @@ function leavetype() {
             //FOR VIEW FILE REASON modal END
 </script>
                 <!---------------------------break --------------------------->
+                <script>
+function strvalidate() {
+  var startDate = new Date(document.getElementById("id_inpt_strdate").value);
+  var endDate = new Date(document.getElementById("id_inpt_enddate").value);
+  var today = new Date(); // Get current date
+  today.setHours(0, 0, 0, 0); // Set the time to 00:00:00 to ignore the time component
 
+  // Calculate the date 14 working days ago
+  var workingDaysAgo = getPastWorkingDays(today, 14);
+
+  // Disable the button by default
+  document.getElementById("id_btnsubmit").disabled = true;
+
+  if (isWorkingDay(startDate) && startDate >= workingDaysAgo) {
+    // If the selected date is within the past 14 working days and falls within the valid working days, enable the button
+    document.getElementById("id_btnsubmit").disabled = false;
+    document.getElementById("error-msg").innerHTML = "";
+    document.getElementById("id_inpt_enddate").disabled = false;
+  } else {
+    // If the selected date is beyond the past 14 working days or not a valid working day, display an error message
+    document.getElementById("error-msg").innerHTML = "Invalid date: beyond 14 workdays or non-working.";
+    document.getElementById("id_btnsubmit").disabled = true; // Disable the button
+    document.getElementById("id_inpt_enddate").value = '';
+    document.getElementById("id_inpt_enddate").disabled = true;
+  }
+}
+
+function isWorkingDay(date) {
+  var dayOfWeek = date.getDay(); // Get the day of the week (0 - Sunday, 1 - Monday, ..., 6 - Saturday)
+  // Check if the day falls within Monday to Friday (1 - 5) and exclude weekends
+  return dayOfWeek >= 1 && dayOfWeek <= 5;
+}
+
+function getPastWorkingDays(date, n) {
+  var workingDaysCount = 0;
+  var currentDate = new Date(date);
+
+  while (workingDaysCount < n) {
+    currentDate.setDate(currentDate.getDate() - 1); // Decrement the date by 1 day
+
+    // Check if the current date is a working day (Monday to Friday, excluding weekends)
+    if (isWorkingDay(currentDate)) {
+      workingDaysCount++;
+    }
+  }
+
+  return currentDate;
+}
+</script>
 
 <script>
 //     $(document).ready(function() {
@@ -940,55 +988,7 @@ $(document).ready(function() {
 
 </script>
 
-<script>
-function strvalidate() {
-  var startDate = new Date(document.getElementById("id_inpt_strdate").value);
-  var endDate = new Date(document.getElementById("id_inpt_enddate").value);
-  var today = new Date(); // Get current date
-  today.setHours(0, 0, 0, 0); // Set the time to 00:00:00 to ignore the time component
 
-  // Calculate the date 14 working days ago
-  var workingDaysAgo = getPastWorkingDays(today, 14);
-
-  // Disable the button by default
-  document.getElementById("id_btnsubmit").disabled = true;
-
-  if (isWorkingDay(startDate) && startDate >= workingDaysAgo) {
-    // If the selected date is within the past 14 working days and falls within the valid working days, enable the button
-    document.getElementById("id_btnsubmit").disabled = false;
-    document.getElementById("error-msg").innerHTML = "";
-    document.getElementById("id_inpt_enddate").disabled = false;
-  } else {
-    // If the selected date is beyond the past 14 working days or not a valid working day, display an error message
-    document.getElementById("error-msg").innerHTML = "Invalid date: beyond 14 workdays or non-working.";
-    document.getElementById("id_btnsubmit").disabled = true; // Disable the button
-    document.getElementById("id_inpt_enddate").value = '';
-    document.getElementById("id_inpt_enddate").disabled = true;
-  }
-}
-
-function isWorkingDay(date) {
-  var dayOfWeek = date.getDay(); // Get the day of the week (0 - Sunday, 1 - Monday, ..., 6 - Saturday)
-  // Check if the day falls within Monday to Friday (1 - 5) and exclude weekends
-  return dayOfWeek >= 1 && dayOfWeek <= 5;
-}
-
-function getPastWorkingDays(date, n) {
-  var workingDaysCount = 0;
-  var currentDate = new Date(date);
-
-  while (workingDaysCount < n) {
-    currentDate.setDate(currentDate.getDate() - 1); // Decrement the date by 1 day
-
-    // Check if the current date is a working day (Monday to Friday, excluding weekends)
-    if (isWorkingDay(currentDate)) {
-      workingDaysCount++;
-    }
-  }
-
-  return currentDate;
-}
-</script>
 
 <script src="js/leaveReq.js"></script>
 

@@ -133,51 +133,23 @@ session_start();
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Leave Employee</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="actions/DTR Correction/correction.php" method="post">
-      <div class="modal-body">
-            <div class="mb-3">
-                    <label for="department">Select Department</label><br>
-                    <?php
-                        include 'config.php';
 
-                        $sqls = "SELECT * FROM dept_tb";
-
-                        $results = mysqli_query($conn, $sqls);
-
-                        $option = "";
-                        while ($rows = mysqli_fetch_assoc($results)) {
-                            $option .= "<option value='" . $rows['col_ID'] . "'>" . $rows['col_deptname'] . "</option> ";
-                        }
-                    ?>
-                    <select name="department" id="departmentDropdown" class="form-select">
-                        <option value selected>Select Department</option>
-                        <option value='All'>All</option>
-                        <?php echo $option ?>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="emp">Select Employee</label><br>
-                        <div id="employeeDropdown">
-                        <select class="approver-dd dd-hide" name="empid[]" id="multi_option" multiple placeholder="Select Employee" data-silent-initial-value-set="false" style="display:flex; width: 380px;">
-                        </select>
-                    </div>
-                </div>
-
+      <form action="actions/Leave Request/manual_leave.php" method="post">
+          <div class="modal-body">
                 <div class="row">
                     <div class="col-6">
-                            <label for="Select_dept" class="form-label">Leave Type :</label>
-                            <select class='form-select form-select-m' onchange="leavetype()" id="leavetype_id" name="name_LeaveT" aria-label='.form-select-sm example' style=' cursor: pointer;'>
-                                <option selected disabled value=''>Select</option>
-                                <option value='Vacation Leave'>Vacation Leave</option>
-                                <option value='Sick Leave'>Sick Leave</option>
-                                <option value='Bereavement Leave'>Bereavement Leave</option>
-                            </select>
+                        <label for="Select_dept" class="form-label">Leave Type :</label>
+                        <select class='form-select form-select-m' onchange="leavetype()" id="leavetype_id" name="name_LeaveT" aria-label='.form-select-sm example' style=' cursor: pointer;' required>
+                            <option selected disabled value=''>Select</option>
+                            <option value='Vacation Leave'>Vacation Leave</option>
+                            <option value='Sick Leave'>Sick Leave</option>
+                            <option value='Bereavement Leave'>Bereavement Leave</option>
+                        </select>
                     </div>
 
                     <div class="col-6">
                         <label for="Select_dept" class="form-label">Leave Period :</label>
-                        <select style id="id_leavePeriod" disabled name="name_LeaveP" onchange="halfdaysides()" class='form-select form-select-m' aria-label='.form-select-sm example' style='cursor: pointer;'>
+                        <select id="id_leavePeriod" disabled name="name_LeaveP" onchange="halfdaysides()" class='form-select form-select-m' aria-label='.form-select-sm example' style='cursor: pointer;' required>
                             <option disabled selected value=''>Select</option>
                             <option value='Full Day'>Full Day</option>
                             <option value='Half Day'>Half Day</option> 
@@ -185,30 +157,95 @@ session_start();
                     </div>
                 </div>
 
+                
                 <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="input-group mb-3" id="id_chckfirsthalf" style="display: none;">
+                            <div class="input-group-text">
+                                 <input class="form-check-input mt-0" type="checkbox" name="firstHalf" value="First Half" aria-label="Checkbox for following text input" onclick="checkboxClicked()">
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with checkbox" readonly value="First Half">
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="input-group mb-3" id="id_chckSecondhalf" style="display: none;">
+                            <div class="input-group-text">
+                                <input class="form-check-input mt-0" type="checkbox" name="secondHalf" value="Second Half" aria-label="Checkbox for following text input" onclick="checkboxClicked()"> 
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with checkbox" readonly value="Second Half">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <span id="error-time" style="color: red;"></span>
+                    <div class="col-6" id="time_start_input" style="display: none;">
+                        <label for="Select_dept" class="form-label">Start Time</label>
+                        <input type="time" name="firsttime" class="form-control" onchange="timeValidation()">
+                    </div>
+
+                    <div class="col-6" id="time_end_input" style="display: none;">
+                        <label for="Select_dept" class="form-label">End Time</label>
+                        <input type="time" name="secondtime" class="form-control" onchange="timeValidation()">
+                    </div>
+                </div>
+                
+                <div class="mb-3 mt-2">
+                        <label for="department">Select Department</label><br>
+                        <?php
+                            include 'config.php';
+
+                            $sqls = "SELECT * FROM dept_tb";
+
+                            $results = mysqli_query($conn, $sqls);
+
+                            $option = "";
+                            while ($rows = mysqli_fetch_assoc($results)) {
+                                $option .= "<option value='" . $rows['col_ID'] . "'>" . $rows['col_deptname'] . "</option> ";
+                            }
+                        ?>
+                        <select name="department" id="departmentDropdown" class="form-select" disabled required>
+                            <option value selected>Select Department</option>
+                            <option value='All'>All</option>
+                            <?php echo $option ?>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="emp">Select Employee</label><br>
+                            <div id="employeeDropdown">
+                            <select class="approver-dd dd-hide" name="empid[]" id="multi_option" multiple placeholder="Select Employee" data-silent-initial-value-set="false" style="display:flex; width: 380px;" disabled required>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                <div class="row mt-2">
+                    <span id="error-msg" style="color: red;"></span>
                     <div class="col-6">
                         <div class="mb-1">
                             <label for="id_inpt_strdate">Start Date :</label>
-                            <input type="date" onchange =" strvalidate() "   name="name_STRdate" class="form-control" id="id_inpt_strdate" style='cursor: pointer;' disabled required>
+                            <input type="date" name="name_STRdate" class="form-control" id="id_startdate" style='cursor: pointer;' disabled required>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="mb-1">
                             <label for="id_inpt_enddate">End Date :</label>
-                            <input type="date" onchange =" endvalidate()" name="name_ENDdate" class="form-control" id="id_inpt_enddate"  style='  cursor: pointer;' required disabled>
+                            <input type="date" onchange="endvalidate()" name="name_ENDdate" class="form-control" id="id_enddate"  style='  cursor: pointer;' required disabled>
                         </div>
                     </div>
                 </div>
-                <span id="error-msg" style="color: red;"></span>
 
-      </div>
-      <div class="modal-footer">
-        <button type="submit" name="yesCorrect" class="btn btn-primary">Yes</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-      </form>
+        </div>
+            <div class="modal-footer">
+                <button type="submit" name="yesCorrect" class="btn btn-primary" id="id_submit">Yes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
     </div>
-  </div>
 </div>
 
 
@@ -538,40 +575,221 @@ session_start();
     </div>
 </div>
 
-<!-----------------------Script sa pagselect ng multiple employee---------------->
+
 <script>
-    $(document).ready(function() {
-    $('#departmentDropdown').change(function() {
-        var selectedValue = $(this).val();
+function leavetype() {
+    let leavetype_id = document.getElementById("leavetype_id").value;
+    
+    if (leavetype_id === 'Vacation Leave' || leavetype_id === 'Sick Leave' || leavetype_id === 'Bereavement Leave') {
+        document.getElementById("id_leavePeriod").disabled = false;
+        document.getElementById("departmentDropdown").disabled = false;
+    } else {
+        document.getElementById("id_leavePeriod").disabled = true;
+        document.getElementById("departmentDropdown").disabled = true;
+        document.getElementById("id_chckfirsthalf").style.display = "none";
+        document.getElementById("id_chckSecondhalf").style.display = "none";
+        document.getElementById("id_startdate").disabled = true;
+        document.getElementById("id_enddate").disabled = true;
+        document.getElementById("id_submit").disabled = true;
+    }
+}
 
-        $.ajax({
-            type: 'POST',
-            url: 'update_selected_department.php',
-            data: { department: selectedValue },
-            success: function(response) {
-                $('#selectedDepartment').text(response); // Update the value in the <p> tag
+function halfdaysides() {
+    const firstHalfCheckbox = document.querySelector('input[name="firstHalf"]');
+    const secondHalfCheckbox = document.querySelector('input[name="secondHalf"]');
+    let id_leavePeriod = document.getElementById('id_leavePeriod').value;
+    let startDateInput = document.getElementById('id_startdate');
+    let endDateInput = document.getElementById('id_enddate');
 
-                // Fetch employee options based on the selected department
-                $.ajax({
-                    type: 'POST',
-                    url: 'leave_employee_options.php', // Create this PHP file to generate employee options
-                    data: { department: response },
-                    success: function(employeeOptions) {
-                        // Update the employee dropdown with new options
-                        $('#employeeDropdown').html(employeeOptions);
-                        console.log('Employee options updated successfully.');
-
-                        // Collect selected employee IDs
-                        var selectedEmployeeIDs = $('#multi_option').val();
-                        console.log('Selected Employee IDs:', selectedEmployeeIDs);
-                      
-                    }
-                });
-            }
+    if (id_leavePeriod === 'Full Day') {
+        document.getElementById("id_startdate").disabled = false;
+        document.getElementById("id_enddate").disabled = false;
+        document.getElementById("id_chckfirsthalf").style.display = "none";
+        document.getElementById("id_chckSecondhalf").style.display = "none";
+        firstHalfCheckbox.checked = this.checked;
+        secondHalfCheckbox.checked = this.checked;
+    } else if (id_leavePeriod === 'Half Day') {
+        startDateInput.disabled = false;
+        startDateInput.addEventListener('change', function () {
+            endDateInput.value = this.value;
         });
-    });
+        endDateInput.disabled = false;
+        document.getElementById("id_chckfirsthalf").style.display = "flex";
+        document.getElementById("id_chckSecondhalf").style.display = "flex";
+    }
+}
+
+
+
+    function checkboxClicked() {
+        const firstHalfCheckbox = document.querySelector('input[name="firstHalf"]');
+        const secondHalfCheckbox = document.querySelector('input[name="secondHalf"]');
+        let startTimeInput = document.getElementById('time_start_input');
+        let endTimeInput = document.getElementById('time_end_input');
+
+        if (firstHalfCheckbox.checked || secondHalfCheckbox.checked) {
+            startTimeInput.style.display = "";
+            endTimeInput.style.display = "";
+        } else {
+            startTimeInput.style.display = "none";
+            endTimeInput.style.display = "none";
+        }
+    }
+
+//     function timeValidation() {
+//         // Check the status of checkboxes and show/hide related inputs
+//     var firstHalfCheckbox = document.querySelector('input[name="firstHalf"]');
+//     var secondHalfCheckbox = document.querySelector('input[name="secondHalf"]');
+//     let startTimeInput = document.getElementById('time_start_input');
+//     let endTimeInput = document.getElementById('time_end_input');
+//     var submitButton = document.getElementById("id_submit");
+//     var errorTime = document.getElementById("error-time");
+
+//     if (firstHalfCheckbox.checked) {
+//         // First Half logic
+//         startTimeInput.style.display = "";
+//         endTimeInput.style.display = "";
+
+//         if (startTimeInput.value >= endTimeInput.value || startTimeInput.value >= "14:00") {
+//             submitButton.disabled = true;
+//             errorTime.textContent = "Start time should be before end time and after 2:00pm.";
+//         } else {
+//             submitButton.disabled = false;
+//             errorTime.textContent = "";
+//         }
+//     } else if (secondHalfCheckbox.checked) {
+//         // Second Half logic
+//         startTimeInput.style.display = "";
+//         endTimeInput.style.display = "";
+
+//         if (startTimeInput.value < "14:00" || endTimeInput.value < "14:00" || endTimeInput.value > "18:00") {
+//             submitButton.disabled = true;
+//             errorTime.textContent = "Start time should be from 2:00pm to 6:00pm.";
+//         } else {
+//             submitButton.disabled = false;
+//             errorTime.textContent = "";
+//         }
+//     } else {
+//         // No checkbox is checked
+//         startTimeInput.style.display = "none";
+//         endTimeInput.style.display = "none";
+//         submitButton.disabled = false;
+//         errorTime.textContent = "";
+//     }
+// }
+
+
+    function endvalidate() {
+        let start_date = new Date(document.getElementById("id_startdate").value);
+        let end_date = new Date(document.getElementById("id_enddate").value);
+        let id_leavePeriod = document.getElementById('id_leavePeriod').value;
+        let error_message = document.getElementById("error-msg");
+        let submit_button = document.getElementById("id_submit");
+        let end_date_input = document.getElementById("id_enddate");
+
+        // Clear any previous error message
+        error_message.textContent = "";
+
+        if (id_leavePeriod === 'Full Day') {
+            if (!start_date || !end_date) {
+                error_message.textContent = "Please fill out both Start Date and End Date fields.";
+                submit_button.disabled = true;
+            } else if (start_date > end_date) {
+                error_message.textContent = "Start Date should be earlier than End Date.";
+                submit_button.disabled = true;
+            } else {
+                submit_button.disabled = false;
+            }
+        } else if (id_leavePeriod === 'Half Day') {
+            if (!start_date) {
+                error_message.textContent = "Please fill out the Start Date field.";
+                submit_button.disabled = true;
+            } else if (end_date && start_date >= end_date) {
+                error_message.textContent = "Start Date should be earlier than End Date.";
+                submit_button.disabled = true;
+            } else {
+                end_date_input.disabled = !start_date; // Enable End Date if Start Date is filled
+                if (!end_date_input.disabled) {
+                    endvalidate(); // Check End Date if it's enabled
+                }
+                submit_button.disabled = false;
+            }
+        }
+    }
+
+const firstHalfCheckbox = document.querySelector('input[name="firstHalf"]');
+const secondHalfCheckbox = document.querySelector('input[name="secondHalf"]');
+firstHalfCheckbox.addEventListener('click', function() {
+    secondHalfCheckbox.checked = !this.checked;
+    document.getElementById("id_startdate").disabled = false;
+});
+secondHalfCheckbox.addEventListener('click', function() {
+    firstHalfCheckbox.checked = !this.checked;
+    document.getElementById("id_startdate").disabled = false;
 });
 </script>
+
+
+
+
+<!-----------------------Script sa pagselect ng multiple employee---------------->
+<script>
+        $(document).ready(function () {
+        $('#departmentDropdown').change(function () {
+            var selectedLeaveType = $("#leavetype_id").val();
+            var selectedDepartment = $("#departmentDropdown").val();
+
+            $.ajax({
+                type: 'POST',
+                url: 'update_selected_department.php',
+                data: { department: selectedDepartment },
+                success: function (response) {
+                    $('#selectedDepartment').text(response); // Update the value in the <p> tag
+
+                    // Call the updateEmployeeOptions function with the selected values
+                    updateEmployeeOptions(selectedLeaveType, selectedDepartment);
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors if any
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+        // Define the updateEmployeeOptions function
+        function updateEmployeeOptions(selectedLeaveType, selectedDepartment) {
+            $.ajax({
+                type: 'POST',
+                url: 'leave_employee_options.php',
+                data: {
+                    LeaveType: selectedLeaveType,
+                    department: selectedDepartment
+                },
+                success: function (employeeOptions) {
+                    // Update the employee dropdown with new options
+                    $('#employeeDropdown').html(employeeOptions);
+                    console.log('Employee options updated successfully.');
+
+                    // Collect selected employee IDs
+                    var selectedEmployeeIDs = $('#multi_option').val();
+                    console.log('Selected Employee IDs:', selectedEmployeeIDs);
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors if any
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+        // Attach the change event handler for the Leave Type dropdown
+        $('#leavetype_id').change(function () {
+            var selectedLeaveType = $(this).val();
+            var selectedDepartment = $("#departmentDropdown").val();
+
+            // Call the updateEmployeeOptions function with the selected values
+            updateEmployeeOptions(selectedLeaveType, selectedDepartment);
+        });
+    });
+</script>
+
 
 <script type="text/javascript" src="js/virtual-select.min.js"></script>
 <script type="text/javascript">

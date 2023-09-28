@@ -230,7 +230,7 @@
                             <th>Classification</th>
                             <th>Position</th>
                             <th>Type</th>
-                            <th>Documents</th>
+                            <th style="display:none;">Documents</th>
                             <th>Status</th>
                             <th>Details</th>
                             <th>Action</th>
@@ -321,7 +321,7 @@
                                     echo "<td style='font-weight: 400;'>" . $row["classification"] . "</td>";
                                     echo "<td style='font-weight: 400;'>"; ?> <?php if( $classification == "Pakyawan") { echo ""; }else{  echo $position; } ?> <?php echo " </td>";
                                     echo "<td style='font-weight: 400;'>" . $row["role"] . " </td>";
-                                    echo "<td>" . '<button class="btn btn-outline-danger btn-icon-text employeeFiles" data-bs-toggle="modal" data-bs-target="#empFile" data-emp-id="' . $cmpny_empid . '"><i class="ti-upload btn-icon-prepend"></i>file</button>' . "</td>";
+                                    echo "<td style='display:none;'>" . '<button class="btn btn-outline-danger btn-icon-text employeeFiles" data-bs-toggle="modal" data-bs-target="#empFile" data-emp-id="' . $cmpny_empid . '"><i class="ti-upload btn-icon-prepend"></i>file</button>' . "</td>";
                                     echo "<td>";
                                     ?> <?php
                                     if ($row['status'] == 'Active') {

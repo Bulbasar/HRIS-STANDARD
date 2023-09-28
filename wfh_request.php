@@ -287,7 +287,7 @@ session_start();
   </div>
 <!-----------------Modal kapag naclick ang Reject all button-------------------------->
 
-<div class="main-panel mt-5">
+<div class="main-panel mt-5" style="margin-left: 2%;">
     <div class=" mt-5">
         <div class="card">
             <div class="card-body">

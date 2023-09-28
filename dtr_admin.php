@@ -64,6 +64,7 @@
     <link rel="stylesheet" href="css/dtr_ad.css"/>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/dtr_adminResponsive.css">
+    <link rel="stylesheet" type="text/css" href="css/virtual-select.min.css">
     <title>DTR Correction - Admin</title>
 </head>
 <body>
@@ -93,6 +94,23 @@
                 display: table !important;
                 table-layout: fixed !important;
             }
+            .multiselect-dropdown-list-wrapper span.placeholder{
+        display: none !important;
+        cursor: default !important;
+        background-color: #fff !important;
+        color: #fff !important;
+        display:none !important; 
+    }
+    .multiselect-dropdown{
+        height: 50px !important;
+        width: 98% !important;
+    }
+
+
+        #multi_option{
+	        max-width: 100%;
+	        width: 100%;
+        }
     </style>
 
 
@@ -107,10 +125,34 @@
       </div>
       <form action="actions/DTR Correction/correction.php" method="post">
       <div class="modal-body">
-            <div class="mb-3">
-                  <label for="exampleInputDate" class="form-label">Employee ID</label>
-                  <input name="employeeId" type="text" class="form-control" required>
-              </div>
+          <div class="mb-3">
+                    <label for="department">Select Department</label><br>
+                    <?php
+                        include 'config.php';
+
+                        $sqls = "SELECT * FROM dept_tb";
+
+                        $results = mysqli_query($conn, $sqls);
+
+                        $option = "";
+                        while ($rows = mysqli_fetch_assoc($results)) {
+                            $option .= "<option value='" . $rows['col_ID'] . "'>" . $rows['col_deptname'] . "</option> ";
+                        }
+                    ?>
+                    <select name="department" id="departmentDropdown" class="form-select">
+                        <option value selected>Select Department</option>
+                        <option value='All'>All</option>
+                        <?php echo $option ?>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="emp">Select Employee</label><br>
+                        <div id="employeeDropdown">
+                        <select class="approver-dd dd-hide" name="empid[]" id="multi_option" multiple placeholder="Select Employee" data-silent-initial-value-set="false" style="display:flex; width: 380px;">
+                        </select>
+                    </div>
+                </div>
 
              <div class="mb-3">
                   <label for="exampleInputDate" class="form-label">Date</label>
@@ -125,7 +167,7 @@
               <div class="mb-3">
                   <label for="disabledSelect" class="form-label">Type</label>
                   <select name="typeDtr" class="form-select" required>
-                    <option value="" disabled>Select Type</option>
+                    <option value="" disabled selected>Select Type</option>
                     <option value="IN">IN</option>
                     <option value="OUT">OUT</option>
                   </select>
@@ -515,7 +557,48 @@
 
 <!------------------------------------------------End ng Modal ---------------------------------------------------->
 
+<!-----------------------Script sa pagselect ng multiple employee---------------->
+<script>
+    $(document).ready(function() {
+    $('#departmentDropdown').change(function() {
+        var selectedValue = $(this).val();
 
+        $.ajax({
+            type: 'POST',
+            url: 'update_selected_department.php',
+            data: { department: selectedValue },
+            success: function(response) {
+                $('#selectedDepartment').text(response); // Update the value in the <p> tag
+
+                // Fetch employee options based on the selected department
+                $.ajax({
+                    type: 'POST',
+                    url: 'dtr_employee_options.php', // Create this PHP file to generate employee options
+                    data: { department: response },
+                    success: function(employeeOptions) {
+                        // Update the employee dropdown with new options
+                        $('#employeeDropdown').html(employeeOptions);
+                        console.log('Employee options updated successfully.');
+
+                        // Collect selected employee IDs
+                        var selectedEmployeeIDs = $('#multi_option').val();
+                        console.log('Selected Employee IDs:', selectedEmployeeIDs);
+                      
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+
+<script type="text/javascript" src="js/virtual-select.min.js"></script>
+<script type="text/javascript">
+	VirtualSelect.init({ 
+	  ele: '#multi_option' 
+	});
+</script>
+<!-----------------------Script sa pagselect ng multiple employee---------------->
 
 <!------------------------------------Script para sa pag pop-up ng view modal------------------------------------------------->
 <!-- <script>

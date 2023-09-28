@@ -1875,7 +1875,7 @@ if(isset($_POST['printAll'])){
                                             <p class="p_Tamount" id="OTamount" name="amountOT_name"><?php echo $OTamount?></p>
                                             <p class="p_Tamount" id="allowanceAmount" name="allowance_name"><?php echo $Total_allowances?></p>
                                             <p class="p_Tamount" id="leaveAmount" name="leavepay_name"><?php echo $PaidLeaves?></p>
-                                            <p class="p_Tamount" id="holidayAmount" name="holiday_name"><?php echo $HolidayPayment?></p>
+                                            <p class="p_Tamount" id="holidayAmount" name="holiday_name"><?php echo number_format(($HolidayPayment),2)?></p>
                                             </div>
                                        </div><!--headbdy_pnl11-->
 
@@ -1927,7 +1927,7 @@ if(isset($_POST['printAll'])){
                                     <div class="headbody2">
                                         <div class="headbdy_pnl1">
                                             <p class="lbl_earnings">Total Earnings :</p>
-                                            <p class="lbl_Hours" id="totalEarn" name="earn_name"><?php echo number_format(($totalEarn),2);?></p>
+                                            <p class="lbl_Hours" id="totalEarn" name="earn_name"><?php echo number_format(($totalEarn),2)?></p>
                                         </div>
 
                                         <div class="headbdy_pnl2">
@@ -1946,7 +1946,7 @@ if(isset($_POST['printAll'])){
                       
     <?php
         }
-        $printAllslipArray[] = array('employeeId' => $EmployeeID, 'numbercutoff' => $cutoffNumber, 'worknumdays' => $TotalworkDays, 'monthcutoff' => $cutoffMonth, 'cutoffstart' => $str_date, 'cutoffend' => $end_date, 'basichours' => $Totalwork, 'basicpay' => $salary_of_month, 'othours' => $basic_OT_hours, 'otpay' => $OTamount, 'empAllowance' => $Total_allowances, 'leavepay' => $PaidLeaves, 'holidayPay' => $HolidayPayment, 'sssdeduct' => $sss, 'phildeduct' => $philHealth, 'tindeduct' => $tin_amount, 'pagibigdeduct' => $pagibig_amount, 'otherdeduct' => $cutoff_deductGovern, 'GovernBenefit' => number_format(($GovernmentBenefit),2), 'latededuct' => $Late_rate_to_deduct, 'underdeduct' => $Undertime_rate_to_deduct, 'lwopdeduct' => $LWOPdeduct, 'empnetpay' => $PayslipNetpay, 'totalEarn' => $totalEarn, 'totalDeduct' => number_format(($totalDeductions),2), 'frequency'=> $Frequency, 'cutoffId'=> $Id_cutoff, 'absences'=> $number_of_absent, 'payrule'=> $row_settings_salary['col_salary_settings'], 'leavecount'=> $number_ofLeave_attStatus, 'transpoallow'=> $Transport, 'mealallow'=> $Meal, 'netallowance'=> $Internet, 'otherallow'=> $Otherallowance, 'absdeductions'=> $absence_Deducts, 'latedeductions'=> $empLate, 'utHours'=> $UT_time, 'lwopcount'=> $number_LWOP_attStatus);
+        $printAllslipArray[] = array('employeeId' => $EmployeeID, 'numbercutoff' => $cutoffNumber, 'worknumdays' => $TotalworkDays, 'monthcutoff' => $cutoffMonth, 'cutoffstart' => $str_date, 'cutoffend' => $end_date, 'basichours' => $Totalwork, 'basicpay' => $salary_of_month, 'othours' => $basic_OT_hours, 'otpay' => $OTamount, 'empAllowance' => $Total_allowances, 'leavepay' => $PaidLeaves, 'holidayPay' => $HolidayPayment, 'sssdeduct' => $sss, 'phildeduct' => $philHealth, 'tindeduct' => $tin_amount, 'pagibigdeduct' => $pagibig_amount, 'otherdeduct' => $cutoff_deductGovern, 'GovernBenefit' => number_format(($GovernmentBenefit),2), 'latededuct' => $Late_rate_to_deduct, 'underdeduct' => $Undertime_rate_to_deduct, 'lwopdeduct' => $LWOPdeduct, 'empnetpay' => $PayslipNetpay, 'totalEarn' => number_format(($totalEarn),2), 'totalDeduct' => number_format(($totalDeductions),2), 'frequency'=> $Frequency, 'cutoffId'=> $Id_cutoff, 'absences'=> $number_of_absent, 'payrule'=> $row_settings_salary['col_salary_settings'], 'leavecount'=> $number_ofLeave_attStatus, 'transpoallow'=> $Transport, 'mealallow'=> $Meal, 'netallowance'=> $Internet, 'otherallow'=> $Otherallowance, 'absdeductions'=> $absence_Deducts, 'latedeductions'=> $empLate, 'utHours'=> $UT_time, 'lwopcount'=> $number_LWOP_attStatus);
      }
      foreach ($printAllslipArray as $Employeeslip) {
         $Employee = $Employeeslip['employeeId'];
@@ -2017,7 +2017,7 @@ if(isset($_POST['printAll'])){
 <!----Script para macapture ang multiple payslip at mailagay sa separate na pages ----->
 <script>
 window.html2canvas = html2canvas;
-    window.jsPDF = window.jspdf.jsPDF;
+window.jsPDF = window.jspdf.jsPDF;
 
     function PrintallPayslip() {
         $('#Modalslip').modal('hide');

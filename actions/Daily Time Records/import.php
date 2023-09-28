@@ -578,61 +578,69 @@ if(isset($_POST['importSubmit'])){
                             } else if (!empty($time_in) && empty($time_out)) {
                                 continue; // Skip this record
                             } else if (!empty($time_in) && !empty($time_out)) {
-                                if ($time_in_datetime < $lunchbreak_start_converted) {
-                                    if ($time_in_datetime <= $grace_period_total) {
-                                        $late = '00:00:00';
-                                        $addtime_in = $scheduled_timein;
+                                if (empty($time_in)) {
+                                    $time_in = "00:00:00";
+                                    $addtime_in = "00:00:00";
+                                    $late = '00:00:00'; // No late when time_in is empty
+                                } else {
+                                    if ($time_in_datetime < $lunchbreak_start_converted) {
+                                        if ($time_in_datetime <= $grace_period_total) {
+                                            $late = '00:00:00';
+                                            $addtime_in = $scheduled_timein;
+                                        } else {
+                                            $late = $time_in_datetime->diff($scheduled_timein)->format('%H:%I:%S');
+                                            $addtime_in = $time_in_datetime;
+                                        }
                                     } else {
-                                        $late = $time_in_datetime->diff($scheduled_timein)->format('%H:%I:%S');
-                                        $addtime_in = $time_in_datetime;
+                                        // Subtract 1 hour from late
+                                        $lates = $time_in_datetime->diff($scheduled_timein)->format('%H:%I:%S');
+                                        $late_datetime = new DateTime($lates);
+                                        $late_datetime->sub(new DateInterval('PT1H'));
+                                        $late = $late_datetime->format('H:i:s');
                                     }
+                                }
+                                if (empty($time_out)) {
+                                    $time_out = "00:00:00";
+                                    $addtime_out = "00:00:00";
+                                    $undertime = '00:00:00'; // No undertime when time_out is empty
+                                    $overtime = '00:00:00'; // No overtime when time_out is empty
                                 } else {
-                                    // Subtract 1 hour from late
-                                    $lates = $time_in_datetime->diff($scheduled_timein)->format('%H:%I:%S');
-                                    $late_datetime = new DateTime($lates);
-                                    $late_datetime->sub(new DateInterval('PT1H'));
-                                    $late = $late_datetime->format('H:i:s');
-                                }
+                                    // Calculate undertime and overtime as before
+                                    if ($time_out < $col_sunday_timeout) {
+                                        $time_out_datetime = new DateTime($time_out);
+                                        $scheduled_time = new DateTime($col_sunday_timeout);
+                                        $interval = $time_out_datetime->diff($scheduled_time);
+                                        $undertime = $interval->format('%h:%i:%s');
+                                    } else {
+                                        $time_out_datetime = new DateTime($time_out);
+                                        $scheduled_timeout = new DateTime( $col_sunday_timeout);
+                                        $intervals = $time_out_datetime->diff($scheduled_timeout);
+                                        $overtime = $intervals->format('%h:%i:%s');
+                                    }
 
-                                if ($time_out < $col_sunday_timeout) {
-                                    $time_out_datetime = new DateTime($time_out);
-                                    $scheduled_time = new DateTime($col_sunday_timeout);
-                                    $interval = $time_out_datetime->diff($scheduled_time);
-                                    $undertime = $interval->format('%h:%i:%s');
-                                }else{
-                                    $undertime = "00:00:00";
-                                }
-
-                                if ($time_out > $col_sunday_timeout) {
-                                    $time_out_datetime = new DateTime($time_out);
-                                    $scheduled_timeout = new DateTime( $col_sunday_timeout);
-                                    $intervals = $time_out_datetime->diff($scheduled_timeout);
-                                    $overtime = $intervals->format('%h:%i:%s');
-                                } else {
-                                    $overtime = '00:00:00';
-                                }
-
-                                if($time_out_datetime > $lunchbreak_start_converted){
-                                    if($time_out != $col_sunday_timeout){
+                                    if($time_out_datetime > $lunchbreak_start_converted){
+                                        if($time_out != $col_sunday_timeout){
+                                            $addtime_out = $time_out_datetime;
+                                        }else{
+                                            $addtime_out = $scheduled_timeout;
+                                        }
+                                    }else{
                                         $addtime_out = $time_out_datetime;
-                                    }else{
-                                        $addtime_out = $scheduled_timeout;
                                     }
-                                }else{
-                                    $addtime_out = $time_out_datetime;
                                 }
-                                    if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
-                                        $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
-                                        // Subtract 1 hour from total work
-                                        $total_work_datetime = new DateTime($total_works);
-                                        $total_work_datetime->sub(new DateInterval('PT1H'));
-                                        $total_work = $total_work_datetime->format('H:i:s');
-                                    }else{
-                                        $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
-                                        //Remove Subtract 1 hour from total work
-                                        $total_work_datetime = new DateTime($total_works);
-                                        $total_work = $total_work_datetime->format('H:i:s');
-                                    }
+
+                                if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
+                                    $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
+                                    // Subtract 1 hour from total work
+                                    $total_work_datetime = new DateTime($total_works);
+                                    $total_work_datetime->sub(new DateInterval('PT1H'));
+                                    $total_work = $total_work_datetime->format('H:i:s');
+                                }else{
+                                    $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
+                                    //Remove Subtract 1 hour from total work
+                                    $total_work_datetime = new DateTime($total_works);
+                                    $total_work = $total_work_datetime->format('H:i:s');
+                                }
                              }
                         } //Close bracket Sunday
 

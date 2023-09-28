@@ -2,12 +2,13 @@
 include '../../config.php';
 
 if(isset($_POST['yesCorrect'])){
-    $EmployeeId = $_POST['employeeId'];
+    $empidArray = $_POST['empid'][0];
+    $empids = explode(",", $empidArray);
     $DateDTR = $_POST['dateDtr'];
     $TimeDTR = $_POST['timeDtr'];
     $TypeDTR = $_POST['typeDtr'];
 
-
+    foreach ($empids as $EmployeeId) {
     if($TypeDTR === 'IN'){
                 $result_emp_sched = mysqli_query($conn, "SELECT schedule_name FROM empschedule_tb WHERE empid = '$EmployeeId'");
                 if(mysqli_num_rows($result_emp_sched) > 0) {
@@ -1196,7 +1197,7 @@ if(isset($_POST['yesCorrect'])){
                                     }
                                 }
     }
+  }
 }
-
 
 ?>
