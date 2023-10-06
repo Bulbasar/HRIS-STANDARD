@@ -282,8 +282,8 @@ include 'header.php';
                         </div>
                         <div class="col-6 mt-2 text-end">
                         <!-- Button trigger modal -->
-                        <button type="button" class="add_new_btn" style="background-color: black; padding: 10px; height: 45px; width: 120px; border-radius: 10px;">
-                        <a href="file_upload.php">Add New</a>
+                        <button type="button" class="add_new_btn" data-bs-toggle="modal" data-bs-target="#addnew_btn" style="background-color: black; padding: 10px; height: 45px; width: 120px; border-radius: 10px;">
+                        Add New
                         
                         </button>
                         </div>

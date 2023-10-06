@@ -185,10 +185,10 @@ if(isset($_POST['signIn'])){
                 
                 <div class="form-container">
                     <form action="" method="POST">
-                        <input class="input-text" type="text" name="username" id="username" placeholder="Username" value="<?php echo @$username; ?>" required>
+                        <input class="input-text" type="text" name="username" id="username" placeholder="Username" value="<?php echo @$username; ?>" required maxlength="50">
                         
                         <div class="login-pass-container" style="">   
-                            <input class="input-text" id="login-pass" type="password" name="password" placeholder="Password" required>
+                            <input class="input-text" id="login-pass" type="password" name="password" placeholder="Password" required maxlength="50">
                             <i class="fas fa-eye show-pass" aria-hidden="true" id="eye" onclick="toggle()"></i>
                         </div>
 

@@ -86,7 +86,9 @@
 
     <link rel="stylesheet" href="css/try.css">
     <link rel="stylesheet" href="css/styles.css"> 
-    <title>HRIS | Employee List</title>
+
+    <link rel="shortcut icon" href="icons/favicon.ico" />
+    <title>HRIS | Loan Request</title>
 </head>
 <body>
 

@@ -7,16 +7,30 @@ if(isset($_POST['submit'])){
 
     $schedule_name = $_POST['schedule_name'];
     $sched_from = $_POST['sched_from'];
-    $sched_to = $_POST['sched_to'];
+    // $sched_to = $_POST['sched_to'];
+
+    $schedule_type = $_POST['schedule_type'];
+
+    echo $schedule_type;
+
+    if($schedule_type == 'Fixed'){
+        // echo "hehe";
+        $sched_to = '2050-09-29';
+    }else{
+        $sched_to = $_POST['sched_to'];
+    }
+
+    // echo $sched_to;
     
     include '../../config.php';
 
-    $sql = "INSERT INTO empschedule_tb (empid, schedule_name, sched_from, sched_to)
-    VALUES (?, ?, ?, ?)
+    $sql = "INSERT INTO empschedule_tb (empid, schedule_name, sched_from, sched_to, schedule_type)
+    VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     schedule_name = VALUES(schedule_name),
     sched_from = VALUES(sched_from),
-    sched_to = VALUES(sched_to)";
+    sched_to = VALUES(sched_to),
+    schedule_type = VALUES(schedule_type)";
 
     $stmt = mysqli_prepare($conn, $sql);
 
@@ -31,7 +45,7 @@ if(isset($_POST['submit'])){
             $empID = strval($empID);
 
             // Bind parameters and execute the statement for the current employee ID
-            mysqli_stmt_bind_param($stmt, "ssss", $empID, $schedule_name, $sched_from, $sched_to); // Assuming cutOff_ID is an integer
+            mysqli_stmt_bind_param($stmt, "sssss", $empID, $schedule_name, $sched_from, $sched_to, $schedule_type); // Assuming cutOff_ID is an integer
             mysqli_stmt_execute($stmt);
         }
     }

@@ -234,7 +234,7 @@
                         </div> -->
                         <div class="w-100 mt-3" id="radBtn" style="display:none"> 
                             <div class="form-check ml-4">
-                                <input class="form-check-input fs-5"  type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <input class="form-check-input fs-5"  type="radio" name="schedule_type" id="flexRadioDefault1" value="Shifting">
                                 <label class="form-check-label fs-5" for="flexRadioDefault1" style="margin-left: -0.1em">
                                     Shifting Schedule
                                 </label>
@@ -242,7 +242,7 @@
 
                             </div>
                             <div class="form-check ml-4 mt-2">
-                                <input class="form-check-input fs-5"  type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                                <input class="form-check-input fs-5"  type="radio" name="schedule_type" id="flexRadioDefault2" value="Fixed">
                                 <label class="form-check-label fs-5"  for="flexRadioDefault2" style="margin-left: -0.1em">
                                     Fixed Schedule
                                 </label>

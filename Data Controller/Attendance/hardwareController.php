@@ -138,8 +138,8 @@
                 // echo '<script> alert("Employee has no schedule!"); </script>';
                 // header("Location: ../../attendance.php?noSchedule");
                 // exit;
-                echo "No schedule <br>"; 
-           
+                // echo "No schedules <br>"; 
+                exit;
             }
             $result = mysqli_query($conn, $stmt);
             while($time = mysqli_fetch_assoc($result)){
@@ -249,6 +249,7 @@
                                  $late, "<br>" , $time_in, "<br>", $empid, "<br> <br>";
 
                     }elseif($currentDayOfWeek == $tuesday){
+                       
                         $convert_timein = strtotime($tuesday_timein);
 
                         $convert_timein += $grace_period * 60; 
@@ -259,8 +260,8 @@
 
                         if($bio_timein > $grace_period_total){
                             $late = (new DateTime($bio_timein))->diff(new DateTime($tuesday_timein))->format('%H:%I:%S');
-                            echo "your late <br> ";
-                            echo "this is the late when the late is not yet at 12:00 === ", $late ,"<br>";
+                            echo "<br> your late";
+                            // echo "this is the late when the late is not yet at 12:00 === ", $late ,"<br>";
 
 
                             date_default_timezone_set("Asia/Manila");
@@ -269,7 +270,7 @@
                                     $late = date("H:i:s", strtotime($late) - 3600); 
                                 }
 
-                            echo "late when 12:00 === ",$late;
+                            // echo "late when 12:00 === ",$late;
                         }else{
                             $late = '00:00:00';
                             
@@ -283,10 +284,12 @@
                         $status = 'Present';
                             
                             
-                            echo "<br>", $early_out , "<br>",
+                            echo "<br>", $time_in, "<br>",
+                                $early_out , "<br>",
                                 $overtime , "<br>",
                                 $total_work , "<br>",
                                 $total_rest , "<br>";
+
 
 
                     }elseif($currentDayOfWeek == $wednesday){
@@ -330,7 +333,7 @@
                                 $total_rest , "<br>";
 
                     }elseif($currentDayOfWeek == $thursday){
-
+                        echo "<br> it is thursday <br>";
                         //grace period calculation
                         $convert_timein = strtotime($thursday_timein);
 
@@ -342,8 +345,8 @@
 
                         if($bio_timein > $grace_period_total){
                             $late = (new DateTime($bio_timein))->diff(new DateTime($thursday_timein))->format('%H:%I:%S');
-                            echo "your late <br> ";
-                            echo "this is the late when the late is not yet at 12:00 === ", $late ,"<br>";
+                            // echo "your late <br> ";
+                            // echo "this is the late when the late is not yet at 12:00 === ", $late ,"<br>";
 
 
                             date_default_timezone_set("Asia/Manila");
@@ -352,7 +355,7 @@
                                     $late = date("H:i:s", strtotime($late) - 3600); 
                                 }
 
-                            echo "late when 12:00 === ",$late;
+                            // echo "late when 12:00 === ",$late;
                         }else{
                             $late = '00:00:00';
                             
@@ -366,16 +369,16 @@
                         $status = 'Present';  
                             
                             
-                        // echo "<br> this is time in ", $time_in , "<br>";
-                        // echo "this is time out ", $time_out , "<br>";
-                        // echo "this is late ", $late , "<br>";
-                        // echo "this is total work ", $total_work , "<br>";
-                        // echo "this is overtime ", $overtime , "<br>";
-                        // echo "this is early out ", $early_out , "<br>";
-                        // echo "this is total rest ", $total_rest , "<br>";
-                        // echo "this is status ", $status , "<br>";
-                        // echo "this is empid ", $empid , "<br>";
-                        // echo "this is date ", $date , "<br>";
+                        echo "<br> this is time in in bio ", $bio_timein , "<br>";
+                        echo "this is time out ", $time_out , "<br>";
+                        echo "this is late ", $late , "<br>";
+                        echo "this is total work ", $total_work , "<br>";
+                        echo "this is overtime ", $overtime , "<br>";
+                        echo "this is early out ", $early_out , "<br>";
+                        echo "this is total rest ", $total_rest , "<br>";
+                        echo "this is status ", $status , "<br>";
+                        echo "this is empid ", $empid , "<br>";
+                        echo "this is date ", $date , "<br>";
 
                                 
                      
@@ -420,6 +423,9 @@
                             //     $overtime , "<br>",
                             //     $total_work , "<br>",
                             //     $total_rest , "<br>";
+
+                            // echo "<br> ", $empid ,"<br>";
+                            // echo "<br> ", $time_in ,"<br>";
 
 
                     }elseif($currentDayOfWeek == $saturday){
@@ -505,7 +511,34 @@
                                 
 
                     }
+
+                    $existingSql = "SELECT * FROM attendances WHERE `empid` = '$empid' AND `date` = '$date' ";
+                    $existingResult = mysqli_query($conn, $existingSql);
+
+                    if(mysqli_num_rows($existingResult) > 0){
+                        $updateSql = "UPDATE attendances SET `status` = '$status' ,  `time_in` = '$bio_timein', `time_out` = '$time_out', `late` = '$late', `early_out` = '$early_out', `overtime` = '$overtime', `total_work` = '$total_work', `total_rest` = '$total_rest' WHERE `empid` = '$empid' AND `date` = '$date' ";
+
+                        if(mysqli_query($conn, $updateSql)){
+                            // header("Location: ../../attendance.php");
+                        }else{
+                            echo "Error Inserting data " .mysqli_error($conn);
+                        }
+
+                    }else{
+                        $insert = "INSERT INTO attendances (`status`, `empid`, `date`, `time_in`, `time_out`, `late`, `early_out`, `overtime`, `total_work`, `total_rest`)
+                        VALUES ('$status', '$empid', '$date', '$bio_timein', '$time_out', '$late', '$early_out' , '$overtime', '$total_work', '$total_rest') ";
+    
+                            if($conn->query($insert) == TRUE){
+                                echo "inserted";
+                            }else{
+                                echo "Error update " . $conn->error;
+                            }
+                    }
+                    
                 }
+
+
+                //start ng time in and out
 
                 $validSql = "SELECT * FROM attendances WHERE `empid` = '$empid' AND `date` = '$date' ";
                 $validResult = mysqli_query($conn,$validSql);
@@ -1171,15 +1204,74 @@
                                     if($time_out){
                                         $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
 
+                                        if($time_out < $tuesday_timeout){
+                                            // $early_out = '08:00:00';
+                                           
+                                            $early_out = (new DateTime($monday_timeout))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                        }
+    
+    
                                         if($late == '00:00:00'){
                                             $total_work = (new DateTime($monday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
                                         }
 
-                                        date_default_timezone_set("Asia/Manila");
-                                        $current_time = date("H:i:s"); 
-                                        if($time_out > '01:00:00'){
-                                            $total_work = date("H:i:s", strtotime($total_work) - 3600); 
+                                        // if()
+                                        // echo $sched_ot;
+
+                                        //02/10/23
+                                        $convert_timeout = strtotime($monday_timeout);
+
+                                        $convert_timeout += $sched_ot * 60; 
+    
+                                        $sched_ot_total = date("H:i:s", $convert_timeout);
+
+                                        // echo $sched_ot_total;
+
+                                        if($sched_ot_total > $time_out){
+                                            // echo "not ot";
+                                            
+                                            if($late == '00:00:00'){
+                                                $total_work = (new DateTime($monday_timein))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                                // $overtime = (new DateTime($sched_ot_total))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                               
+                                            }else{
+                                                $total_work = (new DateTime($time_in))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                                // echo $total_work;
+                                                $overtime = '00:00:00';
+                                                
+                                            }
+
+                                            $overtime = '00:00:00';
+
+                                        }else{
+                                           
+                                            if($late == '00:00:00'){
+                                                $total_work = (new DateTime($monday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                                $overtime = (new DateTime($time_out))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+
+                                                echo $overtime;
+                                            }else{
+                                                $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                                $overtime = (new DateTime($time_out))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+
+                                                // echo $overtime; 
+                                            }
+                                        } //end 02/10/23
+
+                                         // 29/09/2023
+                                         if($time_in > '13:00:00'){
+                                            $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                        }else{
+                                            date_default_timezone_set("Asia/Manila");
+                                            $current_time = date("H:i:s"); 
+                                            if($time_out > '01:00:00'){
+                                                $total_work = date("H:i:s", strtotime($total_work) - 3600);
                                         }
+                                         
+    
+                                            
+                                        }
+    
 
                                     }else{
                                         $total_work = '00:00:00';
@@ -1189,52 +1281,69 @@
 
 
                                     //overtime function
-                                    $convert_timeout = strtotime($monday_timeout);
+                                    // $convert_timeout = strtotime($monday_timeout);
+                                    // var_dump($sched_ot);
 
-                                    $convert_timeout += $sched_ot * 60; 
+                                    // $intSched_ot = intval($sched_ot);
 
-                                    $sched_ot_total = date("H:i:s", $convert_timeout);
+                                    // $convert_timeout += $intSched_ot * 60; 
+                                  
 
-                                    if($time_out > $monday_timeout){
-                                        $overtime = (new DateTime($time_out))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');   
+                                    // $sched_ot_total = date("H:i:s", $convert_timeout);
 
-                                        if($time_out > $sched_ot_total){
-                                            $overtime = (new DateTime($time_out))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                    // if($time_out > $monday_timeout){
+                                    //     $overtime = (new DateTime($time_out))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');   
+
+                                    //     if($time_out > $sched_ot_total){
+                                    //         $overtime = (new DateTime($time_out))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+
+                                    //         // echo $sched_ot_total;
                                             
-                                        $overtime_convert = new DateTime($overtime);
-                                        $totalwork_convert = new DateTime($total_work);
+                                    //     // $overtime_convert = new DateTime($overtime);
+                                    //     // $totalwork_convert = new DateTime($total_work);
                                             
-                                        $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
+                                    //     // $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
 
-                                        $total_work =  $results->format('H:i:s');
+                                    //     // $total_work =  $results->format('H:i:s');
 
-                                        //    echo $total_work;
+                                    //     //    echo $total_work;
 
-                                        if($time_in > $grace_period_total ){
-                                            $late_convert = new DateTime($late);
-                                            $totalwork_convert = new DateTime($total_work);
+                                    //        if($late == '00:00:00'){
+                                    //         $total_work = (new DateTime($monday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    //     }else{
+                                    //         $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    //     }
 
-                                                $diff = $totalwork_convert->diff($late_convert);
+                                    //     if($time_in > $grace_period_total ){
+                                    //         $late_convert = new DateTime($late);
+                                    //         $totalwork_convert = new DateTime($total_work);
 
-                                                $total_work = $diff->format('%H:%i:%s');
+                                    //             $diff = $totalwork_convert->diff($late_convert);
 
-                                                $total_work = sprintf(
-                                                    "%02d:%02d:%02d",
-                                                    $diff->h,
-                                                    $diff->i,
-                                                    $diff->s
-                                                );
+                                    //             $total_work = $diff->format('%H:%i:%s');
+
+                                    //             $total_work = sprintf(
+                                    //                 "%02d:%02d:%02d",
+                                    //                 $diff->h,
+                                    //                 $diff->i,
+                                    //                 $diff->s
+                                    //             );
 
                                             
-                                        }                    
-                                        }else{
-                                            $overtime = '00:00:00';
-                                        }
+                                    //     }    
+
+                                    //     if($time_out > '01:00:00'){
+                                    //         $total_work = date("H:i:s", strtotime($total_work) - 3600);
+                                    //     }
+                                                        
+                                    //     }else{
+                                    //         $overtime = '00:00:00';
+                                    //     }
 
 
-                                    }else{
-                                        $overtime = '00:00:00';
-                                    } //overtime end
+                                    // }else{
+                                    //     $overtime = '00:00:00';
+                                    // } //overtime end
 
                                     $total_rest = '00:00:00';
                                     $status = 'Present';
@@ -1289,14 +1398,69 @@
                                 if($time_out){
                                     $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
 
+                                    if($time_out < $tuesday_timeout){
+                                        // $early_out = '08:00:00';
+                                       
+                                        $early_out = (new DateTime($tuesday_timeout))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }
+
+
                                     if($late == '00:00:00'){
                                         $total_work = (new DateTime($tuesday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
                                     }
 
-                                    date_default_timezone_set("Asia/Manila");
-                                    $current_time = date("H:i:s"); 
-                                    if($time_out > '01:00:00'){
-                                        $total_work = date("H:i:s", strtotime($total_work) - 3600); 
+                                     //02/10/23
+                                     $convert_timeout = strtotime($tuesday_timeout);
+
+                                     $convert_timeout += $sched_ot * 60; 
+ 
+                                     $sched_ot_total = date("H:i:s", $convert_timeout);
+
+                                     // echo $sched_ot_total;
+
+                                     if($sched_ot_total > $time_out){
+                                         // echo "not ot";
+                                         
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($tuesday_timein))->diff(new DateTime($tuesday_timeout))->format('%H:%I:%S');
+                                             // $overtime = (new DateTime($sched_ot_total))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                            
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($tuesday_timeout))->format('%H:%I:%S');
+                                             // echo $total_work;
+                                             $overtime = '00:00:00';
+                                             
+                                         }
+
+                                         $overtime = '00:00:00';
+
+                                     }else{
+                                        
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($tuesday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($tuesday_timeout))->format('%H:%I:%S');
+
+                                             echo $overtime;
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($tuesday_timeout))->format('%H:%I:%S');
+
+                                             // echo $overtime; 
+                                         }
+                                     } //end 02/10/23
+
+                                     // 29/09/2023
+                                     if($time_in > '13:00:00'){
+                                        $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }else{
+                                        date_default_timezone_set("Asia/Manila");
+                                        $current_time = date("H:i:s"); 
+                                        if($time_out > '01:00:00'){
+                                            $total_work = date("H:i:s", strtotime($total_work) - 3600);
+                                    }
+                                     
+
+                                        
                                     }
 
                                 }else{
@@ -1306,53 +1470,53 @@
                                 
 
 
-                                //overtime function
-                                $convert_timeout = strtotime($tuesday_timeout);
+                                // //overtime function
+                                // $convert_timeout = strtotime($tuesday_timeout);
 
-                                $convert_timeout += $sched_ot * 60; 
+                                // $convert_timeout += $sched_ot * 60; 
 
-                                $sched_ot_total = date("H:i:s", $convert_timeout);
+                                // $sched_ot_total = date("H:i:s", $convert_timeout);
 
-                                if($time_out > $tuesday_timeout){
-                                    $overtime = (new DateTime($time_out))->diff(new DateTime($tuesday_timeout))->format('%H:%I:%S');   
+                                // if($time_out > $tuesday_timeout){
+                                //     $overtime = (new DateTime($time_out))->diff(new DateTime($tuesday_timeout))->format('%H:%I:%S');   
 
-                                    if($time_out > $sched_ot_total){
-                                        $overtime = (new DateTime($time_out))->diff(new DateTime($tuesday_timeout))->format('%H:%I:%S');
+                                //     if($time_out > $sched_ot_total){
+                                //         $overtime = (new DateTime($time_out))->diff(new DateTime($tuesday_timeout))->format('%H:%I:%S');
                                         
-                                        $overtime_convert = new DateTime($overtime);
-                                        $totalwork_convert = new DateTime($total_work);
+                                //         $overtime_convert = new DateTime($overtime);
+                                //         $totalwork_convert = new DateTime($total_work);
                                         
-                                        $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
+                                //         $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
 
-                                        $total_work =  $results->format('H:i:s');
+                                //         $total_work =  $results->format('H:i:s');
 
-                                    //    echo $total_work;
+                                //     //    echo $total_work;
 
-                                        if($time_in > $grace_period_total ){
-                                            $late_convert = new DateTime($late);
-                                            $totalwork_convert = new DateTime($total_work);
+                                //         if($time_in > $grace_period_total ){
+                                //             $late_convert = new DateTime($late);
+                                //             $totalwork_convert = new DateTime($total_work);
 
-                                            $diff = $totalwork_convert->diff($late_convert);
+                                //             $diff = $totalwork_convert->diff($late_convert);
 
-                                            $total_work = $diff->format('%H:%i:%s');
+                                //             $total_work = $diff->format('%H:%i:%s');
 
-                                            $total_work = sprintf(
-                                                "%02d:%02d:%02d",
-                                                $diff->h,
-                                                $diff->i,
-                                                $diff->s
-                                            );
+                                //             $total_work = sprintf(
+                                //                 "%02d:%02d:%02d",
+                                //                 $diff->h,
+                                //                 $diff->i,
+                                //                 $diff->s
+                                //             );
 
                                             
-                                        }                    
-                                    }else{
-                                        $overtime = '00:00:00';
-                                    }
+                                //         }                    
+                                //     }else{
+                                //         $overtime = '00:00:00';
+                                //     }
 
 
-                                }else{
-                                    $overtime = '00:00:00';
-                                } //overtime end
+                                // }else{
+                                //     $overtime = '00:00:00';
+                                // } //overtime end
 
                                 $total_rest = '00:00:00';
                                 $status = 'Present';
@@ -1405,14 +1569,69 @@
                                 if($time_out){
                                     $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
 
+                                    if($time_out < $wednesday_timeout){
+                                        // $early_out = '08:00:00';
+                                       
+                                        $early_out = (new DateTime($wednesday_timeout))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }
+
+
                                     if($late == '00:00:00'){
                                         $total_work = (new DateTime($wednesday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
                                     }
 
-                                    date_default_timezone_set("Asia/Manila");
-                                    $current_time = date("H:i:s"); 
-                                    if($time_out > '01:00:00'){
-                                        $total_work = date("H:i:s", strtotime($total_work) - 3600); 
+                                     //02/10/23
+                                     $convert_timeout = strtotime($wednesday_timeout);
+
+                                     $convert_timeout += $sched_ot * 60; 
+ 
+                                     $sched_ot_total = date("H:i:s", $convert_timeout);
+
+                                     // echo $sched_ot_total;
+
+                                     if($sched_ot_total > $time_out){
+                                         // echo "not ot";
+                                         
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($wednesday_timein))->diff(new DateTime($wednesday_timeout))->format('%H:%I:%S');
+                                             // $overtime = (new DateTime($sched_ot_total))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                            
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($wednesday_timeout))->format('%H:%I:%S');
+                                             // echo $total_work;
+                                             $overtime = '00:00:00';
+                                             
+                                         }
+
+                                         $overtime = '00:00:00';
+
+                                     }else{
+                                        
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($wednesday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($wednesday_timeout))->format('%H:%I:%S');
+
+                                             echo $overtime;
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($wednesday_timeout))->format('%H:%I:%S');
+
+                                             // echo $overtime; 
+                                         }
+                                     } //end 02/10/23
+
+                                     // 29/09/2023
+                                     if($time_in > '13:00:00'){
+                                        $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }else{
+                                        date_default_timezone_set("Asia/Manila");
+                                        $current_time = date("H:i:s"); 
+                                        if($time_out > '01:00:00'){
+                                            $total_work = date("H:i:s", strtotime($total_work) - 3600);
+                                    }
+                                     
+
+                                        
                                     }
 
                                 }else{
@@ -1422,53 +1641,53 @@
                                 
 
 
-                                //overtime function
-                                $convert_timeout = strtotime($wednesday_timeout);
+                                // //overtime function
+                                // $convert_timeout = strtotime($wednesday_timeout);
 
-                                $convert_timeout += $sched_ot * 60; 
+                                // $convert_timeout += $sched_ot * 60; 
 
-                                $sched_ot_total = date("H:i:s", $convert_timeout);
+                                // $sched_ot_total = date("H:i:s", $convert_timeout);
 
-                                if($time_out > $wednesday_timeout){
-                                    $overtime = (new DateTime($time_out))->diff(new DateTime($wednesday_timeout))->format('%H:%I:%S');   
+                                // if($time_out > $wednesday_timeout){
+                                //     $overtime = (new DateTime($time_out))->diff(new DateTime($wednesday_timeout))->format('%H:%I:%S');   
 
-                                    if($time_out > $sched_ot_total){
-                                        $overtime = (new DateTime($time_out))->diff(new DateTime($wednesday_timeout))->format('%H:%I:%S');
+                                //     if($time_out > $sched_ot_total){
+                                //         $overtime = (new DateTime($time_out))->diff(new DateTime($wednesday_timeout))->format('%H:%I:%S');
                                         
-                                        $overtime_convert = new DateTime($overtime);
-                                        $totalwork_convert = new DateTime($total_work);
+                                //         $overtime_convert = new DateTime($overtime);
+                                //         $totalwork_convert = new DateTime($total_work);
                                         
-                                        $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
+                                //         $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
 
-                                        $total_work =  $results->format('H:i:s');
+                                //         $total_work =  $results->format('H:i:s');
 
-                                    //    echo $total_work;
+                                //     //    echo $total_work;
 
-                                        if($time_in > $grace_period_total ){
-                                            $late_convert = new DateTime($late);
-                                            $totalwork_convert = new DateTime($total_work);
+                                //         if($time_in > $grace_period_total ){
+                                //             $late_convert = new DateTime($late);
+                                //             $totalwork_convert = new DateTime($total_work);
 
-                                            $diff = $totalwork_convert->diff($late_convert);
+                                //             $diff = $totalwork_convert->diff($late_convert);
 
-                                            $total_work = $diff->format('%H:%i:%s');
+                                //             $total_work = $diff->format('%H:%i:%s');
 
-                                            $total_work = sprintf(
-                                                "%02d:%02d:%02d",
-                                                $diff->h,
-                                                $diff->i,
-                                                $diff->s
-                                            );
+                                //             $total_work = sprintf(
+                                //                 "%02d:%02d:%02d",
+                                //                 $diff->h,
+                                //                 $diff->i,
+                                //                 $diff->s
+                                //             );
 
                                             
-                                        }                    
-                                    }else{
-                                        $overtime = '00:00:00';
-                                    }
+                                //         }                    
+                                //     }else{
+                                //         $overtime = '00:00:00';
+                                //     }
 
 
-                                }else{
-                                    $overtime = '00:00:00';
-                                } //overtime end
+                                // }else{
+                                //     $overtime = '00:00:00';
+                                // } //overtime end
 
                                 $total_rest = '00:00:00';
                                 $status = 'Present';
@@ -1521,19 +1740,68 @@
                                 if($time_out){
                                     $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
 
-                                    if($late == '00:00:00'){
-                                        $total_work = (new DateTime($thursday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
-                                        
-                                        // echo $total_work;
-                                        
+                                    if($time_out < $thursday_timeout){
+                                        // $early_out = '08:00:00';
+                                       
+                                        $early_out = (new DateTime($thursday_timeout))->diff(new DateTime($time_out))->format('%H:%I:%S');
                                     }
 
-                                    date_default_timezone_set("Asia/Manila");
-                                    $current_time = date("H:i:s");
-                                     
-                                    if($time_out > '12:00:00'){
-                                        $total_work = date("H:i:s", strtotime($total_work) - 3600); 
+
+                                    if($late == '00:00:00'){
+                                        $total_work = (new DateTime($thursday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }
+
+                                     //02/10/23
+                                     $convert_timeout = strtotime($thursday_timeout);
+
+                                     $convert_timeout += $sched_ot * 60; 
+ 
+                                     $sched_ot_total = date("H:i:s", $convert_timeout);
+
+                                     // echo $sched_ot_total;
+
+                                     if($sched_ot_total > $time_out){
+                                         // echo "not ot";
+                                         
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($thursday_timein))->diff(new DateTime($thursday_timeout))->format('%H:%I:%S');
+                                             // $overtime = (new DateTime($sched_ot_total))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                            
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($thursday_timeout))->format('%H:%I:%S');
+                                             // echo $total_work;
+                                             $overtime = '00:00:00';
+                                             
+                                         }
+
+                                         $overtime = '00:00:00';
+
+                                     }else{
                                         
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($thursday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($thursday_timeout))->format('%H:%I:%S');
+
+                                             echo $overtime;
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($thursday_timeout))->format('%H:%I:%S');
+
+                                             // echo $overtime; 
+                                         }
+                                     } //end 02/10/23
+
+                                     // 29/09/2023
+                                     if($time_in > '13:00:00'){
+                                        $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }else{
+                                        date_default_timezone_set("Asia/Manila");
+                                        $current_time = date("H:i:s"); 
+                                        if($time_out > '01:00:00'){
+                                            $total_work = date("H:i:s", strtotime($total_work) - 3600);
+                                    }
+                                     
+
                                         
                                     }
 
@@ -1544,68 +1812,68 @@
                                 
 
 
-                                //overtime function
-                                $convert_timeout = strtotime($thursday_timeout);
+                                // //overtime function
+                                // $convert_timeout = strtotime($thursday_timeout);
 
-                                $convert_timeout += $sched_ot * 60; 
+                                // $convert_timeout += $sched_ot * 60; 
 
-                                $sched_ot_total = date("H:i:s", $convert_timeout);
+                                // $sched_ot_total = date("H:i:s", $convert_timeout);
 
-                                if($time_out > $thursday_timeout){
-                                    $overtime = (new DateTime($time_out))->diff(new DateTime($thursday_timeout))->format('%H:%I:%S');   
+                                // if($time_out > $thursday_timeout){
+                                //     $overtime = (new DateTime($time_out))->diff(new DateTime($thursday_timeout))->format('%H:%I:%S');   
 
-                                    if($time_out > $sched_ot_total){
-                                        $overtime = (new DateTime($time_out))->diff(new DateTime($thursday_timeout))->format('%H:%I:%S');
+                                //     if($time_out > $sched_ot_total){
+                                //         $overtime = (new DateTime($time_out))->diff(new DateTime($thursday_timeout))->format('%H:%I:%S');
                                         
-                                        $overtime_convert = new DateTime($overtime);
-                                        $totalwork_convert = new DateTime($total_work);
+                                //         $overtime_convert = new DateTime($overtime);
+                                //         $totalwork_convert = new DateTime($total_work);
                                         
-                                        $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
+                                //         $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
 
-                                        $total_work =  $results->format('H:i:s');
+                                //         $total_work =  $results->format('H:i:s');
 
-                                    //    echo $total_work;
+                                //     //    echo $total_work;
 
-                                        if($time_in > $grace_period_total ){
-                                            $late_convert = new DateTime($late);
-                                            $totalwork_convert = new DateTime($total_work);
+                                //         if($time_in > $grace_period_total ){
+                                //             $late_convert = new DateTime($late);
+                                //             $totalwork_convert = new DateTime($total_work);
 
-                                            $diff = $totalwork_convert->diff($late_convert);
+                                //             $diff = $totalwork_convert->diff($late_convert);
 
-                                            $total_work = $diff->format('%H:%i:%s');
+                                //             $total_work = $diff->format('%H:%i:%s');
 
-                                            $total_work = sprintf(
-                                                "%02d:%02d:%02d",
-                                                $diff->h,
-                                                $diff->i,
-                                                $diff->s
-                                            );
+                                //             $total_work = sprintf(
+                                //                 "%02d:%02d:%02d",
+                                //                 $diff->h,
+                                //                 $diff->i,
+                                //                 $diff->s
+                                //             );
 
                                             
-                                        }                    
-                                    }else{
-                                        $overtime = '00:00:00';
-                                    }
+                                //         }                    
+                                //     }else{
+                                //         $overtime = '00:00:00';
+                                //     }
 
 
-                                }else{
-                                    $overtime = '00:00:00';
-                                } //overtime end
+                                // }else{
+                                //     $overtime = '00:00:00';
+                                // } //overtime end
 
                                 $total_rest = '00:00:00';
                                 $status = 'Present';
                                 
-                                echo "<br> this is early out " ,$early_out ;
-                                echo "<br> this is late ", $late;
-                                echo "<br> this is total work ", $total_work;
-                                echo "<br> this is overtime ", $overtime;
-                                echo "<br> this is time in ", $time_in;
-                                echo "<br> this is time out ", $time_out;
-                                echo "<br> this is total rest ", $total_rest;
-                                echo "<br> this is status ", $status ,"<br><br>";
+                                // echo "<br> this is early out " ,$early_out ;
+                                // echo "<br> this is late ", $late;
+                                // echo "<br> this is total work ", $total_work;
+                                // echo "<br> this is overtime ", $overtime;
+                                // echo "<br> this is time in ", $time_in;
+                                // echo "<br> this is time out ", $time_out;
+                                // echo "<br> this is total rest ", $total_rest;
+                                // echo "<br> this is status ", $status ,"<br><br>";
 
                             }elseif($currentDayOfWeek == $friday){
-                                echo "<br> <br> it is monday";
+                                // echo "<br> <br> it is monday";
                                 // late function
                                 $convert_timein = strtotime($friday_timein);
 
@@ -1644,14 +1912,72 @@
                                 if($time_out){
                                     $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
 
-                                    if($late == '00:00:00'){
-                                        $total_work = (new DateTime($friday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    
+
+                                    // 29/09/2023
+                                    if($time_out < $friday_timeout){
+                                        // $early_out = '08:00:00';
+                                       
+                                        $early_out = (new DateTime($friday_timeout))->diff(new DateTime($time_out))->format('%H:%I:%S');
                                     }
 
-                                    date_default_timezone_set("Asia/Manila");
-                                    $current_time = date("H:i:s"); 
-                                    if($time_out > '01:00:00'){
-                                        $total_work = date("H:i:s", strtotime($total_work) - 3600); 
+                                    if($late == '00:00:00'){
+                                        $total_work = (new DateTime($friday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                        
+                                    }
+
+                                     //02/10/23
+                                     $convert_timeout = strtotime($friday_timeout);
+
+                                     $convert_timeout += $sched_ot * 60; 
+ 
+                                     $sched_ot_total = date("H:i:s", $convert_timeout);
+
+                                     // echo $sched_ot_total;
+
+                                     if($sched_ot_total > $time_out){
+                                         // echo "not ot";
+                                         
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($friday_timein))->diff(new DateTime($friday_timeout))->format('%H:%I:%S');
+                                             // $overtime = (new DateTime($sched_ot_total))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                            
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($friday_timeout))->format('%H:%I:%S');
+                                             // echo $total_work;
+                                             $overtime = '00:00:00';
+                                             
+                                         }
+
+                                         $overtime = '00:00:00';
+
+                                     }else{
+                                        
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($friday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($friday_timeout))->format('%H:%I:%S');
+
+                                             echo $overtime;
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($friday_timeout))->format('%H:%I:%S');
+
+                                             // echo $overtime; 
+                                         }
+                                     } //end 02/10/23
+
+                                     // 29/09/2023
+                                    if($time_in > '13:00:00'){
+                                        $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }else{
+                                        date_default_timezone_set("Asia/Manila");
+                                        $current_time = date("H:i:s"); 
+                                        if($time_out > '01:00:00'){
+                                            $total_work = date("H:i:s", strtotime($total_work) - 3600);
+                                    }
+                                     
+
+                                        
                                     }
 
                                 }else{
@@ -1661,62 +1987,75 @@
                                 
 
 
-                                //overtime function
-                                $convert_timeout = strtotime($friday_timein);
+                                // //overtime function
+                                // $convert_timeout = strtotime($friday_timein);
 
-                                $convert_timeout += $sched_ot * 60; 
+                                // $convert_timeout += $sched_ot * 60; 
 
-                                $sched_ot_total = date("H:i:s", $convert_timeout);
+                                // $sched_ot_total = date("H:i:s", $convert_timeout);
 
-                                if($time_out > $friday_timein){
-                                    $overtime = (new DateTime($time_out))->diff(new DateTime($friday_timein))->format('%H:%I:%S');   
+                                // if($time_out > $friday_timeout){
+                                //     $overtime = (new DateTime($time_out))->diff(new DateTime($friday_timein))->format('%H:%I:%S');   
 
-                                    if($time_out > $sched_ot_total){
-                                        $overtime = (new DateTime($time_out))->diff(new DateTime($friday_timein))->format('%H:%I:%S');
+                                //     if($time_out > $sched_ot_total){
                                         
-                                        $overtime_convert = new DateTime($overtime);
-                                        $totalwork_convert = new DateTime($total_work);
+                                //         $overtime = (new DateTime($time_out))->diff(new DateTime($friday_timein))->format('%H:%I:%S');
                                         
-                                        $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
+                                //         $overtime_convert = new DateTime($overtime);
+                                //         $totalwork_convert = new DateTime($total_work);
+                                        
+                                //         $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
 
-                                        $total_work =  $results->format('H:i:s');
+                                //         $total_work =  $results->format('H:i:s');
 
-                                    //    echo $total_work;
+                                        
 
-                                        if($time_in > $grace_period_total ){
-                                            $late_convert = new DateTime($late);
-                                            $totalwork_convert = new DateTime($total_work);
+                                //     //    echo $total_work;
 
-                                            $diff = $totalwork_convert->diff($late_convert);
+                                //         if($time_in > $grace_period_total ){
+                                //             $late_convert = new DateTime($late);
+                                //             $totalwork_convert = new DateTime($total_work);
 
-                                            $total_work = $diff->format('%H:%i:%s');
+                                //             $diff = $totalwork_convert->diff($late_convert);
 
-                                            $total_work = sprintf(
-                                                "%02d:%02d:%02d",
-                                                $diff->h,
-                                                $diff->i,
-                                                $diff->s
-                                            );
+                                //             $total_work = $diff->format('%H:%i:%s');
 
+                                //             $total_work = sprintf(
+                                //                 "%02d:%02d:%02d",
+                                //                 $diff->h,
+                                //                 $diff->i,
+                                //                 $diff->s
+                                //             );
+
+                                           
                                             
-                                        }                    
-                                    }else{
-                                        $overtime = '00:00:00';
-                                    }
+                                //         }                    
+                                //     }else{
+                                //         $overtime = '00:00:00';
+                                //     }
 
 
-                                }else{
-                                    $overtime = '00:00:00';
-                                } //overtime end
+                                // }else{
+                                //     $overtime = '00:00:00';
+                                // } //overtime end
 
                                 $total_rest = '00:00:00';
                                 $status = 'Present';
                                 
+                                // echo "<br> this is early out " ,$early_out ;
+                                // echo "<br> this is late ", $late;
+                                // echo "<br> this is total work ", $total_work;
+                                // echo "<br> this is overtime ", $overtime;
+                                // echo "<br> this is time in ", $time_in;
+                                // echo "<br> this is time out ", $time_out;
+                                // echo "<br> this is total rest ", $total_rest;
+                                // echo "<br> this is status ", $status ,"<br><br>";
+
                             
 
                                     
                             }elseif($currentDayOfWeek == $saturday){
-                                echo "<br> <br> it is monday";
+                                // echo "<br> <br> it is monday";
                                 // late function
                                 $convert_timein = strtotime($saturday_timein);
 
@@ -1755,15 +2094,71 @@
                                 if($time_out){
                                     $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
 
+                                    if($time_out < $saturday_timeout){
+                                        // $early_out = '08:00:00';
+                                       
+                                        $early_out = (new DateTime($saturday_timeout))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }
+
+
                                     if($late == '00:00:00'){
                                         $total_work = (new DateTime($saturday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
                                     }
 
-                                    date_default_timezone_set("Asia/Manila");
-                                    $current_time = date("H:i:s"); 
-                                    if($time_out > '01:00:00'){
-                                        $total_work = date("H:i:s", strtotime($total_work) - 3600); 
+                                     //02/10/23
+                                     $convert_timeout = strtotime($saturday_timeout);
+
+                                     $convert_timeout += $sched_ot * 60; 
+ 
+                                     $sched_ot_total = date("H:i:s", $convert_timeout);
+
+                                     // echo $sched_ot_total;
+
+                                     if($sched_ot_total > $time_out){
+                                         // echo "not ot";
+                                         
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($saturday_timein))->diff(new DateTime($saturday_timeout))->format('%H:%I:%S');
+                                             // $overtime = (new DateTime($sched_ot_total))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                            
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($saturday_timeout))->format('%H:%I:%S');
+                                             // echo $total_work;
+                                             $overtime = '00:00:00';
+                                             
+                                         }
+
+                                         $overtime = '00:00:00';
+
+                                     }else{
+                                        
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($saturday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($saturday_timeout))->format('%H:%I:%S');
+
+                                             echo $overtime;
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($saturday_timeout))->format('%H:%I:%S');
+
+                                             // echo $overtime; 
+                                         }
+                                     } //end 02/10/23
+
+                                     // 29/09/2023
+                                     if($time_in > '13:00:00'){
+                                        $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }else{
+                                        date_default_timezone_set("Asia/Manila");
+                                        $current_time = date("H:i:s"); 
+                                        if($time_out > '01:00:00'){
+                                            $total_work = date("H:i:s", strtotime($total_work) - 3600);
                                     }
+                                     
+
+                                        
+                                    }
+
 
                                 }else{
                                     $total_work = '00:00:00';
@@ -1772,53 +2167,53 @@
                                 
 
 
-                                //overtime function
-                                $convert_timeout = strtotime($saturday_timeout);
+                                // //overtime function
+                                // $convert_timeout = strtotime($saturday_timeout);
 
-                                $convert_timeout += $sched_ot * 60; 
+                                // $convert_timeout += $sched_ot * 60; 
 
-                                $sched_ot_total = date("H:i:s", $convert_timeout);
+                                // $sched_ot_total = date("H:i:s", $convert_timeout);
 
-                                if($time_out > $saturday_timeout){
-                                    $overtime = (new DateTime($time_out))->diff(new DateTime($saturday_timeout))->format('%H:%I:%S');   
+                                // if($time_out > $saturday_timeout){
+                                //     $overtime = (new DateTime($time_out))->diff(new DateTime($saturday_timeout))->format('%H:%I:%S');   
 
-                                    if($time_out > $sched_ot_total){
-                                        $overtime = (new DateTime($time_out))->diff(new DateTime($saturday_timeout))->format('%H:%I:%S');
+                                //     if($time_out > $sched_ot_total){
+                                //         $overtime = (new DateTime($time_out))->diff(new DateTime($saturday_timeout))->format('%H:%I:%S');
                                         
-                                        $overtime_convert = new DateTime($overtime);
-                                        $totalwork_convert = new DateTime($total_work);
+                                //         $overtime_convert = new DateTime($overtime);
+                                //         $totalwork_convert = new DateTime($total_work);
                                         
-                                        $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
+                                //         $results = $totalwork_convert->add(new DateInterval('PT' . $overtime_convert->format('H') . 'H' . $overtime_convert->format('i') . 'M'));
 
-                                        $total_work =  $results->format('H:i:s');
+                                //         $total_work =  $results->format('H:i:s');
 
-                                    //    echo $total_work;
+                                //     //    echo $total_work;
 
-                                        if($time_in > $grace_period_total ){
-                                            $late_convert = new DateTime($late);
-                                            $totalwork_convert = new DateTime($total_work);
+                                //         if($time_in > $grace_period_total ){
+                                //             $late_convert = new DateTime($late);
+                                //             $totalwork_convert = new DateTime($total_work);
 
-                                            $diff = $totalwork_convert->diff($late_convert);
+                                //             $diff = $totalwork_convert->diff($late_convert);
 
-                                            $total_work = $diff->format('%H:%i:%s');
+                                //             $total_work = $diff->format('%H:%i:%s');
 
-                                            $total_work = sprintf(
-                                                "%02d:%02d:%02d",
-                                                $diff->h,
-                                                $diff->i,
-                                                $diff->s
-                                            );
+                                //             $total_work = sprintf(
+                                //                 "%02d:%02d:%02d",
+                                //                 $diff->h,
+                                //                 $diff->i,
+                                //                 $diff->s
+                                //             );
 
                                             
-                                        }                    
-                                    }else{
-                                        $overtime = '00:00:00';
-                                    }
+                                //         }                    
+                                //     }else{
+                                //         $overtime = '00:00:00';
+                                //     }
 
 
-                                }else{
-                                    $overtime = '00:00:00';
-                                } //overtime end
+                                // }else{
+                                //     $overtime = '00:00:00';
+                                // } //overtime end
 
                                 $total_rest = '00:00:00';
                                 $status = 'Present';
@@ -1863,15 +2258,72 @@
                                 if($time_out){
                                     $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
 
+
+                                    if($time_out < $sunday_timeout){
+                                        // $early_out = '08:00:00';
+                                       
+                                        $early_out = (new DateTime($sunday_timeout))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }
+
+
                                     if($late == '00:00:00'){
                                         $total_work = (new DateTime($sunday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
                                     }
 
-                                    date_default_timezone_set("Asia/Manila");
-                                    $current_time = date("H:i:s"); 
-                                    if($time_out > '01:00:00'){
-                                        $total_work = date("H:i:s", strtotime($total_work) - 3600); 
+                                     //02/10/23
+                                     $convert_timeout = strtotime($sunday_timeout);
+
+                                     $convert_timeout += $sched_ot * 60; 
+ 
+                                     $sched_ot_total = date("H:i:s", $convert_timeout);
+
+                                     // echo $sched_ot_total;
+
+                                     if($sched_ot_total > $time_out){
+                                         // echo "not ot";
+                                         
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($sunday_timein))->diff(new DateTime($sunday_timeout))->format('%H:%I:%S');
+                                             // $overtime = (new DateTime($sched_ot_total))->diff(new DateTime($monday_timeout))->format('%H:%I:%S');
+                                            
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($sunday_timeout))->format('%H:%I:%S');
+                                             // echo $total_work;
+                                             $overtime = '00:00:00';
+                                             
+                                         }
+
+                                         $overtime = '00:00:00';
+
+                                     }else{
+                                        
+                                         if($late == '00:00:00'){
+                                             $total_work = (new DateTime($sunday_timein))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($sunday_timeout))->format('%H:%I:%S');
+
+                                             echo $overtime;
+                                         }else{
+                                             $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                             $overtime = (new DateTime($time_out))->diff(new DateTime($sunday_timeout))->format('%H:%I:%S');
+
+                                             // echo $overtime; 
+                                         }
+                                     } //end 02/10/23
+
+                                     // 29/09/2023
+                                     if($time_in > '13:00:00'){
+                                        $total_work = (new DateTime($time_in))->diff(new DateTime($time_out))->format('%H:%I:%S');
+                                    }else{
+                                        date_default_timezone_set("Asia/Manila");
+                                        $current_time = date("H:i:s"); 
+                                        if($time_out > '01:00:00'){
+                                            $total_work = date("H:i:s", strtotime($total_work) - 3600);
                                     }
+                                     
+
+                                        
+                                    }
+
 
                                 }else{
                                     $total_work = '00:00:00';
@@ -1940,6 +2392,7 @@
                             $existingResult = mysqli_query($conn, $existingSql);
 
                             if(mysqli_num_rows($existingResult) > 0){
+
                                 $updateSql = "UPDATE attendances SET `time_in` = '$time_in', `time_out` = '$time_out', `late` = '$late', `early_out` = '$early_out', `overtime` = '$overtime', `total_work` = '$total_work', `total_rest` = '$total_rest' WHERE `empid` = '$empid' AND `date` = '$date' " ;
 
                                 if(mysqli_query($conn, $updateSql)){

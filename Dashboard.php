@@ -1,5 +1,6 @@
 <?php
   session_start();
+//   error_reporting(0);
   include 'config.php';
   //    $empid = $_SESSION['empid'];
      if (!isset($_SESSION['username'])) {
@@ -844,8 +845,7 @@ if(mysqli_num_rows($result) <= 0) {
                                             
                                             <div class="table-responsive mt-2" style=" overflow-x: hidden; height: 300px;">
                                                 <table id="order-listing" class="table" style="width: 100%; " >
-                                                    <thead style="background-color: #ececec">
-                                                
+                                                    <thead style="background-color: #ececec">   
                                                         <tr> 
                                                             <th> Status  </th>  
                                                             <th> Employee ID </th>

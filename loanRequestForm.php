@@ -173,23 +173,24 @@
 
 
                 </div>
-                <div class="form-group">
+                <div class="form-group mb-5">
                     <label for="applied_cutoff">Applied Cutoff</label><br>
                     <select name="applied_cutoff" class="form-select" style="height:50px;" id="cutoff">
                         <option value="" selected disabled>Cutoff</option>
                         <option value="Every Cutoff">Every Cutoff</option>
                         <option value="First Cutoff">First Cutoff</option>
                         <option value="Last Cutoff">Last Cutoff</option>
-                    </select>
+                    </select><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
                 </div>
-                <div class="form-group loan-req-btn">
-                    <button><a href="loanRequest.php" style="text-decoration: none; color:black;">Cancel</a></button>
-                    <button style="color: blue;" id="saveButton">Save</button>
+                <div class=" d-flex flex-row justify-content-end p-3">
+                    <!-- <button><a href="loanRequest.php" style="text-decoration: none; color:black;">Cancel</a></button> -->
+                    <a class="btn fs-5 fw-bold mr-2" href="loanRequest.php" style="text-decoration: none; color: blue;">Cancel</a>
+                    <button style="color: white;" id="saveButton" class="btn btn-primary fs-5">Save</button>
                 </div>
             </div>   
         </div>
         </form>
-        <div style="border: #ccc 1px solid; width: 95%; margin: auto; margin-top: 50px; margin-bottom: 50px;"></div>
+        <!-- <div style="border: #ccc 1px solid; width: 95%; margin: auto; margin-top: 50px; margin-bottom: 50px;"></div>
         <div class="amortization-container">
             <div class="amortization-title">
                 <h1>Amortization History</h1>
@@ -212,7 +213,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
     </div>
 
 

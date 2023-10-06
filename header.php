@@ -71,7 +71,7 @@
                       }
                     ?>
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start" id="logo-upper-nav" >
-      <a class="navbar-brand brand-logo me-5" href="Dashboard" ><img src="data:<?php echo $image_type; ?>;base64,<?php echo $image_data; ?>" class="me-2" alt="logo" style="margin-left: 25px;"/></a>
+      <a class="navbar-brand brand-logo me-5" href="dashboard" ><img src="data:<?php echo $image_type; ?>;base64,<?php echo $image_data; ?>" class="me-2" alt="logo" style="margin-left: 25px;"/></a>
         <!-- <a class="navbar-brand brand-logo-mini" href="dashboard.php" style="width: 100px;"><img src="img/header-logo-small.jpg" alt="logo" style="width: 100px; " /></a> -->
       </div>
       
@@ -460,7 +460,7 @@
                               $lastPending = $LEAVE_row['last_pending'];
 
                               $now = time(); // Current timestamp
-                              $pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
+                              @$pendingTime = strtotime($lastPending); // Convert last_pending to timestamp
                               $timeDiff = $now - $pendingTime; // Difference in seconds
   
                               if ($timeDiff < 60) {
@@ -656,7 +656,7 @@
 <nav class="sidebar sidebar-offcanvas custom-nav" id="sidebar" style="margin-top: 20px; position:fixed; overflow-y: auto; height: calc(100vh - 40px);">
   <ul class="nav" style="margin-top: 50px; color:red;">
           <li class="nav-item" style="color: black">
-            <a class="nav-link" href="Dashboard" style="color: white;">
+            <a class="nav-link" href="dashboard" style="color: white;">
               <i class="icon-grid fa-solid fa-tv" style=""></i>
               <span class="nav-title" style="font-size: 21px; margin-left: 15px; font-family: Arial, sans-serif; font-weight: 500">DASHBOARD</span>
             </a>
@@ -671,7 +671,7 @@
           <div class="collapse" id="ui-basic">
             <ul class="nav flex-column sub-menu" id="sub-menu" style="width: 100%;">
               <li class="nav-item"> <a class="nav-link" href="attendance.php">ATTENDANCE</a></li>
-              <li class="nav-item"> <a class="nav-link" href="Calendar.php">CALENDAR</a></li>
+              <li class="nav-item"> <a class="nav-link" href="Calendar">CALENDAR</a></li>
               <li class="nav-item"> <a class="nav-link" href="dtRecords">DAILY TIME RECORDS</a></li>
               <li class="nav-item"> <a class="nav-link" href="dtr_admin">DTR CORRECTION</a></li>
               <li class="nav-item"> <a class="nav-link" href="leaveInfo">LEAVE CREDIT</a></li>

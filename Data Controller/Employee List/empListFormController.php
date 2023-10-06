@@ -2,6 +2,8 @@
 // if(error_reporting(0)){
 //     header("Location: ../../EmployeeList.php?msg='Employee added successfully'");
 // }
+
+error_reporting(0);  
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -67,12 +69,12 @@ $empsss = $_POST['empsss'];
 $emptin = $_POST['emptin'];
 $emppagibig = $_POST['emppagibig'];
 $empphilhealth = $_POST['empphilhealth'];
-$empbranch = filter_input(INPUT_POST, "empbranch", FILTER_SANITIZE_STRING);
-$col_deptname = filter_input(INPUT_POST, "col_deptname", FILTER_SANITIZE_STRING);
-$empposition = filter_input(INPUT_POST, "empposition", FILTER_SANITIZE_STRING);
-// $empbranch = $_POST['empbranch'];
-// $col_deptname = $_POST['col_deptname'];
-// $empposition = $_POST['empposition'];
+// @$empbranch = filter_input(INPUT_POST, "empbranch", FILTER_SANITIZE_STRING);
+// @$col_deptname = filter_input(INPUT_POST, "col_deptname", FILTER_SANITIZE_STRING);
+// @$empposition = filter_input(INPUT_POST, "empposition", FILTER_SANITIZE_STRING);
+$empbranch = $_POST['empbranch'];
+$col_deptname = $_POST['col_deptname'];
+$empposition = $_POST['empposition'];
 $drate = $_POST['drate'];
 // $approver = $_POST['approver'];
 $empdate_hired = $_POST['empdate_hired'];
@@ -89,15 +91,20 @@ $classification = $_POST['classification'];
 $empbsalary = $_POST['empbsalary'];
 
 @$empschedule_type = $_POST['schedule_name'];
-$empstart_date = $_POST['sched_from'];
-$empend_date = $_POST['sched_to'];
+@$empstart_date = $_POST['sched_from'];
+@$empend_date = $_POST['sched_to'];
 
-if($empschedule_type = ''){
-    $empschedule_type = 'none';
-}
-else{
-    @$empschedule_type = $_POST['schedule_name'];
-}
+
+// if($empschedule_type = ''){
+//     $empschedule_type = 'none';
+// }
+// else{
+//     @$empschedule_type = $_POST['schedule_name'];
+// }
+
+
+
+
 
 // Check if the employee already exists in the database
 $name_dob = $fname . ' ' . $lname . ' ' . $empdob;
@@ -155,14 +162,14 @@ if ($count > 0) {
         'empbsalary' => $_POST['empbsalary'],
         'drate' => $_POST['drate']
     ]);
-    header("Location: ../../empListForm?" . $queryString);
+    // header("Location: ../../empListForm?" . $queryString);
     exit;
     
 }  
 
 
 $stmt->close();
-
+// echo $password;
 // // Calculate the date 18 years ago
 // $minDate = new DateTime('1990-01-01');
 
@@ -209,31 +216,7 @@ if ($count > 0) {
 
 $stmt->close();
 
-// $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-$passwordHash = mysqli_real_escape_string($conn, md5($password));
 
-$status = 'Active';
-
-$OT_RATE = ($drate / 8) * 1.3;
-
-$stmt = $conn->prepare("INSERT INTO employee_tb (`fname`, `mname`,  `lname`, `company_code`,`empid`, `address`, `contact`, `cstatus`, `gender`, `empdob`, `empsss`, `emptin`, `emppagibig`, `empphilhealth`, `empbranch`, `department_name`, `empposition`, `empbsalary`, `drate`, `empdate_hired`, `emptranspo`, `empmeal`, `empinternet`, `empaccess_id`, `username`, `role`, `email`, `password`, `status`, `otrate`, `classification`)
-                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-
-if (!$stmt) {
-    die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-}
-
-$stmt->bind_param("sssssssssssssssssssssssssssssss", $fname,$mname, $lname,$company_code ,$empid, $address, $contact, $cstatus, $gender, $empdob, $empsss, $emptin, $emppagibig, $empphilhealth, $empbranch, $col_deptname, $empposition, $empbsalary, $drate, $empdate_hired, $emptranspo, $empmeal, $empinternet, $empaccess_id, $username, $role, $email, $passwordHash, $status, $OT_RATE, $classification);
-
-$stmt->execute();
-
-if ($stmt->errno) {
-    echo "<script>alert('Error: " . $stmt->error . "');</script>";
-    echo "<script>window.location.href = '../../empListForm';</script>";
-    exit;
-}
-
-$stmt->close();
 
 $cmpny_stmt = $conn->prepare("INSERT INTO assigned_company_code_tb(`empid`, `company_code_id`)
                         VALUES (?,?)");
@@ -280,29 +263,49 @@ foreach ($approverEmpIds as $approverEmpId) {
     $stmt2->close();
 }
 
-$stmt1 = $conn->prepare("INSERT INTO empschedule_tb (`empid`, `schedule_name`, `sched_from`, `sched_to`)
-                        VALUES (?,?,?,?)");
-if (!$stmt1) {
+// echo $empschedule_type;
+
+// $stmt1 = $conn->prepare("INSERT INTO empschedule_tb (`empid`, `schedule_name`, `sched_from`, `sched_to`)
+//                         VALUES (?,?,?,?)");
+// if (!$stmt1) {
+//     die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+// }
+
+// $stmt1->bind_param("ssss", $empid, $empschedule_type, $empstart_date, $empend_date);
+
+// $stmt1->execute();
+
+
+// $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+$passwordHash = mysqli_real_escape_string($conn, md5($password));
+// echo $passwordHash;
+$status = 'Active';
+
+$OT_RATE = ($drate / 8) * 1.3;
+
+$stmt = $conn->prepare("INSERT INTO employee_tb (`fname`, `mname`,  `lname`, `company_code`,`empid`, `address`, `contact`, `cstatus`, `gender`, `empdob`, `empsss`, `emptin`, `emppagibig`, `empphilhealth`, `empbranch`, `department_name`, `empposition`, `empbsalary`, `drate`, `empdate_hired`, `emptranspo`, `empmeal`, `empinternet`, `empaccess_id`, `username`, `role`, `email`, `password`, `status`, `otrate`, `classification`)
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+if (!$stmt) {
     die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
 }
 
-$stmt1->bind_param("ssss", $empid, $empschedule_type, $empstart_date, $empend_date);
+$stmt->bind_param("sssssssssssssssssssssssssssssss", $fname,$mname, $lname,$company_code ,$empid, $address, $contact, $cstatus, $gender, $empdob, $empsss, $emptin, $emppagibig, $empphilhealth, $empbranch, $col_deptname, $empposition, $empbsalary, $drate, $empdate_hired, $emptranspo, $empmeal, $empinternet, $empaccess_id, $username, $role, $email, $passwordHash, $status, $OT_RATE, $classification);
 
-$stmt1->execute();
+$stmt->execute();
 
-
-if ($stmt1->errno) {
+if ($stmt->errno) {
     // Display an error message and stop the script from continuing
     echo '<script>alert("Error: Unable to insert data in empschedule_tb. Please try again.")</script>';
     echo "<script>window.location.href = '../../empListForm';</script>";
+    //   echo "hello";
     exit;
   } else {
-
+    // echo "hello";
     //Para mag delete sa schedule na naka set sa "none"
     //Way para ma solusyonan ang show stopper na "if mag insert ng employee at walang schedule na pinili ay may error"
-    $sql = "DELETE FROM `empschedule_tb` WHERE `schedule_name` = 'none'";
-    $result = mysqli_query($conn, $sql);
-
+    // $sql = "DELETE FROM `empschedule_tb` WHERE `schedule_name` = 'none'";
+    // $result = mysqli_query($conn, $sql);
 
     // Both queries were successful, redirect to EmployeeList.php
     echo '<script>alert("Employee successfully added.")</script>';
@@ -346,7 +349,7 @@ if ($stmt1->errno) {
   
    
  
-  $stmt1->close();
+  $stmt->close();
   $conn->close();
    
    ?>

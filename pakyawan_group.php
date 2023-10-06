@@ -234,7 +234,8 @@ session_start();
                         <?php 
                             include 'config.php';
 
-                            $sql = "SELECT empid,group_name, COUNT(*) AS count FROM pakyawan_group_tb GROUP BY group_name";
+                            $sql = "SELECT group_name, COUNT(*) AS count FROM pakyawan_group_tb GROUP BY group_name";
+
                             $result = mysqli_query($conn, $sql);
 
                             if(mysqli_num_rows($result) > 0){

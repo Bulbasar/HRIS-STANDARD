@@ -110,14 +110,14 @@ if(mysqli_num_rows($result_attendance) > 0){
 
     <title>HRIS Attendance</title>
     <script>
-        function closeErrorMessage() {
-            document.getElementById('error-message').style.display = 'none';
-            window.history.replaceState({}, document.title, 'attendance.php');
-        }
+        // function closeErrorMessage() {
+        //     document.getElementById('error-message').style.display = 'none';
+        //     window.history.replaceState({}, document.title, 'attendance.php');
+        // }
        
 
-            // Call the checkReload function when the page loads
-            window.onload = checkReload;
+        //     // Call the checkReload function when the page loads
+        //     window.onload = checkReload;
     </script>
       
       <?php 
@@ -732,7 +732,7 @@ if(mysqli_num_rows($result_attendance) > 0){
                                 echo 'style="font-weight: 400; text-align: center;"';
                             }
                             else{
-                                if($row['time_in'] === '00:00:00')
+                                if($row['time_in'] === '00:00')
                                 {
                                     echo 'style="color: #FF5D5E;" ';
                                 }
@@ -745,7 +745,14 @@ if(mysqli_num_rows($result_attendance) > 0){
                         ?>
                     > <!--close td -->
                         <?php 
-                             echo substr($row['time_in'], 0, 5); // Display only hour:minute
+                            $time_in = $row['time_in'];
+                            if(empty($time_in)){
+                                echo '00:00:00';
+                            }else{
+                                echo substr($row['time_in'], 0, 5); // Display only hour:minute
+                            }
+                            
+                             
                         ?>
                     </td>
                             <!-------- td  for time out ----------->
@@ -769,16 +776,21 @@ if(mysqli_num_rows($result_attendance) > 0){
                            
                         ?>
                     > <!--close td -->
-                        <?php 
-                           echo substr($row['time_out'], 0, 5); // Display only hour:minute
+                        <?php
+                            $time_out = $row['time_out'];
+                            if(empty($time_out)){
+                                echo '00:00';
+                            }else{
+                                echo substr($row['time_out'], 0, 5); // Display only hour:minute
+                            }
                         ?>
                     </td>
                     
-                    <td style="font-weight: 400; color:red;"><?php echo substr($row['late'], 0, 5); ?></td>
-                    <td style="font-weight: 400; color: blue"><?php echo substr($row['early_out'], 0, 5); ?></td>
-                    <td style="font-weight: 400; color: orange;"><?php echo substr($row['overtime'], 0, 5); ?></td>
-                    <td style="font-weight: 400; color:green;"><?php echo substr($row['total_work'], 0, 5); ?></td>
-                    <td style="font-weight: 400; color:gray;"><?php echo substr($row['total_rest'], 0, 5); ?></td>
+                    <td style="font-weight: 400; color:red;"><?php $late = $row['late']; if(empty($late)){ echo '00:00'; }else{ echo substr($row['late'], 0, 5);} ?></td>
+                    <td style="font-weight: 400; color: blue"><?php $early_out = $row['early_out']; if(empty($early_out)){ echo '00:00'; }else { echo substr($row['early_out'], 0, 5); }?></td>
+                    <td style="font-weight: 400; color: orange;"><?php $overtime = $row['overtime']; if(empty($overtime)){ echo '00:00'; }else {echo substr($row['overtime'], 0, 5); }?></td>
+                    <td style="font-weight: 400; color:green;"><?php $total_work = $row['total_work']; if(empty($total_work)){ echo '00:00'; }else{ echo substr($row['total_work'], 0, 5); } ?></td>
+                    <td style="font-weight: 400; color:gray;"><?php $total_rest = $row['total_rest']; if(empty($total_rest)){ echo '00:00'; }else{ echo substr($row['total_rest'], 0, 5); } ?></td>
 
                     <td 
                         <?php 
@@ -1046,7 +1058,7 @@ $(document).ready(function() {
     <script src="skydash/template.js"></script>
     <script src="skydash/settings.js"></script>
     <script src="skydash/todolist.js"></script>
-     <script src="main.js"></script>
+     <!-- <script src="main.js"></script> -->
     <script src="bootstrap js/data-table.js"></script>
 
 

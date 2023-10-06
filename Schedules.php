@@ -136,25 +136,27 @@
                                         }
                                 ?>
                                 <label for="schedule_name">Schedule Type</label><br>
-                                <select name="schedule_name" class="form-control" id="schedule_name" style="color: black">       
+                                <select name="schedule_name" class="form-select" id="schedule_name" style="color: black">       
                                 <!-- <option value="" selected ></option>                         -->
                                     <?php echo $options; ?>
                                 </select>
                             </div>
                             <div class="mb-3" class="form-group">
+                                <input type="hidden" name="" id="sched_type">
                                 
                                 <label for="sched_from">From</label>
                                 <input type="date" name="sched_from" id="sched_from" class="form-control" onchange="datevalidate()" min="<?php echo date('Y-m-d'); ?>">
                                 <div id="sched_from_error" class="text-danger"></div>
 
-                                <label for="sched_from" class="mt-3">To</label>
-                                <input type="date" name="sched_to" id="sched_to" class="form-control"  onchange="datevalidate()">
+                                <label for="sched_from" class="mt-3" id="label_to">To</label>
+                                <input type="date" name="sched_to" id="sched_tos" class="form-control"  onchange="datevalidate()" min="<?php echo date('Y-m-d'); ?>">
                                 <div id="sched_to_error" class="text-danger"></div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border: none; background-color: inherit;">Close</button>
                                 <button type="submit" class="btn btn-primary" id="submit-btn" style="background-color: black; border: none;"> Update </button>
                             </div>
+                           
                         </div>
                     </form>
             </div>
@@ -228,6 +230,8 @@
                                             <th>To(Date)</th>
                                             <th>Action</th>
                                             <th style="display: none;">Action</th>
+                                            <th class='d-none'>sched to</th>
+                                            <th class='d-none'>schedule_type</th>
                                         </thead>
                                         <?php
                                                 include 'config.php';
@@ -290,6 +294,13 @@
 
                                                         $cmpny_code = $cmpny_row['company_code_name'] ?? '';
                                                         echo $cmpny_code !== '' ? $cmpny_code . ' - ' . $row['empid'] : $row['empid'];
+
+                                                        $schedule_type = $row['schedule_type'];
+                                                        if($schedule_type == 'Fixed'){
+                                                            $sched_to = '-- -- --';
+                                                        }elseif($schedule_type == 'Shifting'){
+                                                            $sched_to = $row['sched_to'];
+                                                        }
     
                                                         echo "</td>
                                                             <td style='font-weight: 400;'>" . $row["fname"] . " " . $row["lname"] . "</td>
@@ -299,11 +310,13 @@
                                                             <td><i class='fa-solid fa-eye viewbtn' data-bs-toggle='modal' data-bs-target='#view_rest_modal' style='cursor: pointer;'></i></td>
                                                             <td style='font-weight: 400;'>" . $row["schedule_name"] . "</td>
                                                             <td style='font-weight: 400;'>" . $row["sched_from"] . "</td>
-                                                            <td style='font-weight: 400;'>" . $row["sched_to"] . "</td>
+                                                            <td style='font-weight: 400;'>" . $sched_to . "</td>
                                                             <td>
                                                                 <button type='button' data-bs-toggle='modal' data-bs-target='#schedUpdate' id='sched-update' class='sched-update' style='border:none; background-color:inherit; color:cornflowerblue; outline:none;'>Update</button>
                                                             </td>
                                                             <td style='display: none;'>" . $row['empid'] . "</td>
+                                                            <td class='d-none'>".$row['sched_to']."</td>
+                                                            <td class='d-none'>".$row['schedule_type']."</td>
                                                         </tr>";
                                                     }
                                                 } else {
@@ -665,12 +678,30 @@ $(document).ready(function() {
                                     //id_colId
                                     $('#empid').val(data[10]);
                                     $('#sched_from').val(data[7]);
-                                    $('#sched_to').val(data[8]);
+                                    $('#sched_tos').val(data[11]);
                                     $('#empName').val(data[1]);
+                                    $('#sched_type').val(data[12]);
+                                    $('#schedule_name').val(data[6]);
+                                   
+                                    let sched_type = document.getElementById("sched_type").value;
+                                    let label_to = document.getElementById("label_to");
+                                    let sched_to = document.getElementById("sched_tos");
+
+                                    console.log(sched_type);
+                                    if(sched_type == 'Fixed'){
+                                        label_to.style.display = 'none';
+                                        sched_to.style.display = 'none';
+                                    }else if(sched_type == 'Shifting'){
+                                        label_to.style.display = 'block';
+                                        sched_to.style.display = 'block';
+                                    }
+                                    
+                            
                                 });
                             });
             
     </script>
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

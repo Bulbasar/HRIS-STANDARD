@@ -382,7 +382,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                     
                                         }
                                         // Get file extension from image URL
-                                        $file_ext = pathinfo($image_url, PATHINFO_EXTENSION);
+                                        @$file_ext = pathinfo($image_url, PATHINFO_EXTENSION);
                                         ?>
                                         <!-- src="uploads/<?php echo $image_url; ?>" -->
                                         <img <?php if(!empty($image_url)){ echo "src='uploads/".$image_url."' "; } else{ echo "src='data:".$image_type.";base64,".$image_data."'";} ?> alt="" srcset="" accept=".jpg, .jpeg, .png" title="<?php echo $image_url; ?>" >
@@ -703,7 +703,8 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
 
                                         $employee_ID = $_GET['empid'];
 
-                                        $query = "SELECT * FROM approver_tb WHERE empid = $employee_ID";
+
+                                        $query = "SELECT * FROM approver_tb WHERE empid = $employee_ID ";
                                         $result = $conn->query($query);
                                         
                                         // Check if any rows are fetched
@@ -724,8 +725,11 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                             <?php
                                             foreach ($array_approver as $approvers) {
                                                 $approver_ID = $approvers['approver_empid'];
+
+                                                $sessionEmpid = $_SESSION['empid'];
+                                            
                                         
-                                                $query = "SELECT * FROM employee_tb WHERE empid = $approver_ID";
+                                                $query = "SELECT * FROM employee_tb WHERE `empid` = '$approver_ID'";
                                                 $result = $conn->query($query);
                                         
                                                 // Check if any rows are fetched
@@ -740,6 +744,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                             ?>
                                         </select>
                                         
+                                        
                            
                             </div>
                         </div>
@@ -751,7 +756,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
 
                                 <div class="worksched-restday">
                                     <label for="restday">Rest Day</label><br>
-                                    <input type="text"  id="" placeholder="Rest Day" value="<?php echo !empty($restdayRow['restday']) ? $restdayRow['restday'] : 'No rest day'; ?>" style="border: black 1px solid;" readonly>
+                                    <input type="text"  id="" placeholder="Rest Day" value="<?php echo !empty($restdayRow['restday']) ? $restdayRow['restday'] : 'No rest day'; ?>" style="border: black 1px solid;" class="form-control" readonly>
 
                                 </div>
                                 <div class="worksched-scedule">
@@ -774,7 +779,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                 }else{
                                                     echo $schedID;
                                                 }
-                                            ?>" id="" readonly style="border: black 1px solid;">                                       
+                                            ?>" id="" class="form-control" readonly style="border: black 1px solid;">                                       
                                 </div>
                             </div>
                         </div>

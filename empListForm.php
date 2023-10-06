@@ -1,6 +1,6 @@
 
 <?php
-  error_reporting();
+  error_reporting(0);
   session_start();
   //    $empid = $_SESSION['empid'];
      if (!isset($_SESSION['username'])) {
@@ -546,8 +546,9 @@
 
                                 <div id="emp_visor">
                                     <?php
+                                        $sessionEmpid = $_SESSION['empid'];
                                         include 'config.php';
-                                        $sql = "SELECT * FROM employee_tb WHERE `role` = 'Admin' OR `role` = 'Supervisor'";
+                                        $sql = "SELECT * FROM employee_tb WHERE `role` = 'Admin' OR `role` = 'Supervisor' ";
                                         $result = mysqli_query($conn, $sql);
 
                                         $options = "";
@@ -563,7 +564,7 @@
                                             <?php echo $options ?>
                                            
                                         </select>
-                                        
+                                     
                                     
                                     </div>
                                 </div>
@@ -651,7 +652,7 @@
                                 </div>
                              <!---Modal-->
                         
-                        <div class="employeeList-schedule-input hide-element">
+                        <!-- <div class="employeeList-schedule-input hide-element">
                             <div class="emp-title">
                                 <h1>Schedule</h1>
                             </div>
@@ -684,7 +685,7 @@
                                     <input type="date" name="sched_to" id="sched_to" placeholder="End Date" >  
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="employeeList-empAccess-container hide-element">
                             <div class="emp-title">
@@ -721,16 +722,21 @@
                                 </div>
                                 <div class="">
                                     <label for="password">Password</label><br>
-                                    <input type="password"  pattern="[a-zA-Z0-9]{5,}" title="Must be at least 5 characters." oninput="Pass()" oninput="showPasswordIcon(this, 'eye')" name="password" id="pass" placeholder="Password" required>
-                                    <i class="fas fa-eye show-pass" aria-hidden="true" id="eye" style="display: none;" onclick="togglePassword()"></i>
+                                    <div class="d-flex flex-row" style="position: relative">
+                                        <input type="password"  pattern="[a-zA-Z0-9]{5,}" title="Must be at least 5 characters." oninput="Pass()" oninput="showPasswordIcon(this, 'eye')" name="password" id="pass" placeholder="Password" required>
+                                        <i class="fas fa-eye show-pass" aria-hidden="true" id="eye" style="position: absolute; right: 4%; top: 20%; font-size: 1.3em; display:none" onclick="togglePassword()"></i>
+                                    </div>
+                                    
                                 </div>
                             </div>
 
-                                <div class="emp-Access-cpassword" style="margin-left: 2%">
+                                <div class="" style="margin-left: 2.8%; width: 25.5%;" >
                                     <label for="cpassword">Confirm Password</label><br>
-                                    <input type="password"  pattern="[a-zA-Z0-9]{5,}" title="Must be at least 5 characters." disabled oninput="matchPass()" oninput="showPasswordIcon(this, 'confirm-eye')" name="cpassword" id="cpass" placeholder="Confirm Password" required>
+                                    <div class="d-flex flex-row w-100" style="position: relative">
+                                        <input type="password" class="form-control" pattern="[a-zA-Z0-9]{5,}" title="Must be at least 5 characters." disabled oninput="matchPass()" oninput="showPasswordIcon(this, 'confirm-eye')" name="cpassword" id="cpass" placeholder="Confirm Password" required>
+                                        <i class="fas fa-eye show-pass" aria-hidden="true" id="confirm-eye" style="position: absolute; right: 4%; top: 20%; font-size: 1.3em; display: none" onclick="toggleConfirmPassword()"></i>
+                                    </div>
                                     <p id="id_pValidate" style="color: red; display: none;" class="mt-2">Passwords don't match!</p>
-                                    <i class="fas fa-eye show-pass" aria-hidden="true" id="confirm-eye" style="display: none;" onclick="toggleConfirmPassword()"></i>
                                      
                                 </div>  
                                
@@ -748,6 +754,24 @@
                     </div>
                 </div>
             </form>
+
+            <script>
+                let pass = document.getElementById("pass");
+                let cpass = document.getElementById("cpass");
+              
+
+
+                pass.addEventListener('focus', function(){
+                    let eye = document.getElementById("eye");
+                    eye.style.display = "block";
+
+                    cpass.addEventListener('focus', function(){
+                        let confirm_eye = document.getElementById("confirm-eye");
+                        confirm_eye.style.display="block"; 
+                    });
+
+                });
+            </script>
              
 
             </div>

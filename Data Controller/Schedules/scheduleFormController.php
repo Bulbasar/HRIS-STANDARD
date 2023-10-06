@@ -2,58 +2,58 @@
 
     $schedule_name = $_POST['schedule_name'];
 
-    $monday = filter_input(INPUT_POST, "monday", FILTER_SANITIZE_STRING);
-    $mon_timein = filter_input(INPUT_POST, "mon_timein", FILTER_SANITIZE_STRING);
-    $mon_timeout = filter_input(INPUT_POST, "mon_timeout", FILTER_SANITIZE_STRING);
-    $mon_wfh = filter_input(INPUT_POST, "mon_wfh", FILTER_SANITIZE_STRING);
+    @$monday = filter_input(INPUT_POST, "monday", FILTER_SANITIZE_STRING);
+    @$mon_timein = filter_input(INPUT_POST, "mon_timein", FILTER_SANITIZE_STRING);
+    @$mon_timeout = filter_input(INPUT_POST, "mon_timeout", FILTER_SANITIZE_STRING);
+    @$mon_wfh = filter_input(INPUT_POST, "mon_wfh", FILTER_SANITIZE_STRING);
 
-    $tuesday = filter_input(INPUT_POST, "tuesday", FILTER_SANITIZE_STRING);
-    $tues_timein = filter_input(INPUT_POST, "tues_timein", FILTER_SANITIZE_STRING);
-    $tues_timeout = filter_input(INPUT_POST, "tues_timeout", FILTER_SANITIZE_STRING);
-    $tues_wfh = filter_input(INPUT_POST, "tues_wfh", FILTER_SANITIZE_STRING);
+    @$tuesday = filter_input(INPUT_POST, "tuesday", FILTER_SANITIZE_STRING);
+    @$tues_timein = filter_input(INPUT_POST, "tues_timein", FILTER_SANITIZE_STRING);
+    @$tues_timeout = filter_input(INPUT_POST, "tues_timeout", FILTER_SANITIZE_STRING);
+    @$tues_wfh = filter_input(INPUT_POST, "tues_wfh", FILTER_SANITIZE_STRING);
 
-    $wednesday = filter_input(INPUT_POST, "wednesday", FILTER_SANITIZE_STRING);
-    $wed_timein = filter_input(INPUT_POST, "wed_timein", FILTER_SANITIZE_STRING);
-    $wed_timeout = filter_input(INPUT_POST, "wed_timeout", FILTER_SANITIZE_STRING);
-    $wed_wfh = filter_input(INPUT_POST, "wed_wfh", FILTER_SANITIZE_STRING);
+    @$wednesday = filter_input(INPUT_POST, "wednesday", FILTER_SANITIZE_STRING);
+    @$wed_timein = filter_input(INPUT_POST, "wed_timein", FILTER_SANITIZE_STRING);
+    @$wed_timeout = filter_input(INPUT_POST, "wed_timeout", FILTER_SANITIZE_STRING);
+    @$wed_wfh = filter_input(INPUT_POST, "wed_wfh", FILTER_SANITIZE_STRING);
 
-    $thursday = filter_input(INPUT_POST, "thursday", FILTER_SANITIZE_STRING);
-    $thurs_timein = filter_input(INPUT_POST, "thurs_timein", FILTER_SANITIZE_STRING);
-    $thurs_timeout = filter_input(INPUT_POST, "thurs_timeout", FILTER_SANITIZE_STRING);
-    $thurs_wfh = filter_input(INPUT_POST, "thurs_wfh", FILTER_SANITIZE_STRING);
+    @$thursday = filter_input(INPUT_POST, "thursday", FILTER_SANITIZE_STRING);
+    @$thurs_timein = filter_input(INPUT_POST, "thurs_timein", FILTER_SANITIZE_STRING);
+    @$thurs_timeout = filter_input(INPUT_POST, "thurs_timeout", FILTER_SANITIZE_STRING);
+    @$thurs_wfh = filter_input(INPUT_POST, "thurs_wfh", FILTER_SANITIZE_STRING);
 
-    $friday = filter_input(INPUT_POST, "friday", FILTER_SANITIZE_STRING);
-    $fri_timein = filter_input(INPUT_POST, "fri_timein", FILTER_SANITIZE_STRING);
-    $fri_timeout = filter_input(INPUT_POST, "fri_timeout",FILTER_SANITIZE_STRING);
-    $fri_wfh = filter_input(INPUT_POST, "fri_wfh", FILTER_SANITIZE_STRING);
+    @$friday = filter_input(INPUT_POST, "friday", FILTER_SANITIZE_STRING);
+    @$fri_timein = filter_input(INPUT_POST, "fri_timein", FILTER_SANITIZE_STRING);
+    @$fri_timeout = filter_input(INPUT_POST, "fri_timeout",FILTER_SANITIZE_STRING);
+    @$fri_wfh = filter_input(INPUT_POST, "fri_wfh", FILTER_SANITIZE_STRING);
 
-    $saturday = filter_input(INPUT_POST, "saturday", FILTER_SANITIZE_STRING);
-    $sat_timein = filter_input(INPUT_POST, "sat_timein", FILTER_SANITIZE_STRING);
-    $sat_timeout = filter_input(INPUT_POST, "sat_timeout", FILTER_SANITIZE_STRING);
-    $sat_wfh = filter_input(INPUT_POST, "sat_wfh", FILTER_SANITIZE_STRING);
+    @$saturday = filter_input(INPUT_POST, "saturday", FILTER_SANITIZE_STRING);
+    @$sat_timein = filter_input(INPUT_POST, "sat_timein", FILTER_SANITIZE_STRING);
+    @$sat_timeout = filter_input(INPUT_POST, "sat_timeout", FILTER_SANITIZE_STRING);
+    @$sat_wfh = filter_input(INPUT_POST, "sat_wfh", FILTER_SANITIZE_STRING);
 
-    $sunday = filter_input(INPUT_POST, "sunday", FILTER_SANITIZE_STRING);
-    $sun_timein = filter_input(INPUT_POST, "sun_timein", FILTER_SANITIZE_STRING);
-    $sun_timeout = filter_input(INPUT_POST, "sun_timeout", FILTER_SANITIZE_STRING);
-    $sun_wfh = filter_input(INPUT_POST, "sun_wfh", FILTER_SANITIZE_STRING);
+    @$sunday = filter_input(INPUT_POST, "sunday", FILTER_SANITIZE_STRING);
+    @$sun_timein = filter_input(INPUT_POST, "sun_timein", FILTER_SANITIZE_STRING);
+    @$sun_timeout = filter_input(INPUT_POST, "sun_timeout", FILTER_SANITIZE_STRING);
+    @$sun_wfh = filter_input(INPUT_POST, "sun_wfh", FILTER_SANITIZE_STRING);
 
-    $flexible = filter_input(INPUT_POST, "flexible", FILTER_SANITIZE_STRING);
-    $grace_period =filter_input(INPUT_POST, "grace_period", FILTER_SANITIZE_STRING);
-    $sched_ot = filter_input(INPUT_POST, "sched_ot", FILTER_SANITIZE_STRING);
-    $sched_holiday = filter_input(INPUT_POST, "sched_holiday", FILTER_SANITIZE_STRING);
-    $restday = filter_input(INPUT_POST, "restday", FILTER_SANITIZE_STRING);
-    $enable_grace_period = filter_input(INPUT_POST, "enable_grace_period", FILTER_SANITIZE_STRING);
-    $enable_sched_ot = filter_input(INPUT_POST, "enable_sched_ot", FILTER_SANITIZE_STRING);
+    @$flexible = filter_input(INPUT_POST, "flexible", FILTER_SANITIZE_STRING);
+    @$grace_period =filter_input(INPUT_POST, "grace_period", FILTER_SANITIZE_STRING);
+    @$sched_ot = filter_input(INPUT_POST, "sched_ot", FILTER_SANITIZE_STRING);
+    @$sched_holiday = filter_input(INPUT_POST, "sched_holiday", FILTER_SANITIZE_STRING);
+    @$restday = filter_input(INPUT_POST, "restday", FILTER_SANITIZE_STRING);
+    @$enable_grace_period = filter_input(INPUT_POST, "enable_grace_period", FILTER_SANITIZE_STRING);
+    @$enable_sched_ot = filter_input(INPUT_POST, "enable_sched_ot", FILTER_SANITIZE_STRING);
 
 
-    $days = [
-        'monday' => filter_input(INPUT_POST, "monday", FILTER_SANITIZE_STRING),
-        'tuesday' => filter_input(INPUT_POST, "tuesday", FILTER_SANITIZE_STRING),
-        'wednesday' => filter_input(INPUT_POST, "wednesday", FILTER_SANITIZE_STRING),
-        'thursday' => filter_input(INPUT_POST, "thursday", FILTER_SANITIZE_STRING),
-        'friday' => filter_input(INPUT_POST, "friday", FILTER_SANITIZE_STRING),
-        'saturday' => filter_input(INPUT_POST, "saturday", FILTER_SANITIZE_STRING),
-        'sunday' => filter_input(INPUT_POST, "sunday", FILTER_SANITIZE_STRING)
+    @$days = [
+        @'monday' => filter_input(INPUT_POST, "monday", FILTER_SANITIZE_STRING),
+        @'tuesday' => filter_input(INPUT_POST, "tuesday", FILTER_SANITIZE_STRING),
+        @'wednesday' => filter_input(INPUT_POST, "wednesday", FILTER_SANITIZE_STRING),
+        @'thursday' => filter_input(INPUT_POST, "thursday", FILTER_SANITIZE_STRING),
+        @'friday' => filter_input(INPUT_POST, "friday", FILTER_SANITIZE_STRING),
+        @'saturday' => filter_input(INPUT_POST, "saturday", FILTER_SANITIZE_STRING),
+        @'sunday' => filter_input(INPUT_POST, "sunday", FILTER_SANITIZE_STRING)
     ];
     
     // Remove empty values from the array

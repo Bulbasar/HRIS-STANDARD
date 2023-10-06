@@ -157,6 +157,8 @@
                               <dd id="start" class=""></dd>
                               <dt class="text-muted">End</dt>
                               <dd id="end" class=""></dd>
+
+                              
                           </dl>
                       </div>
                   </div>
@@ -341,7 +343,7 @@ if(isset($conn)) $conn->close();
 <script>
     var scheds = $.parseJSON('<?= json_encode($sched_res) ?>')
 </script>
-<script src="./js/script.js"></script>
+<script src="js/script.js"></script>
 
 <style>
   <?php 
