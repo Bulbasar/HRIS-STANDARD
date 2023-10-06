@@ -287,7 +287,7 @@ include 'header.php';
                         
                         </button>
                         </div>
-                    </div> <!--ROW END data-bs-toggle="modal" data-bs-target="#addnew_btn" -->
+                    </div> <!--ROW END  -->
 
 
 <!-------------------------------------------------------MESSAGE ALERT------------------------------------------------------------------->
