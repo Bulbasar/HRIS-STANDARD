@@ -136,7 +136,9 @@
 	        max-width: 100%;
 	        width: 100%;
         }
-
+        #schedule_list:hover{
+        color:blue !important;
+    }
 </style>
 
 
@@ -342,7 +344,7 @@
                            
                             if($results->num_rows > 0){
                                 while($rows = $results->fetch_assoc()){
-                                    echo "<button style='border:none; background-color: inherit; display: flex; margin-left: 20px; font-size: 26px; margin-top: 10px; font-weight: 500;'><a href='editScheduleForm.php?id=" . $rows['id'] . "&schedule=" . $rows['schedule_name'] . "'>" . $rows['schedule_name'] . "</a></button>";
+                                    echo "<button id='schedule_list' style='border:none; background-color: inherit; display: flex; margin-left: 20px; font-size: 20px; margin-top: 10px; font-weight: 500;'><a id='schedule_list' href='editScheduleForm.php?id=" . $rows['id'] . "&schedule=" . $rows['schedule_name'] . "'>" . $rows['schedule_name'] . "</a></button>";
                                 }
                             }
                         ?>
@@ -369,7 +371,7 @@
                     <div class="schedule-name-container" style="height: 80px; display: flex; flex-direction: row; margin-bottom: 20px;">
                         <div>
                             <label for="schedule_name">Schedule Name</label><br>
-                            <input class="schedule-input" type="text" name="schedule_name" id="" required style="border: black 1px solid;" >
+                            <input class="schedule-input form-control" type="text" name="schedule_name" id="" required style="height: 3.125em" maxlength="30" >
                            
                         </div>
                         <div>

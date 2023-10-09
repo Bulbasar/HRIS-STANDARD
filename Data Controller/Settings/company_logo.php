@@ -35,7 +35,7 @@ session_start();
             $update_run = mysqli_query($conn, $update_query);
 
             if($update_run){
-                echo '<script>alert("You have successfully updated the Company Settings"); window.location.href="../../settings";</script>';
+                echo '<script>window.location.href="../../settings?update";</script>';
                 exit;
             } else {
                 echo "Failed: " . mysqli_error($conn);
@@ -46,7 +46,7 @@ session_start();
             $update_run = mysqli_query($conn, $update_query);
 
             if($update_run){
-                echo '<script>alert("You have successfully updated the Company Settings"); window.location.href="../../settings";</script>';
+                echo '<script> window.location.href="../../settings?update";</script>';
                 exit;
             } else {
                 echo "Failed: " . mysqli_error($conn);
@@ -58,7 +58,7 @@ session_start();
         $query_run = mysqli_query($conn, $query);    
 
         if($query_run){
-            echo '<script>alert("You have successfully inserted the Company Settings"); window.location.href="../../settings";</script>';
+            echo '<script> window.location.href="../../settings?inserted";</script>';
             exit;
         } else {
             echo "Failed: " . mysqli_error($conn);

@@ -32,14 +32,14 @@ include '../../config.php';
             $query_run = mysqli_query($conn, $query);    
     
             if($query_run){
-                header("Location: ../../settings?error=You successfull save data for Company Settings");
+                header("Location: ../../settings?inserted");
             }
         }else{
             $query = "INSERT INTO settings_tb (`holiday_pay`) VALUES ('$holiday_type')";
             $query_run = mysqli_query($conn, $query);    
     
             if($query_run){
-                header("Location: ../../settings?error=You successfull save data for Company Settings");
+                header("Location: ../../settings?inserted");
             }
         }
 

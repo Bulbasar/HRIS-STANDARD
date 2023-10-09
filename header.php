@@ -528,7 +528,7 @@
                 <div class="header-head">
                 <?php 
                         include 'config.php';
-                        $employeeID = $_SESSION['empid'];
+                        @$employeeID = $_SESSION['empid'];
 
                         $Supervisor_Profile = "SELECT * FROM employee_tb WHERE `empid` = '$employeeID'";
                         $profileRun = mysqli_query($conn, $Supervisor_Profile);

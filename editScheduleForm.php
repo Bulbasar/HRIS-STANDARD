@@ -163,6 +163,10 @@
 	        max-width: 100%;
 	        width: 100%;
         }
+
+    #schedule_list:hover{
+        color:blue !important;
+    }
     </style>
 
 
@@ -367,7 +371,7 @@
                            
                             if($results->num_rows > 0){
                                 while($rows = $results->fetch_assoc()){
-                                    echo "<button style='border:none; background-color: inherit; display: flex; margin-left: 20px; font-size: 26px; margin-top: 10px; font-weight: 500;'><a href='editScheduleForm.php?id=$rows[id]'>".$rows['schedule_name']."</a></button>";
+                                    echo "<button id='schedule_list' style='border:none; background-color: inherit; display: flex; margin-left: 1em; font-size: 20px; margin-top: 10px; font-weight: 500;'><a id='schedule_list' href='editScheduleForm.php?id=$rows[id]'>".$rows['schedule_name']."</a></button>";
                                 }
                             }
                         ?>
@@ -391,7 +395,7 @@
                     </div>
 
                     <label for="schedule_name">Schedule Name</label><br>
-                    <input class="schedule-input" type="text" name="schedule_name" id="" value="<?php echo $schedrow['schedule_name'];?>" required>
+                    <input class="schedule-input form-control" style="height:3.125em" type="text" name="schedule_name" id="" value="<?php echo $schedrow['schedule_name'];?>" required maxlength="30">
 
                 <div class="scheduletable-table">
 
@@ -410,49 +414,50 @@
                                 <input type="hidden" name="restday" id="restdayInput" value="<?php echo $schedrow['restday'] ?>" readonly>
                                 <td>
                                 <input type="checkbox" class="checkbox" name="monday" id="checkbox1" onchange="updateRestday()" onclick="toggleInputs(this)" value="Monday" <?php if ($schedrow['monday']){ echo "checked"; } ?>> Monday</td>
-                                <td><input name="mon_timein" type="time" class="time-input" id="time1"  value="<?php if(isset($schedrow['mon_timein'])&& !empty($schedrow['mon_timein'])) { echo $schedrow['mon_timein']; } else {echo 'No data'; }?>"></td>
-                                <td><input name="mon_timeout" type="time" class="time-input" id="time2"  value="<?php if(isset($schedrow['mon_timeout'])&& !empty($schedrow['mon_timeout'])) { echo $schedrow['mon_timeout']; } else { echo 'No data'; }?>"></td>
-                                <td><input name ="mon_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if ($schedrow['mon_wfh']){ echo "checked"; } ?>></td>
+                                <td><input name="mon_timein" type="time" class="time-input" id="time1"  value="<?php if(isset($schedrow['mon_timein'])&& !empty($schedrow['mon_timein'])) { echo $schedrow['mon_timein']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['mon_timein'])){ echo "disabled"; }else{ echo ''; }  ?>  ></td>
+                                <td><input name="mon_timeout" type="time" class="time-input" id="time2"  value="<?php if(isset($schedrow['mon_timeout'])&& !empty($schedrow['mon_timeout'])) { echo $schedrow['mon_timeout']; } else { echo 'No data'; }?>" <?php if(empty($schedrow['mon_timeout'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name ="mon_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if ($schedrow['mon_wfh']){ echo "checked"; } ?> ></td>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" class="checkbox" name="tuesday"  id="checkbox1" onchange="updateRestday()" onclick="toggleInputs(this)" value="Tuesday" <?php if ($schedrow['tuesday']){ echo "checked"; } ?>> Tuesday</td>
-                                <td><input name="tues_timein" type="time" class="time-input" id="time3"  value="<?php if(isset($schedrow['tues_timein'])&& !empty($schedrow['tues_timein'])) { echo $schedrow['tues_timein']; } else {echo 'No data'; }?>"></td>
-                                <td><input name="tues_timeout" type="time" class="time-input" id="time4"  value="<?php if(isset($schedrow['tues_timeout'])&& !empty($schedrow['tues_timeout'])) { echo $schedrow['tues_timeout']; } else {echo 'No data'; }?>"></td>
+                                <td><input name="tues_timein" type="time" class="time-input" id="time3"  value="<?php if(isset($schedrow['tues_timein'])&& !empty($schedrow['tues_timein'])) { echo $schedrow['tues_timein']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['tues_timein'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name="tues_timeout" type="time" class="time-input" id="time4"  value="<?php if(isset($schedrow['tues_timeout'])&& !empty($schedrow['tues_timeout'])) { echo $schedrow['tues_timeout']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['tues_timeout'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
                                 <td><input name ="tues_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if ($schedrow['tues_wfh']){ echo "checked"; } ?>></td>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" class="checkbox" name="wednesday"  id="checkbox1" onchange="updateRestday()" onclick="toggleInputs(this)" value="Wednesday" <?php if ($schedrow['wednesday']){ echo "checked"; } ?>> Wednesday</td>
-                                <td><input name="wed_timein" type="time" class="time-input" id="time5"  value="<?php if(isset($schedrow['wed_timein'])&& !empty($schedrow['wed_timein'])) { echo $schedrow['wed_timein']; } else {echo 'No data'; }?>"></td>
-                                <td><input name="wed_timeout" type="time" class="time-input" id="time6"  value="<?php if(isset($schedrow['wed_timeout'])&& !empty($schedrow['wed_timeout'])) { echo $schedrow['wed_timeout']; } else {echo 'No data'; }?>"></td>
+                                <td><input name="wed_timein" type="time" class="time-input" id="time5"  value="<?php if(isset($schedrow['wed_timein'])&& !empty($schedrow['wed_timein'])) { echo $schedrow['wed_timein']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['wed_timein'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name="wed_timeout" type="time" class="time-input" id="time6"  value="<?php if(isset($schedrow['wed_timeout'])&& !empty($schedrow['wed_timeout'])) { echo $schedrow['wed_timeout']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['wed_timeout'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
                                 <td><input name ="wed_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if ($schedrow['wed_wfh']){ echo "checked"; } ?>></td>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" class="checkbox" name="thursday" value="Thursday" onchange="updateRestday()" <?php if ($schedrow['thursday']){ echo "checked"; } ?> id="checkbox1" onclick="toggleInputs(this)">  Thursday </td>
-                                <td><input name="thurs_timein" type="time" class="time-input" id="time7"  value="<?php if(isset($schedrow['thurs_timein'])&& !empty($schedrow['thurs_timein'])) { echo $schedrow['thurs_timein']; } else {echo 'No data'; }?>"></td>
-                                <td><input name="thurs_timeout" type="time" class="time-input" id="time8" value="<?php if(isset($schedrow['thurs_timeout'])&& !empty($schedrow['thurs_timeout'])) { echo $schedrow['thurs_timeout']; } else {echo 'No data'; }?>"></td>
-                                <td><input name ="thurs_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if ($schedrow['thurs_wfh']){ echo "checked"; } ?>></td>
+                                <td><input name="thurs_timein" type="time" class="time-input" id="time7"  value="<?php if(isset($schedrow['thurs_timein'])&& !empty($schedrow['thurs_timein'])) { echo $schedrow['thurs_timein']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['thurs_timein'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name="thurs_timeout" type="time" class="time-input" id="time8" value="<?php if(isset($schedrow['thurs_timeout'])&& !empty($schedrow['thurs_timeout'])) { echo $schedrow['thurs_timeout']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['thurs_timeout'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name ="thurs_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if ($schedrow['thurs_wfh']){ echo "checked"; } ?> ></td>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" class="checkbox" name="friday" value="Friday" onchange="updateRestday()" <?php if ($schedrow['friday']){ echo "checked"; } ?> id="checkbox1" onclick="toggleInputs(this)"> Friday</td>
 
-                                <td><input name="fri_timein" type="time" class="time-input" id="time9"  value="<?php if(isset($schedrow['fri_timein'])&& !empty($schedrow['fri_timein'])) { echo $schedrow['fri_timein']; } else {echo 'No data'; }?>"></td>
-                                <td><input name="fri_timeout" type="time" class="time-input" id="time10"  value="<?php if(isset($schedrow['fri_timeout'])&& !empty($schedrow['fri_timeout'])) { echo $schedrow['fri_timeout']; } else {echo 'No data'; }?>"></td>
+                                <td><input name="fri_timein" type="time" class="time-input" id="time9"  value="<?php if(isset($schedrow['fri_timein'])&& !empty($schedrow['fri_timein'])) { echo $schedrow['fri_timein']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['fri_timein'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name="fri_timeout" type="time" class="time-input" id="time10"  value="<?php if(isset($schedrow['fri_timeout'])&& !empty($schedrow['fri_timeout'])) { echo $schedrow['fri_timeout']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['fri_timeout'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
                                 <td><input name ="fri_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if ($schedrow['fri_wfh']){ echo "checked"; } ?>></td>
                             </tr>
                             <tr>
+
                             <td><input type="checkbox" class="checkbox" name="saturday" value="Saturday" onchange="updateRestday()" <?php if ($schedrow['saturday']){ echo "checked"; } ?> id="checkbox1" onclick="toggleInputs(this)"> Saturday</td>
-
-
-                            <td><input name="sat_timein" type="time" class="time-input" id="time11"  value="<?php if(isset($schedrow['sat_timein'])&& !empty($schedrow['sat_timein'])) { echo $schedrow['sat_timein']; } else {echo 'No data'; }?>"></td>
-                                <td><input name="sat_timeout" type="time" class="time-input" id="time12"  value="<?php if(isset($schedrow['sat_timeout'])&& !empty($schedrow['sat_timeout'])) { echo $schedrow['sat_timeout']; } else {echo 'No data'; }?>"></td>
-                                <td><input name ="sat_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if ($schedrow['sat_wfh']){ echo "checked"; } ?>></td>
+                            <td><input name="sat_timein" type="time" class="time-input" id="time11"  value="<?php if(empty($schedrow['sat_timein'])) { echo "No Value"; }else{ echo $schedrow['time_in']; } ?>" <?php if(empty($schedrow['sat_timein'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name="sat_timeout" type="time" class="time-input" id="time12"  value="<?php if(isset($schedrow['sat_timeout'])&& !empty($schedrow['sat_timeout'])) { echo $schedrow['sat_timeout']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['sat_timeout'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name ="sat_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if (!empty($schedrow['sat_wfh'])){ echo "checked"; }else{ echo ""; } ?>></td>
+                                
                             </tr>
                             <tr>
+
                             <td><input type="checkbox" class="checkbox" name="sunday" value="Sunday" onchange="updateRestday()" <?php if ($schedrow['sunday']){ echo "checked"; } ?> id="checkbox1" onclick="toggleInputs(this)" > Sunday</td>
 
-                            <td><input name="sun_timein" type="time" class="time-input" id="time13"  value="<?php  if(isset($schedrow['sun_timein'])&& !empty($schedrow['sun_timein'])) { echo $schedrow['sun_timein']; } else echo 'No data';?>"></td>
-                                <td><input name="sun_timeout" type="time" class="time-input" id="time14"  value="<?php if(isset($schedrow['sun_timeout'])&& !empty($schedrow['sun_timeout'])) { echo $schedrow['sun_timeout']; } else {echo 'No data'; }?>"></td>
-                                <td><input name ="sun_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if ($schedrow['sun_wfh']){ echo "checked"; } ?>></td>
+                            <td><input name="sun_timein" type="time" class="time-input" id="time13"  value="<?php  if(isset($schedrow['sun_timein'])&& !empty($schedrow['sun_timein'])) { echo $schedrow['sun_timein']; } else echo 'No data';?>" <?php if(empty($schedrow['sun_timein'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name="sun_timeout" type="time" class="time-input" id="time14"  value="<?php if(isset($schedrow['sun_timeout'])&& !empty($schedrow['sun_timeout'])) { echo $schedrow['sun_timeout']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['sun_timeout'])){ echo "disabled"; }else{ echo ''; }  ?> ></td>
+                                <td><input name ="sun_wfh" type="checkbox" class="checkbox-lg" value="WFH" <?php if (!empty($schedrow['sun_wfh'])){ echo "checked"; }else{ echo ""; } ?>></td>
                             </tr>
                             <tr>
                                 <td ><input type="checkbox" name="flexible" id="" class="checkbox-lg" value="Flexible" <?php if ($schedrow['flexible']){ echo "checked"; } ?>> Flexible</td>
@@ -471,7 +476,7 @@
                                     <label for="grace_period">Grace Period</label>
                                 </div>
                                 <div>
-                                    <input class="numbox" id="my-number-input" type="number" name="grace_period" placeholder="00:00" value="<?php if(isset($schedrow['grace_period'])&& !empty($schedrow['grace_period'])) { echo $schedrow['grace_period']; } else {echo 'No data'; }?>">
+                                    <input class="numbox" id="my-number-input" type="number" name="grace_period" placeholder="00:00" value="<?php if(isset($schedrow['grace_period'])&& !empty($schedrow['grace_period'])) { echo $schedrow['grace_period']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['grace_period'])){ echo "disabled"; }else{ echo ''; }  ?> >
                                     <label for="graceperiod_minutes">Minutes</label>
                                 </div> 
                                 
@@ -482,7 +487,7 @@
                                     <label for="ob_ot">Enable OT</label>
                                 </div>
                                 <div>
-                                    <input class="numbox"  id="my-number-input2" type="number" name="sched_ot" placeholder="00:00"  value="<?php if(isset($schedrow['sched_ot'])&& !empty($schedrow['sched_ot'])) { echo $schedrow['sched_ot']; } else {echo 'No data'; }?>">
+                                    <input class="numbox "  id="my-number-input2" type="number" name="sched_ot" placeholder="00:00"  value="<?php if(isset($schedrow['sched_ot'])&& !empty($schedrow['sched_ot'])) { echo $schedrow['sched_ot']; } else {echo 'No data'; }?>" <?php if(empty($schedrow['sched_ot'])){ echo "disabled"; }else{ echo ''; }  ?> >
                                     <label for="ob_minutes">Minutes</label> 
                                 </div>
                             </div>
@@ -498,6 +503,13 @@
             </div>
        </div>
        </form>   
+
+        <script>
+            let time11 = document.getElementById("time11");
+
+            console.log(time11.value);
+
+        </script>
 
        
        <script>

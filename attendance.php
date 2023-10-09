@@ -747,7 +747,7 @@ if(mysqli_num_rows($result_attendance) > 0){
                         <?php 
                             $time_in = $row['time_in'];
                             if(empty($time_in)){
-                                echo '00:00:00';
+                                echo '00:00';
                             }else{
                                 echo substr($row['time_in'], 0, 5); // Display only hour:minute
                             }

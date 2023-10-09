@@ -14,7 +14,7 @@
           header("Location: logout.php");
           exit();
       } else{
-          $userId = $_SESSION['empid'];
+          @$userId = $_SESSION['empid'];
          
           $iconResult = mysqli_query($conn, "SELECT id, emp_img_url, empid FROM employee_tb WHERE empid = '$userId'");
           $iconRow = mysqli_fetch_assoc($iconResult);

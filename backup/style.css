@@ -47,7 +47,7 @@ main{
 
 /* login */
 
-.container{
+.container-fluid{
     width: 100vw;
     height: 100vh;
     display: flex;

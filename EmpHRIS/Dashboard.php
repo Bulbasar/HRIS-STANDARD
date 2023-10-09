@@ -858,7 +858,7 @@ include 'config.php';
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $start_date = date('Y-m-d', strtotime($row['start_date']));
                                     $end_date = date('Y-m-d', strtotime($row['end_date']));
-                                    $eventDay = date('l', strtotime($row['date_event']));
+                                    $eventDay = date('l', strtotime($row['start_date']));
                                 ?>
                                 <div class="son_first" style="background-color: #ECECEC;">
                                     <p ><?php echo '<strong style="font-size: 20px; margin-left: 10px;">' . $row['event_title'] . '</strong> ' . '<span style="float: right; margin-right: 10px;"> '; ?> <?php if ($start_date == $end_date){ echo $start_date; }else{ echo $start_date, " - ", $end_date; } ?> <?php ' </span>'; ?></p>
