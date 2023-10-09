@@ -1321,7 +1321,7 @@ if(mysqli_num_rows($result) <= 0) {
 
     <div class="dashboard-container" id="dashboard-container">
         <div class="dashboard-content" style="margin-left: 320px;">
-            <div class="dashboard-title" style="">
+            <div class="dashboard-title">
                 <h1>DASHBOARD</h1>
             </div>
             <div class="dashboard-contents">
@@ -1797,8 +1797,8 @@ if(mysqli_num_rows($result) <= 0) {
                     </div>   
 
                 <div class="second-dash-contents">
-                <div class="announcement-container" style="">
-                        <div class="announce-title" style="">
+                <div class="announcement-container" >
+                        <div class="announce-title">
                             <h3 style="margin-bottom: -1em" class="ml-1">Announcement</h3>
                             <h3 class="mb-0 d-inline-block mt-2 ml-2"> </h3>
                                 <i class="mdi mdi-arrow-down-drop-circle float-right mt-2 mr-2 dropdown-icon" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
