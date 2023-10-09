@@ -350,7 +350,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                         <?php
                                         include 'config.php';
 
-                                        $sql = "SELECT * FROM Payrule_tb";
+                                        $sql = "SELECT * FROM payrule_tb";
                                         $results = mysqli_query($conn, $sql);
                                         $options = "";
                                         while ($rows = mysqli_fetch_assoc($results)) {
@@ -361,6 +361,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                         
                                         <label for="payrules">Paying Rules</label><br>
                                         <select name="payrules" id="" placeholder="" value="<?php echo $row['rule_name'];?>">
+                                            <option disabled selected>Select Payrule</option>
                                             <?php echo $options; ?>
                                         </select>
                                     </div>

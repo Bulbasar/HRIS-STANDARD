@@ -323,7 +323,7 @@
                                     include 'config.php';
 
                                   
-                                     $sql = "SELECT * FROM Payrule_tb";
+                                     $sql = "SELECT * FROM payrule_tb";
                                      $result = mysqli_query($conn, $sql);
                                    
 

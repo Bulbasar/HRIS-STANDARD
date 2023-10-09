@@ -409,11 +409,11 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                         $EmployeeID = $row['emp_ID'];
                                                         
                                                         $payruleQuery = "SELECT 
-                                                        Payrule_tb.id,
-                                                        Payrule_tb.rule_name,
+                                                        payrule_tb.id,
+                                                        payrule_tb.rule_name,
                                                         employee_tb.empid,
                                                         employee_tb.payrules
-                                                        FROM employee_tb INNER JOIN Payrule_tb ON employee_tb.payrules = Payrule_tb.rule_name WHERE empid = '$EmployeeID'";
+                                                        FROM employee_tb INNER JOIN payrule_tb ON employee_tb.payrules = payrule_tb.rule_name WHERE empid = '$EmployeeID'";
                                                         $payruleResult = mysqli_query($conn, $payruleQuery);
                                                         if($payruleResult){
                                                             $payrow = $payruleResult->fetch_assoc();
@@ -1207,6 +1207,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                     <div class="div_mdlcontnt_mid_left">
                                                         <p class="lbl_hdmf">Tardiness</p>
                                                         <p class="lbl_hdmf">Undertime</p>
+                                                        <p class="lbl_hdmf">Absent</p>
                                                         <p class="lbl_hdmf">LWOP</p>
                                                         <p class="lbl_sss_se">SSS SE CONTRI</p>
                                                         <p class="lbl_philhlt_c">PHILHEALTH CONTRI</p>
@@ -1223,8 +1224,9 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                     </div>
                         
                                                     <div class="div_mdlcontnt_mid_right">
-                                                    <p class="lbl_philhlt_c" id="deductLate" name="late_kaltas"></p>
+                                                        <p class="lbl_philhlt_c" id="deductLate" name="late_kaltas"></p>
                                                         <p class="lbl_philhlt_c" id="deductUT" name="undertime_kaltas"></p>
+                                                        <p class="lbl_philhlt_c" id="absentdeduct" name="absentkaltas"></p>
                                                         <p class="lbl_philhlt_c" id="deductLWOP" name="lwop_kaltas"></p>
                                                         <p class="lbl_sss_se" id="deductSSS" name="sss_kaltas"></p>
                                                         <p class="lbl_philhlt_c" id="deductphil" name="phil_kaltas"></p>
@@ -1612,6 +1614,7 @@ $(document).ready(function(){
         $('#deductLate').text(LateDeduction);
         $('#latehour').text(TotalLate);
         $('#deductUT').text(UndertimeDeduct);
+        $('#absentdeduct').text(AbsentDeduct);
         $('#underhour').text(Undertimehours);
         $('#deductLWOP').text(LWOPDeduct);
         $('#netpayslip').text(TotalNetPay);

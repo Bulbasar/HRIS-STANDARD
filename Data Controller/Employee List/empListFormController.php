@@ -217,30 +217,6 @@ if ($count > 0) {
 
 $stmt->close();
 
-
-$status = 'Active';
-
-$OT_RATE = ($drate / 8) * 1.3;
-
-$stmt = $conn->prepare("INSERT INTO employee_tb (`fname`, `mname`,  `lname`, `company_code`, `payrules`, `empid`, `address`, `contact`, `cstatus`, `gender`, `empdob`, `empsss`, `emptin`, `emppagibig`, `empphilhealth`, `empbranch`, `department_name`, `empposition`, `empbsalary`, `drate`, `empdate_hired`, `emptranspo`, `empmeal`, `empinternet`, `empaccess_id`, `username`, `role`, `email`, `password`, `status`, `otrate`, `classification`)
-                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-
-if (!$stmt) {
-    die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-}
-
-$stmt->bind_param("ssssssssssssssssssssssssssssssss", $fname, $mname, $lname, $company_code, $PayingRules, $empid, $address, $contact, $cstatus, $gender, $empdob, $empsss, $emptin, $emppagibig, $empphilhealth, $empbranch, $col_deptname, $empposition, $empbsalary, $drate, $empdate_hired, $emptranspo, $empmeal, $empinternet, $empaccess_id, $username, $role, $email, $passwordHash, $status, $OT_RATE, $classification);
-
-$stmt->execute();
-
-if ($stmt->errno) {
-    echo "<script>alert('Error: " . $stmt->error . "');</script>";
-    echo "<script>window.location.href = '../../empListForm';</script>";
-    exit;
-}
-
-$stmt->close();
-
 $cmpny_stmt = $conn->prepare("INSERT INTO assigned_company_code_tb(`empid`, `company_code_id`)
                         VALUES (?,?)");
 
@@ -306,15 +282,14 @@ $status = 'Active';
 
 $OT_RATE = ($drate / 8) * 1.3;
 
-$stmt = $conn->prepare("INSERT INTO employee_tb (`fname`, `mname`,  `lname`, `company_code`,`empid`, `address`, `contact`, `cstatus`, `gender`, `empdob`, `empsss`, `emptin`, `emppagibig`, `empphilhealth`, `empbranch`, `department_name`, `empposition`, `empbsalary`, `drate`, `empdate_hired`, `emptranspo`, `empmeal`, `empinternet`, `empaccess_id`, `username`, `role`, `email`, `password`, `status`, `otrate`, `classification`)
-                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+$stmt = $conn->prepare("INSERT INTO employee_tb (`fname`, `mname`,  `lname`, `company_code`, `payrules`, `empid`, `address`, `contact`, `cstatus`, `gender`, `empdob`, `empsss`, `emptin`, `emppagibig`, `empphilhealth`, `empbranch`, `department_name`, `empposition`, `empbsalary`, `drate`, `empdate_hired`, `emptranspo`, `empmeal`, `empinternet`, `empaccess_id`, `username`, `role`, `email`, `password`, `status`, `otrate`, `classification`)
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 if (!$stmt) {
     die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
 }
 
-$stmt->bind_param("sssssssssssssssssssssssssssssss", $fname,$mname, $lname,$company_code ,$empid, $address, $contact, $cstatus, $gender, $empdob, $empsss, $emptin, $emppagibig, $empphilhealth, $empbranch, $col_deptname, $empposition, $empbsalary, $drate, $empdate_hired, $emptranspo, $empmeal, $empinternet, $empaccess_id, $username, $role, $email, $passwordHash, $status, $OT_RATE, $classification);
-
+$stmt->bind_param("ssssssssssssssssssssssssssssssss", $fname, $mname, $lname, $company_code, $PayingRules, $empid, $address, $contact, $cstatus, $gender, $empdob, $empsss, $emptin, $emppagibig, $empphilhealth, $empbranch, $col_deptname, $empposition, $empbsalary, $drate, $empdate_hired, $emptranspo, $empmeal, $empinternet, $empaccess_id, $username, $role, $email, $passwordHash, $status, $OT_RATE, $classification);
 $stmt->execute();
 
 if ($stmt->errno) {
