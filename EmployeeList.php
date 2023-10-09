@@ -119,6 +119,32 @@
         margin-bottom: -16px !important;
 
     }
+    table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                max-height: 450px;
+                height: 450px;
+                
+                
+            }
+            tbody {
+                display: table;
+                width: 100%;
+            }
+            tr {
+                width: 100% !important;
+                display: table !important;
+                table-layout: fixed !important;
+            }
+            th, td {
+                text-align: left !important;
+                width: 14.28% !important;
+            }
+
+
+
+            
 
     /* .toggle-circle {
       width: 1.3em;
@@ -165,47 +191,10 @@
         
         </form>
 </div>
-    
+            <!-- <button class="btn btn-outline-danger btn-icon-text employeeFiles" data-bs-toggle="modal" data-bs-target="#empFile" style="display: none;">Update</button> -->
             <a href="empListForm.php" class="empList-btn mr-5" title="Create New">Create New</a>
         </div>
         
-
-        <style>
-            table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-                max-height: 450px;
-                height: 450px;
-                
-                
-            }
-            tbody {
-                display: table;
-                width: 100%;
-            }
-            tr {
-                width: 100% !important;
-                display: table !important;
-                table-layout: fixed !important;
-            }
-            th, td {
-                text-align: left !important;
-                width: 14.28% !important;
-            }
-
-            
-
-            /* .toggle-circle {
-      width: 1.3em;
-      height: 1.3em;
-      border-radius: 50%;
-      border: 2px solid #ccc;
-      cursor: pointer;
-      background-color: <?= $status === 'Inactive' ? 'red' : 'green' ?>;
-      transition: background-color 0.3s;
-    } */
-        </style>
 <!-- Modal sa file ng employee -->
 <div class="modal fade" id="empFile" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
@@ -232,6 +221,9 @@
         <div style="width: 95%; margin:auto; margin-top: 30px;">
             <table id="order-listing" class="table" style="width: 100%">
                             <thead>
+                            <!-- <th>
+                                <input type="checkbox" id="checkAll" />
+                            </th> -->
                             <th>Employee ID</th>
                             <th>Name</th>
                             <th>Department</th>
@@ -319,6 +311,10 @@
                                 
 
                                     echo "<tr class='lh-1'>";
+                                    // echo "<td><input type='checkbox' class='customCheckbox' name='checkboxGroup[]' />";
+                                    // echo "<input type='hidden' name='empid[]' value='{$cmpny_empid}' />";
+                                    echo "</td>";
+
                                     echo "<td style='font-weight: 400;'>";
 
                                     $cmpny_code = $cmpny_row['company_code_name'] ?? null;
@@ -461,7 +457,42 @@
                 </div>
             </div>
 
-          
+<!-- <script> sa pagcheck ng checkbox para lumabas ang update button
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkAllCheckbox = document.getElementById("checkAll");
+        const customCheckboxes = document.querySelectorAll('.customCheckbox');
+        const updateButton = document.querySelector('.employeeFiles');
+
+        function checkUpdateButtonVisibility() {
+            const checkedCheckboxes = document.querySelectorAll('input.customCheckbox:checked').length;
+
+            if (checkedCheckboxes > 0) {
+                updateButton.style.display = 'block';
+            } else {
+                updateButton.style.display = 'none';
+            }
+        }
+
+        checkAllCheckbox.addEventListener("change", function () {
+            const isChecked = this.checked;
+
+            customCheckboxes.forEach(function (checkbox) {
+                checkbox.checked = isChecked;
+            });
+
+            checkUpdateButtonVisibility();
+        });
+
+        customCheckboxes.forEach(function (checkbox) {
+            checkbox.addEventListener("change", checkUpdateButtonVisibility);
+        });
+    });
+</script> -->
+
+
+
+
+
 
 
             <script>
@@ -720,8 +751,8 @@ $(document).ready(function() {
 
         console.log(data);
         //id_colId
-        $('#employID').val(data[10].trim());
-        $('#statuses').val(data[7].trim()); // Remove spaces using trim()
+        $('#employID').val(data[11].trim());
+        $('#statuses').val(data[8].trim()); // Remove spaces using trim()
     });
 });
 </script>

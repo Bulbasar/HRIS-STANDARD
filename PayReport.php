@@ -92,7 +92,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                 </div>
                                 <div class="col-6 mt-1 text-end">
                                     <a href="payroll_report.php" style="text-decoration: none;" class="btn btn-outline-primary">Back</a>
-                                    <button class="btn btn-outline-danger" id="export-pdf-btn" onclick="exportPDF()">PDF</button>
+                                    <!-- <button class="btn btn-outline-danger" id="export-pdf-btn" onclick="exportPDF()">PDF</button> -->
                                 </div>
                             </div>
 
@@ -119,8 +119,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                             payslip_report_tb.net_allowance, 
                             payslip_report_tb.add_allow, 
                             payslip_report_tb.allowances, 
-                            payslip_report_tb.number_leave, 
-                            payslip_report_tb.paid_leaves, 
+                            payslip_report_tb.number_leave,  
                             payslip_report_tb.holiday_pay, 
                             payslip_report_tb.total_earnings, 
                             payslip_report_tb.absence, 
@@ -218,7 +217,6 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                         <td style="font-weight: 400;"> <?php echo $row['add_allow']?></td>
                                         <td style="font-weight: 400; display: none;"> <?php echo $row['allowances']?></td>
                                         <td style="font-weight: 400; display: none;"> <?php echo $row['number_leave']?></td>
-                                        <td style="font-weight: 400;"> <?php echo $row['paid_leaves']?></td>
                                         <td style="font-weight: 400;"> <?php echo $row['holiday_pay']?></td>
                                         <td style="font-weight: 400; color: red; display: none;"> <?php echo $row['absence']?></td>
                                         <td style="font-weight: 400; color: red;"> <?php echo $row['absence_deduction']?></td>

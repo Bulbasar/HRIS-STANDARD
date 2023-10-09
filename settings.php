@@ -249,14 +249,14 @@ session_start();
                     </div>
 
 
-                    <label for="" class="form-label lbl_slary mt-3">Salary Settings</label>
+                    <!-- <label for="" class="form-label lbl_slary mt-3">Salary Settings</label>
                     <div class="mb-3">
                     <?php
-                    include 'config.php';
-                        $query_settings = "SELECT * FROM `settings_company_tb`";
-                        $result_Settings = mysqli_query($conn, $query_settings);
+                    // include 'config.php';
+                    //     $query_settings = "SELECT * FROM `settings_company_tb`";
+                    //     $result_Settings = mysqli_query($conn, $query_settings);
 
-                        $row_settings = mysqli_fetch_assoc($result_Settings);
+                    //     $row_settings = mysqli_fetch_assoc($result_Settings);
                     
                     ?>
                     <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
@@ -266,7 +266,7 @@ session_start();
                         <input type="radio" class="btn-check" name="col_salary_settings" id="btnradio3" value="Days Worked" autocomplete="off" <?php if($row_settings['col_salary_settings'] === 'Days Worked'){echo 'checked';} ?>>
                         <label class="btn btn-outline-warning radio_btn" for="btnradio3">Days Worked</label>
                     </div>
-                    </div>
+                    </div> -->
             
                 </div><!--first_cont-->
                 
@@ -325,30 +325,30 @@ session_start();
                         $databaseValue = $row['holiday_pay'];
                       ?>
 
-  <div class="check_before_holiday">
-      <div class="input-group-text check1">
-          <input class="form-check-input mt-0" type="checkbox" name="name_before" value="Holiday Before" aria-label="Checkbox for following text input" <?php if ($databaseValue === 'Holiday Before') echo 'checked'; ?>>
-          <input type="text" class="form-control" aria-label="Text input with checkbox" readonly value="Holiday Before">         
-      </div>
-  </div>
+                      <div class="check_before_holiday">
+                          <div class="input-group-text check1">
+                              <input class="form-check-input mt-0" type="checkbox" name="name_before" value="Holiday Before" aria-label="Checkbox for following text input" <?php if ($databaseValue === 'Holiday Before') echo 'checked'; ?>>
+                              <input type="text" class="form-control" aria-label="Text input with checkbox" readonly value="Holiday Before">         
+                          </div>
+                      </div>
 
-  <div class="check_after_holiday">
-      <div class="input-group-text check2">
-          <input class="form-check-input mt-0" type="checkbox" name="name_after" value="Holiday After" aria-label="Checkbox for following text input" <?php if ($databaseValue === 'Holiday After') echo 'checked'; ?>>
-          <input type="text" class="form-control" aria-label="Text input with checkbox" readonly value="Holiday After">
-      </div>
-  </div>
+                      <div class="check_after_holiday">
+                          <div class="input-group-text check2">
+                              <input class="form-check-input mt-0" type="checkbox" name="name_after" value="Holiday After" aria-label="Checkbox for following text input" <?php if ($databaseValue === 'Holiday After') echo 'checked'; ?>>
+                              <input type="text" class="form-control" aria-label="Text input with checkbox" readonly value="Holiday After">
+                          </div>
+                      </div>
 
-  <div class="check_both_holiday">
-      <div class="input-group-text check3">
-          <input class="form-check-input mt-0" type="checkbox" name="name_beforeAfter" value="Holiday Before and After" aria-label="Checkbox for following text input" <?php if ($databaseValue === 'Holiday Before and After') echo 'checked'; ?>>
-          <input type="text" class="form-control" aria-label="Text input with checkbox" readonly value="Holiday Before and After">
-      </div>
-  </div>
+                      <div class="check_both_holiday">
+                          <div class="input-group-text check3">
+                              <input class="form-check-input mt-0" type="checkbox" name="name_beforeAfter" value="Holiday Before and After" aria-label="Checkbox for following text input" <?php if ($databaseValue === 'Holiday Before and After') echo 'checked'; ?>>
+                              <input type="text" class="form-control" aria-label="Text input with checkbox" readonly value="Holiday Before and After">
+                          </div>
+                      </div>
 
 
-                                                  <!------------------ after and before holiday END ---------------->
-                                                <button type="submit" name="name_btn_submit" class="btn btn-primary custom_btn">Save</button>
+                        <!------------------ after and before holiday END ---------------->
+                        <button type="submit" name="name_btn_submit" class="btn btn-primary custom_btn">Save</button>
                       </div> <!--  end Col-4 -->
 
                       <div class="col-8">

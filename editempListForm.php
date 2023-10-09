@@ -36,7 +36,7 @@ if(count($_POST) > 0){
 
     $SuperProfile = $_FILES['profile_super']['tmp_name'] ? addslashes(file_get_contents($_FILES['profile_super']['tmp_name'])) : '';
 
-    mysqli_query($conn, "UPDATE employee_tb SET fname='".$_POST['fname']."',mname='".$_POST['mname']."', lname='".$_POST['lname']."',contact='".$_POST['contact']."',cstatus='".$_POST['cstatus']."',gender='".$_POST['gender']."',empdob='".$_POST['empdob']."',empsss='".$_POST['empsss']."',emptin='".$_POST['emptin']."',emppagibig='".$_POST['emppagibig']."',empphilhealth='".$_POST['empphilhealth']."',empbranch='".$_POST['empbranch']."',department_name='".$_POST['department_name']."',empbsalary='".$_POST['empbsalary']."', drate='". $dailyRate_update ."', otrate='".$_POST['otrate']."', empdate_hired='".$_POST['empdate_hired']."',emptranspo='".$_POST['emptranspo']."',empmeal='".$_POST['empmeal']."',empinternet='".$_POST['empinternet']."',empposition='".$_POST['empposition']."', role='".$_POST['role']."',email='".$_POST['email']."', company_email='".$_POST['comp_email']."',sss_amount='".$_POST['sss_amount']."', tin_amount='".$_POST['tin_amount']."', pagibig_amount='".$_POST['pagibig_amount']."', philhealth_amount='".$_POST['philhealth_amount']."', classification='".$_POST['classification']."', bank_name='".$_POST['bank_name']."', bank_number='".$_POST['bank_number']."'".$emp_img_url.", company_code='".$_POST['company_code']."', user_profile = '".$SuperProfile."'
+    mysqli_query($conn, "UPDATE employee_tb SET fname='".$_POST['fname']."',mname='".$_POST['mname']."', lname='".$_POST['lname']."',payrules='".$_POST['payrules']."',contact='".$_POST['contact']."',cstatus='".$_POST['cstatus']."',gender='".$_POST['gender']."',empdob='".$_POST['empdob']."',empsss='".$_POST['empsss']."',emptin='".$_POST['emptin']."',emppagibig='".$_POST['emppagibig']."',empphilhealth='".$_POST['empphilhealth']."',empbranch='".$_POST['empbranch']."',department_name='".$_POST['department_name']."',empbsalary='".$_POST['empbsalary']."', drate='". $dailyRate_update ."', otrate='".$_POST['otrate']."', empdate_hired='".$_POST['empdate_hired']."',emptranspo='".$_POST['emptranspo']."',empmeal='".$_POST['empmeal']."',empinternet='".$_POST['empinternet']."',empposition='".$_POST['empposition']."', role='".$_POST['role']."',email='".$_POST['email']."', company_email='".$_POST['comp_email']."',sss_amount='".$_POST['sss_amount']."', tin_amount='".$_POST['tin_amount']."', pagibig_amount='".$_POST['pagibig_amount']."', philhealth_amount='".$_POST['philhealth_amount']."', classification='".$_POST['classification']."', bank_name='".$_POST['bank_name']."', bank_number='".$_POST['bank_number']."'".$emp_img_url.", company_code='".$_POST['company_code']."', user_profile = '".$SuperProfile."'
     WHERE id ='".$_POST['id']."'");
 
     mysqli_query($conn, "UPDATE assigned_company_code_tb SET company_code_id='".$_POST['company_code']."' WHERE empid = '".$_POST['empid']."' ");
@@ -345,15 +345,33 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                             <option value="Female">Female</option>
                                         </select>
                                     </div>
+                                    
+                                    <div class="emp-gender">
+                                        <?php
+                                        include 'config.php';
+
+                                        $sql = "SELECT * FROM Payrule_tb";
+                                        $results = mysqli_query($conn, $sql);
+                                        $options = "";
+                                        while ($rows = mysqli_fetch_assoc($results)) {
+                                            $selected = ($rows['rule_name'] == $row['payrules']) ? 'selected' : ''; //$selected = ($rows['id'] == $row['payrules']) ? 'selected' : '';
+                                            $options .= "<option value='".$rows['rule_name']."' ".$selected.">" .$rows['rule_name'].  "</option>"; //$options .= "<option value='".$rows['id']."' ".$selected.">" .$rows['rule_name'].  "</option>";
+                                        }
+                                        ?>
+                                        
+                                        <label for="payrules">Paying Rules</label><br>
+                                        <select name="payrules" id="" placeholder="" value="<?php echo $row['rule_name'];?>">
+                                            <?php echo $options; ?>
+                                        </select>
+                                    </div>
                                 </div>
+
                                 <div class="emp-list-info-second-container "> 
                                     <div class="emp-head mt-1 ">
                                         <?php
                                         if(!empty($row['emp_img_url'])) {
                                             $image_url = $row['emp_img_url'];
                                         } else {
-                                           
-
                                             $Supervisor_Profile = "SELECT * FROM employee_tb WHERE `empid` = '$empid'";
                                             $profileRun = mysqli_query($conn, $Supervisor_Profile);
 
@@ -381,8 +399,11 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                             }
                     
                                         }
-                                        // Get file extension from image URL
-                                        @$file_ext = pathinfo($image_url, PATHINFO_EXTENSION);
+                                        if (!empty($image_url)) {
+                                            $file_ext = pathinfo($image_url, PATHINFO_EXTENSION);
+                                        } else {
+                                            $file_ext = ''; // Set a default value or handle the case when $image_url is empty.
+                                        }
                                         ?>
                                         <!-- src="uploads/<?php echo $image_url; ?>" -->
                                         <img <?php if(!empty($image_url)){ echo "src='uploads/".$image_url."' "; } else{ echo "src='data:".$image_type.";base64,".$image_data."'";} ?> alt="" srcset="" accept=".jpg, .jpeg, .png" title="<?php echo $image_url; ?>" >

@@ -974,82 +974,120 @@ if(isset($_POST['printAll'])){
 
                 //para sa pag select sa attendances at employee para sa modal ng payslip
                 if($row_settings_salary['col_salary_settings'] === 'Fixed Salary'){ 
-                    $sql_attendanaaa = mysqli_query($conn, " SELECT
-                    employee_tb.`empbsalary` AS Salary_of_Month,
-                    employee_tb.`sss_amount`,
-                    employee_tb.`tin_amount`,
-                    employee_tb.`pagibig_amount`,
-                    employee_tb.`philhealth_amount`,
-                    employee_tb.`emptranspo`,
-                    employee_tb.`empmeal`,
-                    employee_tb.`empinternet`,
-                    employee_tb.`emptranspo` + employee_tb.`empmeal` + employee_tb.`empinternet`  AS Total_allowanceStandard,
-                    employee_tb.`sss_amount` + employee_tb.`tin_amount` + employee_tb.`pagibig_amount` + employee_tb.`philhealth_amount` AS Total_deduct_governStANDARD,
-
-                    CONCAT(
+                    $sql_attendanaaa = mysqli_query($conn, "SELECT
+                    subquery.Salary_of_Month,
+                    subquery.Total_allowanceStandard,
+                    subquery.Total_deduct_governStANDARD,
+                    subquery.total_hoursWORK,
+                    subquery.total_hoursOT,
+                    subquery.Number_of_days_work
+                FROM (
+                    SELECT
+                        employee_tb.empid,
+                        employee_tb.empbsalary AS Salary_of_Month,
+                        employee_tb.emptranspo, employee_tb.empmeal, employee_tb.empinternet,
+                        employee_tb.emptranspo + employee_tb.empmeal + employee_tb.empinternet AS Total_allowanceStandard,
+                        employee_tb.sss_amount + employee_tb.tin_amount + employee_tb.pagibig_amount + employee_tb.philhealth_amount AS Total_deduct_governStANDARD,
+                        CONCAT(
                             FLOOR(
-                                SUM(TIME_TO_SEC(attendances.total_work)) / 3600
-                                
+                                SUM(
+                                    TIME_TO_SEC(attendances.total_work)
+                                ) / 3600
                             ),
                             'H:',
                             FLOOR(
                                 (
-                                    SUM(TIME_TO_SEC(attendances.total_work)) % 3600
-                                    
+                                    SUM(
+                                        TIME_TO_SEC(attendances.total_work)
+                                    ) % 3600
                                 ) / 60
                             ),
                             'M'
                         ) AS total_hoursWORK,
-                        
-                    CONCAT(
+                        CONCAT(
                             FLOOR(
-                                SUM(TIME_TO_SEC(attendances.overtime)) / 3600
+                                SUM(
+                                    TIME_TO_SEC(attendances.overtime)
+                                ) / 3600
                             ),
-                            'H'
+                            'H:',
+                            FLOOR(
+                                (
+                                    SUM(
+                                        TIME_TO_SEC(attendances.overtime)
+                                    ) % 3600
+                                ) / 60
+                            ),
+                            'M'
                         ) AS total_hoursOT,
-                    COUNT(attendances.`status`) AS Number_of_days_work
+                        COUNT(attendances.status) AS Number_of_days_work
                     FROM
-                    employee_tb
+                        employee_tb
                     INNER JOIN attendances ON employee_tb.empid = attendances.empid
-                    WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave') AND employee_tb.empid = '$EmployeeID' AND `date` BETWEEN  '$str_date' AND  '$end_date'");
+                    WHERE
+                        (
+                            attendances.status IN ('Present', 'On-Leave')
+                        ) AND employee_tb.empid = '$EmployeeID' AND attendances.date BETWEEN '$str_date' AND '$end_date'
+                    GROUP BY employee_tb.empid, employee_tb.empbsalary, employee_tb.emptranspo, employee_tb.empmeal, employee_tb.empinternet, employee_tb.sss_amount, employee_tb.tin_amount, employee_tb.pagibig_amount, employee_tb.philhealth_amount
+                ) AS subquery
+                ");
 
                 }else{
-                    $sql_attendanaaa = mysqli_query($conn, " SELECT
-                    SUM(employee_tb.`drate`) AS Salary_of_Month,
-                    employee_tb.`sss_amount`,
-                    employee_tb.`tin_amount`,
-                    employee_tb.`pagibig_amount`,
-                    employee_tb.`philhealth_amount`,
-                    employee_tb.`emptranspo`,
-                    employee_tb.`empmeal`,
-                    employee_tb.`empinternet`,
-                    employee_tb.`emptranspo` + employee_tb.`empmeal` + employee_tb.`empinternet`  AS Total_allowanceStandard,
-                    employee_tb.`sss_amount` + employee_tb.`tin_amount` + employee_tb.`pagibig_amount` + employee_tb.`philhealth_amount` AS Total_deduct_governStANDARD,
-
-                    CONCAT(
+                    $sql_attendanaaa = mysqli_query($conn, "SELECT
+                    subquery.Salary_of_Month,
+                    subquery.Total_allowanceStandard,
+                    subquery.Total_deduct_governStANDARD,
+                    subquery.total_hoursWORK,
+                    subquery.total_hoursOT,
+                    subquery.Number_of_days_work
+                FROM (
+                    SELECT
+                        employee_tb.empid,
+                        SUM(employee_tb.drate) AS Salary_of_Month,
+                        employee_tb.emptranspo,
+                        employee_tb.empmeal,
+                        employee_tb.empinternet,
+                        employee_tb.emptranspo + employee_tb.empmeal + employee_tb.empinternet AS Total_allowanceStandard,
+                        employee_tb.sss_amount + employee_tb.tin_amount + employee_tb.pagibig_amount + employee_tb.philhealth_amount AS Total_deduct_governStANDARD,
+                        CONCAT(
                             FLOOR(
-                                SUM(TIME_TO_SEC(attendances.total_work)) / 3600                                                                      
+                                SUM(TIME_TO_SEC(attendances.total_work)) / 3600
                             ),
                             'H:',
                             FLOOR(
-                                (
-                                    SUM(TIME_TO_SEC(attendances.total_work)) % 3600                                                     
-                                ) / 60
+                                (SUM(TIME_TO_SEC(attendances.total_work)) % 3600) / 60
                             ),
                             'M'
                         ) AS total_hoursWORK,
-                        
-                    CONCAT(
+                        CONCAT(
                             FLOOR(
                                 SUM(TIME_TO_SEC(attendances.overtime)) / 3600
                             ),
-                            'H'
+                            'H:',
+                            FLOOR(
+                                (SUM(TIME_TO_SEC(attendances.overtime)) % 3600) / 60
+                            ),
+                            'M'
                         ) AS total_hoursOT,
-                    COUNT(attendances.`status`) AS Number_of_days_work
+                        COUNT(attendances.status) AS Number_of_days_work
                     FROM
-                    employee_tb
+                        employee_tb
                     INNER JOIN attendances ON employee_tb.empid = attendances.empid
-                    WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave') AND employee_tb.empid = '$EmployeeID' AND `date` BETWEEN  '$str_date' AND  '$end_date'");
+                    WHERE
+                        (
+                            attendances.status IN ('Present', 'On-Leave')
+                        ) AND employee_tb.empid = '$EmployeeID' AND attendances.date BETWEEN '$str_date' AND '$end_date'
+                    GROUP BY
+                        employee_tb.empid,
+                        employee_tb.emptranspo,
+                        employee_tb.empmeal,
+                        employee_tb.empinternet,
+                        employee_tb.sss_amount,
+                        employee_tb.tin_amount,
+                        employee_tb.pagibig_amount,
+                        employee_tb.philhealth_amount
+                ) AS subquery");
+
                 }
 
                 if(mysqli_num_rows($sql_attendanaaa) > 0) {
@@ -1057,9 +1095,9 @@ if(isset($_POST['printAll'])){
                     $Totalwork = $row_atteeee['total_hoursWORK'];
                     $TotalworkDays = $row_atteeee['Number_of_days_work'];
                     $salary = $row_atteeee['Salary_of_Month'];
-                    $Transport = $row_atteeee['emptranspo'];
-                    $Meal = $row_atteeee['empmeal'];
-                    $Internet = $row_atteeee['empinternet'];
+                    $Transport = isset($row_atteeee['emptranspo']) ? $row_atteeee['emptranspo'] : 0;
+                    $Meal = isset($row_atteeee['empmeal']) ? $row_atteeee['empmeal'] : 0;
+                    $Internet = isset($row_atteeee['empinternet']) ? $row_atteeee['empinternet'] : 0;
                     
 
                     } else {
@@ -1176,12 +1214,10 @@ if(isset($_POST['printAll'])){
                         $allowance = ($row_atteeee['Total_allowanceStandard'] + $row_addAllowance['total_sum_addAllowance']) / $working_days;
                         $allowance = str_replace(',', '', $allowance); // Remove comma
 
-                        $Transport = $row_atteeee['emptranspo'];
-                        $Meal = $row_atteeee['empmeal'];
-                        $Internet = $row_atteeee['empinternet'];
-                        $Otherallowance = $row_addAllowance['total_sum_addAllowance']; 
-
-                        
+                        $Transport = isset($row_atteeee['emptranspo']) ? $row_atteeee['emptranspo'] : 0;
+                        $Meal = isset($row_atteeee['empmeal']) ? $row_atteeee['empmeal'] : 0;
+                        $Internet = isset($row_atteeee['empinternet']) ? $row_atteeee['empinternet'] : 0;
+                        $Otherallowance = isset($row_addAllowance['total_sum_addAllowance']) ? $row_addAllowance['total_sum_addAllowance']: 0;
 
                         $Total_allowances = $Transport + $Meal + $Internet + $Otherallowance;
                     } 
@@ -1192,10 +1228,10 @@ if(isset($_POST['printAll'])){
                         $first_cutOFf = '1';
                         $last_cutoff = '2';  
                         
-                        $Transport = $row_atteeee['emptranspo'] / 2;
-                        $Meal = $row_atteeee['empmeal'] / 2;
-                        $Internet = $row_atteeee['empinternet'] / 2;
-                        $Otherallowance = $row_addAllowance['total_sum_addAllowance'] / 2;
+                        $Transport = isset($row_atteeee['emptranspo']) ? $row_atteeee['emptranspo'] : 0 / 2;
+                        $Meal = isset($row_atteeee['empmeal']) ? $row_atteeee['empmeal'] : 0 / 2;
+                        $Internet = isset($row_atteeee['empinternet']) ? $row_atteeee['empinternet'] : 0 / 2;
+                        $Otherallowance = isset($row_addAllowance['total_sum_addAllowance']) ? $row_addAllowance['total_sum_addAllowance']: 0 / 2;
                         
                         $Total_allowances = $Transport + $Meal + $Internet + $Otherallowance;
                     }
@@ -1206,10 +1242,10 @@ if(isset($_POST['printAll'])){
                         $first_cutOFf = '1';
                         $last_cutoff ='4';    
 
-                        $Transport = $row_atteeee['emptranspo'] / 4;
-                        $Meal = $row_atteeee['empmeal'] / 4;
-                        $Internet = $row_atteeee['empinternet'] / 4;
-                        $Otherallowance = $row_addAllowance['total_sum_addAllowance'] / 4;
+                        $Transport = isset($row_atteeee['emptranspo']) ? $row_atteeee['emptranspo'] : 0 / 4;
+                        $Meal = isset($row_atteeee['empmeal']) ? $row_atteeee['empmeal'] : 0 / 4;
+                        $Internet = isset($row_atteeee['empinternet']) ? $row_atteeee['empinternet'] : 0 / 4;
+                        $Otherallowance = isset($row_addAllowance['total_sum_addAllowance']) ? $row_addAllowance['total_sum_addAllowance']: 0 / 4;
 
                         $Total_allowances = $Transport + $Meal + $Internet + $Otherallowance;
                     }
@@ -1363,6 +1399,7 @@ if(isset($_POST['printAll'])){
 
                 if($row_settings_salary['col_salary_settings'] === 'Fixed Salary'){
                     $sql = "SELECT
+                    employee_tb.empid,
                     payroll_loan_tb.loan_type,
                     payroll_loan_tb.payable_amount,
                     payroll_loan_tb.amortization,
@@ -1381,66 +1418,37 @@ if(isset($_POST['printAll'])){
                     employee_tb.`tin_amount`,
                     employee_tb.`pagibig_amount`,
                     employee_tb.`philhealth_amount`,
-                    employee_tb.`emptranspo` + employee_tb.`empmeal` + employee_tb.`empmeal` AS Total_allowanceStandard,
+                    employee_tb.`emptranspo` + employee_tb.`empmeal` + employee_tb.`empinternet` AS Total_allowanceStandard,
                     employee_tb.`sss_amount` + employee_tb.`tin_amount` + employee_tb.`pagibig_amount` + employee_tb.`philhealth_amount` AS Total_deduct_governStANDARD,
                     CONCAT(
-                            FLOOR( 
-                                SUM(TIME_TO_SEC(attendances.late)) / 3600
-                            ),
-                            'H:',
-                            FLOOR(
-                                (
-                                    SUM(TIME_TO_SEC(attendances.late)) % 3600
-                                ) / 60
-                            ),
-                            'M'
-                        ) AS total_hours_minutesLATE,
+                        FLOOR(SUM(TIME_TO_SEC(attendances.late)) / 3600),
+                        'H:',
+                        FLOOR((SUM(TIME_TO_SEC(attendances.late)) % 3600) / 60),
+                        'M'
+                    ) AS total_hours_minutesLATE,
                     CONCAT(
-                            FLOOR(
-                                SUM(TIME_TO_SEC(attendances.early_out)) / 3600
-                            ),
-                            'H:',
-                            FLOOR(
-                                (
-                                    SUM(TIME_TO_SEC(attendances.early_out)) % 3600
-                                ) / 60
-                            ),
-                            'M'
-                        ) AS total_hours_minutesUndertime,
+                        FLOOR(SUM(TIME_TO_SEC(attendances.early_out)) / 3600),
+                        'H:',
+                        FLOOR((SUM(TIME_TO_SEC(attendances.early_out)) % 3600) / 60),
+                        'M'
+                    ) AS total_hours_minutesUndertime,
                     CONCAT(
-                            FLOOR(
-                                SUM(TIME_TO_SEC(attendances.total_work)) / 3600
-                                
-                            ),
-                            'H:',
-                            FLOOR(
-                                (
-                                    SUM(TIME_TO_SEC(attendances.total_work)) % 3600
-                                   
-                                ) / 60
-                            ),
-                            'M'
-                        ) AS total_hours_minutestotalHours
+                        FLOOR(SUM(TIME_TO_SEC(attendances.total_work)) / 3600),
+                        'H:',
+                        FLOOR((SUM(TIME_TO_SEC(attendances.total_work)) % 3600) / 60),
+                        'M'
+                    ) AS total_hours_minutestotalHours
                 FROM
                     employee_tb
-                    INNER JOIN attendances ON employee_tb.empid = attendances.empid
-                    LEFT JOIN allowancededuct_tb ON employee_tb.empid = allowancededuct_tb.id_emp
-                    LEFT JOIN payroll_loan_tb ON employee_tb.empid = payroll_loan_tb.empid
-
-                WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave')  AND employee_tb.empid = '$EmployeeID' AND `date` BETWEEN  '$str_date' AND  '$end_date'";
-
-                $sql_absent_count = "SELECT 
-                                        COUNT(`status`) as Absent_count
-                                     FROM attendances
-                                     WHERE (`status` = 'Absent' OR `status` = 'LWOP')  AND `empid` = '$EmployeeID' AND `date` BETWEEN  '$str_date' AND  '$end_date'";
-
-                $result_absent_count = mysqli_query($conn, $sql_absent_count);
-                $row_absent_count = mysqli_fetch_assoc($result_absent_count);
-                $number_of_absent =  $row_absent_count['Absent_count'];
-                
-                
-            }else{
-                    $sql = "SELECT
+                INNER JOIN attendances ON employee_tb.empid = attendances.empid
+                LEFT JOIN allowancededuct_tb ON employee_tb.empid = allowancededuct_tb.id_emp
+                LEFT JOIN payroll_loan_tb ON employee_tb.empid = payroll_loan_tb.empid
+                WHERE
+                    (
+                        attendances.status = 'Present' OR attendances.status = 'On-Leave'
+                    ) AND employee_tb.empid = '$EmployeeID' AND `date` BETWEEN '$str_date' AND '$end_date'
+                GROUP BY
+                    employee_tb.empid,
                     payroll_loan_tb.loan_type,
                     payroll_loan_tb.payable_amount,
                     payroll_loan_tb.amortization,
@@ -1450,61 +1458,95 @@ if(isset($_POST['printAll'])){
                     payroll_loan_tb.loan_status,
                     payroll_loan_tb.loan_date,
                     payroll_loan_tb.timestamp,
-                    SUM(allowancededuct_tb.allowance_amount) AS total_sum,
                     employee_tb.emptranspo,
                     employee_tb.empmeal,
                     employee_tb.empinternet,
-                    SUM(employee_tb.`drate`) AS Salary_of_Month,
+                    employee_tb.`empbsalary`,
                     employee_tb.`sss_amount`,
                     employee_tb.`tin_amount`,
                     employee_tb.`pagibig_amount`,
-                    employee_tb.`philhealth_amount`,
-                    employee_tb.`emptranspo` + employee_tb.`empmeal` + employee_tb.`empmeal` AS Total_allowanceStandard,
-                    employee_tb.`sss_amount` + employee_tb.`tin_amount` + employee_tb.`pagibig_amount` + employee_tb.`philhealth_amount` AS Total_deduct_governStANDARD,
-                    CONCAT(
-                            FLOOR( 
-                                SUM(TIME_TO_SEC(attendances.late)) / 3600
-                            ),
+                    employee_tb.`philhealth_amount`";
+
+                            $sql_absent_count = "SELECT 
+                            COUNT(`status`) as Absent_count
+                            FROM attendances
+                            WHERE (`status` = 'Absent' OR `status` = 'LWOP')  AND `empid` = '$EmployeeID' AND `date` BETWEEN  '$str_date' AND  '$end_date'";
+
+                            $result_absent_count = mysqli_query($conn, $sql_absent_count);
+                            $row_absent_count = mysqli_fetch_assoc($result_absent_count);
+                            $number_of_absent =  $row_absent_count['Absent_count'];
+                
+                
+            }else{
+                        $sql = "SELECT
+                        employee_tb.empid,
+                        payroll_loan_tb.loan_type,
+                        payroll_loan_tb.payable_amount,
+                        payroll_loan_tb.amortization,
+                        payroll_loan_tb.col_BAL_amount,
+                        payroll_loan_tb.cutoff_no,
+                        payroll_loan_tb.applied_cutoff,
+                        payroll_loan_tb.loan_status,
+                        payroll_loan_tb.loan_date,
+                        payroll_loan_tb.timestamp,
+                        SUM(allowancededuct_tb.allowance_amount) AS total_sum,
+                        employee_tb.emptranspo,
+                        employee_tb.empmeal,
+                        employee_tb.empinternet,
+                        SUM(employee_tb.`drate`) AS Salary_of_Month,
+                        employee_tb.`sss_amount`,
+                        employee_tb.`tin_amount`,
+                        employee_tb.`pagibig_amount`,
+                        employee_tb.`philhealth_amount`,
+                        employee_tb.`emptranspo` + employee_tb.`empmeal` + employee_tb.`empinternet` AS Total_allowanceStandard,
+                        employee_tb.`sss_amount` + employee_tb.`tin_amount` + employee_tb.`pagibig_amount` + employee_tb.`philhealth_amount` AS Total_deduct_governStANDARD,
+                        CONCAT(
+                            FLOOR(SUM(TIME_TO_SEC(attendances.late)) / 3600),
                             'H:',
-                            FLOOR(
-                                (
-                                    SUM(TIME_TO_SEC(attendances.late)) % 3600
-                                ) / 60
-                            ),
+                            FLOOR((SUM(TIME_TO_SEC(attendances.late)) % 3600) / 60),
                             'M'
                         ) AS total_hours_minutesLATE,
-                    CONCAT(
-                            FLOOR(
-                                SUM(TIME_TO_SEC(attendances.early_out)) / 3600
-                            ),
+                        CONCAT(
+                            FLOOR(SUM(TIME_TO_SEC(attendances.early_out)) / 3600),
                             'H:',
-                            FLOOR(
-                                (
-                                    SUM(TIME_TO_SEC(attendances.early_out)) % 3600
-                                ) / 60
-                            ),
+                            FLOOR((SUM(TIME_TO_SEC(attendances.early_out)) % 3600) / 60),
                             'M'
                         ) AS total_hours_minutesUndertime,
-                    CONCAT(
-                            FLOOR(
-                                SUM(TIME_TO_SEC(attendances.total_work)) / 3600
-                            ),
+                        CONCAT(
+                            FLOOR(SUM(TIME_TO_SEC(attendances.total_work)) / 3600),
                             'H:',
-                            FLOOR(
-                                (
-                                    SUM(TIME_TO_SEC(attendances.total_work)) % 3600
-                                ) / 60
-                            ),
+                            FLOOR((SUM(TIME_TO_SEC(attendances.total_work)) % 3600) / 60),
                             'M'
                         ) AS total_hours_minutestotalHours
-                FROM
-                    employee_tb
+                    FROM
+                        employee_tb
                     INNER JOIN attendances ON employee_tb.empid = attendances.empid
                     LEFT JOIN allowancededuct_tb ON employee_tb.empid = allowancededuct_tb.id_emp
                     LEFT JOIN payroll_loan_tb ON employee_tb.empid = payroll_loan_tb.empid
-
-                WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave')  AND employee_tb.empid = '$EmployeeID' AND `date` BETWEEN  '$str_date' AND  '$end_date'";
-            }
+                    WHERE
+                        (
+                            attendances.status = 'Present' OR attendances.status = 'On-Leave'
+                        ) AND employee_tb.empid = '$EmployeeID' AND `date` BETWEEN '$str_date' AND '$end_date'
+                    GROUP BY
+                        employee_tb.empid,
+                        payroll_loan_tb.loan_type,
+                        payroll_loan_tb.payable_amount,
+                        payroll_loan_tb.amortization,
+                        payroll_loan_tb.col_BAL_amount,
+                        payroll_loan_tb.cutoff_no,
+                        payroll_loan_tb.applied_cutoff,
+                        payroll_loan_tb.loan_status,
+                        payroll_loan_tb.loan_date,
+                        payroll_loan_tb.timestamp,
+                        employee_tb.emptranspo,
+                        employee_tb.empmeal,
+                        employee_tb.empinternet,
+                        employee_tb.`sss_amount`,
+                        employee_tb.`tin_amount`,
+                        employee_tb.`pagibig_amount`,
+                        employee_tb.`philhealth_amount`
+                    ";
+                }
                 //deduct sa absent
                 
                 $result = $conn->query($sql);
@@ -1520,10 +1562,10 @@ if(isset($_POST['printAll'])){
                             @$salary_of_month = $salary_of_month - ($EmpDrate * $number_of_absent);
                         }
                         
-                        $sss = $row_atteeee['sss_amount'];
-                        $philHealth = $row_atteeee['philhealth_amount'];
-                        $pagibig_amount = $row_atteeee['pagibig_amount'];
-                        $tin_amount = $row_atteeee['tin_amount'];
+                        $sss = isset($row_atteeee['sss_amount']) ? $row_atteeee['sss_amount'] : 0;
+                        $philHealth = isset($row_atteeee['philhealth_amount']) ? $row_atteeee['philhealth_amount'] : 0;
+                        $pagibig_amount = isset($row_atteeee['pagibig_amount']) ? $row_atteeee['pagibig_amount'] : 0;
+                        $tin_amount = isset($row_atteeee['tin_amount']) ? $row_atteeee['tin_amount'] : 0;
     
                         $total_government_deduct = $sss + $philHealth + $pagibig_amount + $tin_amount;
 
@@ -1537,10 +1579,10 @@ if(isset($_POST['printAll'])){
                             @$salary_of_month = $salary_of_month - ($EmpDrate * $number_of_absent);
                         }
     
-                        $sss = $row_atteeee['sss_amount'] / 2;      
-                        $philHealth = $row_atteeee['philhealth_amount'] / 2;       
-                        $pagibig_amount = $row_atteeee['pagibig_amount'] / 2;
-                        $tin_amount = $row_atteeee['tin_amount'] / 2;
+                        $sss = isset($row_atteeee['sss_amount']) ? $row_atteeee['sss_amount'] : 0 / 2;      
+                        $philHealth = isset($row_atteeee['philhealth_amount']) ? $row_atteeee['philhealth_amount'] : 0 / 2;       
+                        $pagibig_amount = isset($row_atteeee['pagibig_amount']) ? $row_atteeee['pagibig_amount'] : 0 / 2;
+                        $tin_amount = isset($row_atteeee['tin_amount']) ? $row_atteeee['tin_amount'] : 0 / 2;
                         $total_government_deduct = $sss + $philHealth + $pagibig_amount + $tin_amount;   
                         
                         $absence_Deducts = $EmpDrate * $number_of_absent;
@@ -1552,10 +1594,10 @@ if(isset($_POST['printAll'])){
                             @$salary_of_month = $salary_of_month - ($EmpDrate* $number_of_absent);
                         }
     
-                        $sss = $row_atteeee['sss_amount'] / 4;
-                        $philHealth = $row_atteeee['philhealth_amount'] / 4; 
-                        $pagibig_amount = $row_atteeee['pagibig_amount'] / 4;
-                        $tin_amount = $row_atteeee['tin_amount'] / 4; 
+                        $sss = isset($row_atteeee['sss_amount']) ? $row_atteeee['sss_amount'] : 0 / 4;
+                        $philHealth = isset($row_atteeee['philhealth_amount']) ? $row_atteeee['philhealth_amount'] : 0 / 4; 
+                        $pagibig_amount = isset($row_atteeee['pagibig_amount']) ? $row_atteeee['pagibig_amount'] : 0 / 4;
+                        $tin_amount = isset($row_atteeee['tin_amount']) ? $row_atteeee['tin_amount'] : 0 / 4; 
                         $total_government_deduct = $sss + $philHealth + $pagibig_amount + $tin_amount;
 
                         $absence_Deducts = $EmpDrate * $number_of_absent;
@@ -1638,21 +1680,26 @@ if(isset($_POST['printAll'])){
                         //For total hours ng ot
                         $select_basic_OT = "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(total_ot))) AS total_time_sum FROM overtime_tb WHERE `empid` = '$EmployeeID' AND `work_schedule` BETWEEN  '$str_date' AND  '$end_date' AND `status` = 'Approved'";
                         $result_basic_OT = mysqli_query($conn, $select_basic_OT);
-
+                        
                         if(mysqli_num_rows($result_basic_OT) > 0){
                             $row_basic_OT = mysqli_fetch_assoc($result_basic_OT);
                             $time = $row_basic_OT['total_time_sum'];
-
-                            $timeArr = explode(':', $time);
-                            @$hours = (int)$timeArr[0];
-                            @$minutes = (int)$timeArr[1];
-                            @$seconds = (int)$timeArr[2];
-
+                        
+                            if ($time !== null) {
+                                $timeArr = explode(':', $time);
+                                @$hours = (int)$timeArr[0];
+                                @$minutes = (int)$timeArr[1];
+                                @$seconds = (int)$timeArr[2];
+                        
                                 $basic_OT_hours =  $hours . "H:" . $minutes . "M";
+                            } else {
+                                $basic_OT_hours = "01H:0M"; // Handle null value appropriately
+                            }
                         }
                         else{
-                                $basic_OT_hours = "01H:0M";
+                            $basic_OT_hours = "01H:0M";
                         }
+                        
 
                         //calculation ng ot amount
                         $OTamount = $cutoff_OT + $totalOT_pay_holiday + $totalOT_pay_holiday_restday;

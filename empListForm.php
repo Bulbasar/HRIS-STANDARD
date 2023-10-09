@@ -267,7 +267,7 @@
                                 </div>
                             </div>
                             <div class="emp-info-fourth-input w-100 d-flex flex-start ml-3 mt-1">
-                              <div class="emp-info-empID" style=" width: 25.6%; margin-left: 1.7%;">
+                              <div class="emp-info-empID" style=" width: 25.6%; margin-left: 1.7%; ">
                                 <label for="empid" >Employee ID</label><br>                                     
                                  <?php 
                                     include 'config.php';
@@ -316,6 +316,29 @@
                                     </div>
                                     <span id="empid-error" style="color: red;"></span>
                                 </div>
+
+                                <div class="payrule" id="id_payingrules" style=" width: 26%; margin-left: 6%;">
+                                    <label for="PayingRules" >Pay Rules</label><br>    
+                                    <?php 
+                                    include 'config.php';
+
+                                  
+                                     $sql = "SELECT * FROM Payrule_tb";
+                                     $result = mysqli_query($conn, $sql);
+                                   
+
+                                        $options = "";
+                                        while ($rowpay = mysqli_fetch_assoc($result)) {
+                                            $options .= "<option value='". $rowpay['rule_name'] . "'>" .$rowpay['rule_name'].  "</option>"; //$options .= "<option value='". $rowpay['id'] . "'>" .$rowpay['rule_name'].  "</option>"; 
+                                        }
+                                        ?>
+                                        <div style="display:flex; flex-direction: row">
+                                            <select name="payingRule" style="display: flex; align-items: center; justify-content: center;width: 110%; padding: 0.2em; margin-right: 2%; height: 40px">
+                                                <option value="" selected disabled>Paying Rules</option>
+                                                <?php echo $options; ?>
+                                            </select>
+                                    </div>
+                                </div> 
                         </div> 
                           
                         <div class="employeeList-empDetail-container">
@@ -1084,7 +1107,8 @@ function matchPass(){
    
   document.addEventListener("DOMContentLoaded", function() {
 
-   var btn = document.getElementById("btn_save");
+    var btn = document.getElementById("btn_save");
+    var payrules = document.getElementById("id_payingrules");
     var classificationSelect = document.getElementById("classification");
     var department = document.getElementById("deparment");
     var position = document.getElementById("position");
@@ -1146,6 +1170,7 @@ function matchPass(){
         empPosition.style.display = "none";
         workingDays.style.display = "none";
         empVisor.style.display ="none";
+        payrules.style.display = "none";
         pakyawan.style.display = "block";
         freq.style.display = "block";
         pakyawVisor.style.display = "block";
@@ -1178,6 +1203,7 @@ function matchPass(){
         empPosition.style.display = "block";
         workingDays.style.display = "block";
         empVisor.style.display = "block";
+        payrules.style.display = "block";
         pakyawan.style.display = "none";
         freq.style.display = "none";
         pakyawVisor.style.display = "none";

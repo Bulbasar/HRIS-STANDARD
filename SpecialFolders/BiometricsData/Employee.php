@@ -49,6 +49,7 @@ class Employee{
     public function GetAllRecords(){
 
     }
+    
 
     public function IsEmployeeExist($empID){
         //echo $this->password;
@@ -64,7 +65,35 @@ class Employee{
         catch (Exception $e){
             return null;
         }
-        // if($res == null) return null;
+        if($res == null) return null;
         return $res->success ? true : false;
     }
+
+    // public function IsEmployeeExist($empID){
+    //     //echo $this->password;
+    //     $api = $this->url."/person/find?pass=$this->password&id=$empID";
+    
+    //     try {
+    //         $curl = curl_init($api);
+    //         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    //         $data = curl_exec($curl);
+    
+    //         if ($data === false) {
+    //             // Handle the cURL error
+    //             throw new Exception("cURL error: " . curl_error($curl));
+    //         }
+    
+    //         $res = json_decode($data);
+    
+    //         if ($res === null) {
+    //             // Handle JSON decoding error
+    //             throw new Exception("JSON decoding error: " . json_last_error_msg());
+    //         }
+    //     } catch (Exception $e) {
+    //         // Handle the exception, log or return an error message
+    //         return null;
+    //     }
+    
+    //     return isset($res->success) ? $res->success : false;
+    // }
 }

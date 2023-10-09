@@ -721,6 +721,7 @@
             </a>
             <div class="collapse" id="ui-emp">
               <ul class="nav flex-column sub-menu" style=" width: 100%;">
+                <!-- <li class="nav-item"> <a class="nav-link" href="Payrules">PAY RULE</a></li> -->
                 <li class="nav-item"> <a class="nav-link" href="EmployeeList">EMPLOYEE LIST</a></li>
                 <li class="nav-item"> <a class="nav-link" href="employeeRequest">EMPLOYEE REQUEST</a></li>
               </ul>

@@ -113,7 +113,7 @@ include_once 'config.php';
     }
 </style>
 
-    <div class="main-panel mt-5" style="margin-left: 15%; position: absolute; top:0;">
+      <div class="main-panel mt-5" style="margin-left: 15%; position: absolute; top:0;">
         <div class="content-wrapper mt-4" style="background-color: #f4f4f4">
           <div class="card mt-3" style=" width: 1550px; height:790px; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
             <div class="card-body">
@@ -175,75 +175,84 @@ include_once 'config.php';
                 <button id="arrowBtn" onclick="filterAttReport()"> &rarr; Apply Filter</button>
  </div> <!--Container Select-->
 <!----------------------------------------select button and text input--------------------------------------->
-                
-                                <div class="table-responsive" id="table-responsiveness" style="width: 98%; margin:auto; margin-top: 30px;">
-                                    <table id="order-listing" class="table" style="width: 100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>Cut Off Month</th>
-                                                    <th>Cut Off Start</th>
-                                                    <th>Cut Off End</th>
-                                                    <th>Cut Off Number</th>
-                                                    <th>Date Generated</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <?php 
-                                                include 'config.php';
-                                                $check_prb = mysqli_query($conn, "SELECT * FROM payslip_report_tb GROUP BY `cutoff_ID`");
-                                                if ($check_prb && mysqli_num_rows($check_prb) > 0) {
-                                                    while ($prb_row = $check_prb->fetch_assoc()){                                                    
-                                                ?>
-                                                    <tr>
-                                                        <td style="font-weight: 400;"><?php echo $prb_row['cutoff_month']; ?></td>
-                                                        <td style="font-weight: 400;"><?php echo $prb_row['cutoff_startdate']; ?></td>
-                                                        <td style="font-weight: 400;"><?php echo $prb_row['cutoff_enddate']; ?></td>
-                                                        <td style="font-weight: 400;"><?php echo $prb_row['cutoff_num']; ?></td>
-                                                        <td style="font-weight: 400;"><?php echo $prb_row['date_time']; ?></td>
-                                                        <td>                
-                                                            <form method="post" action="PayReport.php">
-                                                                <input type="hidden" name="cutoffID" value="<?php echo $prb_row['cutoff_ID']; ?>">
-                                                                <input type="hidden" name="startDate" value="<?php echo $prb_row['cutoff_startdate']; ?>">
-                                                                <input type="hidden" name="endDate" value="<?php echo $prb_row['cutoff_enddate']; ?>">
-                                                                <button type="submit" class="btn btn-primary view-report-btn">View Report</button>
-                                                            </form>
-                                                        </td>
-                                                    </tr>
-                                            </table>
-                                         </div>    
-                               <div class="report-container d-flex flex-row" id="pdf-content">
-    <!-- Your content here -->
-</div>
 
-                            
-                    <div class="export-section">
-                        <div class="export-sec">
-                            <p class="export">Export Options:</p>
-                            <form action="actions/Payroll/export_csv.php" method="POST" id="csv-export-form">
-                                    <input type="hidden" name="cutoffID" value="<?php echo $prb_row['cutoff_ID']; ?>">
-                                    <input type="hidden" name="startDate" value="<?php echo $prb_row['cutoff_startdate']; ?>">
-                                    <input type="hidden" name="endDate" value="<?php echo $prb_row['cutoff_enddate']; ?>">
-                                <button class="excel downloadcsv" id="export-csv-btn">CSV</button>
-                            </form>
-                            <!-- <p class="lbl_exprt_contnt">|</p> -->
-                                    <!-- <input type="hidden" name="cutoffID" value="<?php echo $prb_row['cutoff_ID']; ?>">
-                                    <input type="hidden" name="startDate" value="<?php echo $prb_row['cutoff_startdate']; ?>">
-                                    <input type="hidden" name="endDate" value="<?php echo $prb_row['cutoff_enddate']; ?>"> -->
+
+                                <div class="table-responsive" id="table-responsive">
+                                    <table id="order-listing" class="table" style="width: 100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Cut Off Month</th>
+                                                <th>Cut Off Start</th>
+                                                <th>Cut Off End</th>
+                                                <th>Cut Off Number</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <?php
+                                            include 'config.php';
+                                            $check_prb = mysqli_query($conn, "SELECT 
+                                            cutoff_ID,
+                                            cutoff_month,
+                                            cutoff_startdate,
+                                            cutoff_enddate,
+                                            cutoff_num
+                                            FROM payslip_report_tb
+                                            GROUP BY
+                                            cutoff_ID,
+                                            cutoff_month,
+                                            cutoff_startdate,
+                                            cutoff_enddate,
+                                            cutoff_num");
+                                            while($prb_row = $check_prb->fetch_assoc()){                      
+                                        ?>
+
+                                        <tr>
+                                            <td style="font-weight: 400;"><?php echo $prb_row['cutoff_month']?></td>
+                                            <td style="font-weight: 400;"><?php echo $prb_row['cutoff_startdate']?></td>
+                                            <td style="font-weight: 400;"><?php echo $prb_row['cutoff_enddate']?></td>
+                                            <td style="font-weight: 400;"><?php echo $prb_row['cutoff_num']?></td>
+                                            <td style="font-weight: 400;">
+                                            <form action="PayReport.php" method="POST">
+                                                <input type="hidden" name="cutoffID" value="<?php echo $prb_row['cutoff_ID']; ?>">
+                                                <input type="hidden" name="startDate" value="<?php echo $prb_row['cutoff_startdate']; ?>">
+                                                <input type="hidden" name="endDate" value="<?php echo $prb_row['cutoff_enddate']; ?>">
+                                            <button type="submit" class="btn btn-primary view-report-btn">View Report</button>
+                                            </form>
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                                
+                                <div class="export-section">
+                                    <div class="export-sec">
+                                        <p class="export">Export Options:</p>
+                                        <form action="actions/Payroll/export_csv.php" method="POST" id="csv-export-form">
+                                            <input type="hidden" name="cutoffID" value="<?php echo $prb_row['cutoff_ID']; ?>">
+                                            <input type="hidden" name="startDate" value="<?php echo $prb_row['cutoff_startdate']; ?>">
+                                            <input type="hidden" name="endDate" value="<?php echo $prb_row['cutoff_enddate']; ?>">
+                                        <button class="excel downloadcsv" id="export-csv-btn">CSV</button>
+                                        </form>
+                                    </div>
+                                          <?php
+                                        }
+                                      ?>
+                                </div>    
+
+
 
                         </div>
                     </div>
-                     <?php
-                      }
-                   }
-                ?>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
+                
+    
+
+
+                            
+
    
-            <div class="report-container d-flex flex-row" id="pdf-content">
-                <!-- Your existing content here -->
-            </div>
+
 
 
 
@@ -280,65 +289,6 @@ $(document).ready(function () {
         var maxDate = $("input[name='maxDate']").val();
     });
 });
-</script>
-
-<!--Pdf Exporting--->
-<script>
-$(document).ready(function() {
-  $("#export-pdf-btn").click(function() {
-    // Get the content to export
-    var contentToExport = $("#pdf-content").html();
-    
-    // Send content to generate_pdf.php using AJAX
-    $.ajax({
-      type: "POST",
-      url: "generate_pdf.php",
-      data: {
-        content: contentToExport
-      },
-      success: function(response) {
-        // Handle the response, e.g., you can open the generated PDF in a new tab
-        window.open(response, "_blank");
-      }
-    });
-  });
-});
-
-
-// document.getElementById("export-pdf-btn").addEventListener("click", exportPDF);
-
-// function exportPDF() {
-//     // Create a new jsPDF instance
-//     var pdf = new jsPDF('landscape');
-
-//     // Fetch the content from PayReport.php using AJAX
-//     var xhr = new XMLHttpRequest();
-//     xhr.open("GET", "PayReport.php", true);
-
-//     xhr.onreadystatechange = function () {
-//         if (xhr.readyState === 4 && xhr.status === 200) {
-//             var payReportContent = xhr.responseText;
-
-//             // Create a temporary element to hold the specific content
-//             var tempContainer = document.createElement("div");
-//             tempContainer.innerHTML = payReportContent;
-
-//             // Find the content with the specific ID
-//             var pdfContent = tempContainer.querySelector("#pdf-content");
-
-//             if (pdfContent) {
-//                 // Add the specific content to the PDF
-//                 pdf.fromHTML(pdfContent, 10, 10);
-//                 // Save the PDF with a filename
-//                 pdf.save("Payroll_Report.pdf");
-//             } else {
-//                 alert("Content with ID 'pdf-content' not found.");
-//             }
-//         }
-//     };
-
-//     xhr.send();
-// }
 </script>
 <!----------------------Script sa dropdown chain--------------------------->        
 <script>
