@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
     session_start();
     //    $empid = $_SESSION['empid'];
        if (!isset($_SESSION['username'])) {
@@ -143,7 +144,7 @@
     <link rel="stylesheet" href="css/styles.css"> 
     <link rel="stylesheet" href="css/pakyawan_generate.css">
     <link rel="stylesheet" href="css/gnratepayrollVIEW.css">
-    <title>Employee List</title>
+    <title>Pakyawan Employee</title>
 </head>
 <body>
 
@@ -151,7 +152,7 @@
     
     <header>
        <!-- include -->
-       <?php include 'header.php';?>
+       <!-- <?php include 'header.php';?> -->
     </header>
     
     <style>

@@ -108,7 +108,28 @@ session_start();
         margin-right: 15px !important;
         margin-bottom: -16px !important;
 
+        
     }
+
+    table {
+                display: block;
+                overflow-x: hidden;
+                white-space: nowrap;
+                max-height: 250px;
+                height: 250px;
+                
+                
+            }
+            tbody {
+                display: table;
+                width: 100%;
+            }
+            tr {
+                width: 100% !important;
+                display: table !important;
+                table-layout: fixed !important;
+            }
+            
 
 </style>
 
@@ -188,10 +209,12 @@ session_start();
         <div class="p-4 mb-2 bg-secondary text-white ml-4 mr-4">List of all Request</div>
 
         <form action="actions/Employee List/empreq.php" method="post">
-            <div class="table-responsive mt-3" style="width: 98%; margin:auto">
+   
+                
+                <div class="table-responsive" id="table-responsiveness" style="width: 98%; margin:auto; margin-top: 1em;">
                 <input type="hidden" name="name_reqType" id="id_reqType">
                 <input type="hidden" name="emp_req_id" id="id_emp">
-                <table id="order-listing" class="table" style="width: 100%;" >
+                <table id="order-listing" class="table" style="width: 100%">
                     <thead >   
                         <th style="display: none;"> ID </th>  
                         <th> Employee ID </th>

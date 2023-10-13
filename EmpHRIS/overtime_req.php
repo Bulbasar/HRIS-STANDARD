@@ -200,7 +200,7 @@ include 'config.php';
                             <div class="form-group">
                                 <label for="time_from" class="form-label mt-1">Time Range</label>
                                 <div class="input-group mb-3">
-                                    <input type="time" class="form-control" name="time_from" id="time_from_id">
+                                    <input type="time" class="form-control" name="time_from" id="time_from_id" readonly>
                                     <span class="input-group-text">-</span>
                                     <input type="time" class="form-control" name="time_to" id="time_to_id" onchange="min_hours()" required>
                                 </div>

@@ -371,7 +371,7 @@
                     <div class="schedule-name-container" style="height: 80px; display: flex; flex-direction: row; margin-bottom: 20px;">
                         <div>
                             <label for="schedule_name">Schedule Name</label><br>
-                            <input class="schedule-input form-control" type="text" name="schedule_name" id="" required style="height: 3.125em" maxlength="30" >
+                            <input class="schedule-input form-control" type="text" name="schedule_name" id="" required style="height: 3.125em" maxlength="25" >
                            
                         </div>
                         <div>

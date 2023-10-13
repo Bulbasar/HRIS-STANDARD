@@ -3,9 +3,20 @@
 if (isset($_POST['save_changes'])) {
     $empidArray = $_POST['empid'][0];
     $empids = explode(",", $empidArray);
-    $vacationLeave = $_POST['name_vctn_lve'];
-    $sickLeave = $_POST['name_sick_lve'];
-    $bereavementLeave = $_POST['name_brvmnt_lve'];
+    $vacation_leave = $_POST['name_vctn_lve'];
+    $sick_leave = $_POST['name_sick_lve'];
+    $bereavement_leave = $_POST['name_brvmnt_lve'];
+
+    $vacation_leave1 = $_POST['name_vctn_lve1'];
+    $vacation_leave_final = $vacation_leave . $vacation_leave1;
+
+    $sick_leave1 = $_POST['name_sick_lve1'];
+    $sick_leave_final = $sick_leave . $sick_leave1;
+
+    $bereavement_leave1 =  $_POST['name_brvmnt_lve1'];
+    $bereavement_leave_final = $bereavement_leave . $bereavement_leave1;
+
+    echo $vacation_leave_final , "<br>", $sick_leave_final, "<br>", $bereavement_leave_final;
     
     include '../../config.php';
 
@@ -33,7 +44,7 @@ if (isset($_POST['save_changes'])) {
             if (mysqli_stmt_num_rows($check_stmt) == 0) {
                 // No existing data, insert new data
                 mysqli_stmt_close($check_stmt);
-                mysqli_stmt_bind_param($stmt, "ssss", $empID, $vacationLeave, $sickLeave, $bereavementLeave);
+                mysqli_stmt_bind_param($stmt, "ssss", $empID, $vacation_leave_final, $sick_leave_final, $bereavement_leave_final);
                 mysqli_stmt_execute($stmt);
             } else {
                 // Data already exists, skip insertion

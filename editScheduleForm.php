@@ -1,7 +1,7 @@
 <?php
-   
+   error_reporting(0);
    session_start();
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   //    $empid = $_SESSION['empid'];
+      $empid = $_SESSION['empid'];
       if (!isset($_SESSION['username'])) {
        header("Location: login.php");
    } else {
@@ -38,8 +38,10 @@
                                  SET schedule_name='".$_POST['schedule_name']."', monday='".$_POST['monday']."', mon_timein='".$_POST['mon_timein']."', mon_timeout='".$_POST['mon_timeout']."', mon_wfh='".$_POST['mon_wfh']."', tuesday='".$_POST['tuesday']."', tues_timein='".$_POST['tues_timein']."', tues_timeout='".$_POST['tues_timeout']."', tues_wfh='".$_POST['tues_wfh']."', wednesday='".$_POST['wednesday']."', wed_timein='".$_POST['wed_timein']."', wed_timeout='".$_POST['wed_timeout']."', wed_wfh='".$_POST['wed_wfh']."', thursday='".$_POST['thursday']."', thurs_timein='".$_POST['thurs_timein']."', thurs_timeout='".$_POST['thurs_timeout']."', thurs_wfh='".$_POST['thurs_wfh']."', friday='".$_POST['friday']."', fri_timein='".$_POST['fri_timein']."', fri_timeout='".$_POST['fri_timeout']."', fri_wfh='".$_POST['fri_wfh']."', saturday='".$_POST['saturday']."', sat_timein='".$_POST['sat_timein']."', sat_timeout='".$_POST['sat_timeout']."', sat_wfh='".$_POST['sat_wfh']."', sunday='".$_POST['sunday']."', sun_timein='".$_POST['sun_timein']."', sun_timeout='".$_POST['sun_timeout']."', sun_wfh='".$_POST['sun_wfh']."', flexible='".$_POST['flexible']."', enable_grace_period='".$_POST['enable_grace_period']."' , grace_period='".$_POST['grace_period']."', enable_sched_ot='".$_POST['enable_sched_ot']."'  , sched_ot='".$_POST['sched_ot']."', sched_holiday='".$_POST['sched_holiday']."', restday='".$_POST['restday']."'
                                  WHERE id='".$_GET['id']."'");
                      
-                                    $schedules_names = $_GET['schedule'];   
-                                     
+                                    $schedules_names = $_GET['schedule']; 
+                                    $schedule_id = $_GET['id'];
+                                    // echo $schedule_id; 
+
                                     $query = " SELECT
                                                     *  
                                                 FROM
@@ -66,11 +68,33 @@
                                                 $schedname = $_POST['schedule_name'];
                                                 mysqli_query($conn, "UPDATE empschedule_tb SET schedule_name = '$schedname' WHERE empid = $empids ");
                                             }
+                                        
+                                        
+                                        // header('Location: editScheduleForm?id='.$schedule_id.'&schedule'.$schedules_names.'');
+                                        // echo '<script>alert("Successfully Updated!")</script>';
+                                    //     echo "<script> 
+                                    //     let validation = document.getElementById('validation');
+                                    //     validation.value = 'Nice';
+                                    // </script>";
+                                    
+                                    // // Correct the concatenation of URL parameters in the window.location.href
+                                    // echo "<script>window.location.href = 'editScheduleForm?id=$schedule_id&schedule=$schedules_names';</script>";
 
-                                        header('Location: scheduleForm.php');
+                                    // if()
+                                    
+                                        
+                                        
                                     }
                                     else{
-                                        header('Location: scheduleForm.php?msg="Something went wrong"');
+                                        // echo '<script>alert("Successfully Updated!")</script>';
+                                    //     echo "<script> 
+                                    //     let validation = document.getElementById('validation');
+                                    //     validation.value = 'Nice';
+                                    // </script>";
+
+                                    // // Correct the concatenation of URL parameters in the window.location.href
+                                    // echo "<script>window.location.href = 'editScheduleForm?id=$schedule_id&schedule=$schedules_names';</script>";
+
                                     }
                                   //para sa pag select sa schedule base sa schedule na fetch (END)
            
@@ -113,6 +137,8 @@
 <script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
 <script type="text/javascript" src="js/multi-select-dd.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 
 <link rel="stylesheet" href="css/try.css">
     <link rel="stylesheet" href="css/styles.css"> 
@@ -121,8 +147,11 @@
 </head>
 <body>
     <header>
-        <?php include("header.php")?>
+       <?php 
+            include 'header.php';
+       ?>
     </header>
+
 
     <style>
         body a{
@@ -371,7 +400,7 @@
                            
                             if($results->num_rows > 0){
                                 while($rows = $results->fetch_assoc()){
-                                    echo "<button id='schedule_list' style='border:none; background-color: inherit; display: flex; margin-left: 1em; font-size: 20px; margin-top: 10px; font-weight: 500;'><a id='schedule_list' href='editScheduleForm.php?id=$rows[id]'>".$rows['schedule_name']."</a></button>";
+                                    echo "<button id='schedule_list' style='border:none; background-color: inherit; display: flex; margin-left: 1em; font-size: 20px; margin-top: 10px; font-weight: 500;'><a id='schedule_list' href='editScheduleForm.php?id=" . $rows['id'] . "&schedule=" . $rows['schedule_name'] . "'>".$rows['schedule_name']."</a></button>";
                                 }
                             }
                         ?>
@@ -409,7 +438,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                           
+                                <input type="text" name="" id="validation" value='Validation'>
                                 <input type="hidden" name="id" value="<?php echo $schedrow['id']; ?>">
                                 <input type="hidden" name="restday" id="restdayInput" value="<?php echo $schedrow['restday'] ?>" readonly>
                                 <td>
@@ -468,6 +497,25 @@
                         </tbody>
                     </table>
 
+                    <!-- <script>
+    // Get the URL parameters
+    // const params = new URLSearchParams(window.location.search);
+    // const showAlert = params.get("show_alert");
+
+    let validation = document.getElementById("validation").value;
+
+    console.log(validation);
+    if (validation == "Validation") {
+        // Use SweetAlert for the success message
+        Swal.fire({
+            title: "Success!",
+            text: "Successfully Updated!",
+            icon: "success"
+        }).then(function() {
+            // You can perform any other actions after the SweetAlert here
+        });
+    }
+</script> -->
                  <div class="schedule-extra">
                     <div>
                         <div class="schedule-gracePeriod">

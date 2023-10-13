@@ -360,11 +360,13 @@ position: fixed;
 background-color: transparent;
 position: fixed;
 margin-left: 150px;
+font-size: smaller;
 }
 .p_Tamount{
 background-color: transparent;
 position: fixed;
 margin-left: 300px;
+font-size: smaller;
 }
 .headbdy_pnl22{
 background-color: transparent;

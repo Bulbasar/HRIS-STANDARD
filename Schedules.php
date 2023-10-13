@@ -95,6 +95,24 @@
                 display: table !important;
                 table-layout: fixed !important;
             }
+
+        thead th:nth-child(1){
+            width: 8% !important;
+        }
+
+        tr td:nth-child(1){
+            width: 8% !important;
+        }
+
+        thead th:nth-child(2){
+            width: 24% !important;
+        }
+
+        tr td:nth-child(2){
+            width: 25% !important;
+        }
+
+
     </style>
 
     <div class="modal fade" id="schedUpdate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="title" aria-hidden="true">

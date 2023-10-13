@@ -2,11 +2,11 @@
 include 'config.php';
 
 $pdfData = $_POST['pdfData'];
-$employeeId = $_POST['employeeId'];
-$Cutoff_Frequency = $_POST['Cutoff_Frequency'];
-$Cutoff_Numbers = $_POST['Cutoff_Numbers'];
-$employee_workdays = $_POST['employee_workdays'];
-$cutoffId = $_POST['cutoffId'];
+$Empid = $_POST['Empid'];
+$Frequent = $_POST['Frequent'];
+$Cutoffnumber = $_POST['Cutoffnumber'];
+$WorkingDays = $_POST['WorkingDays'];
+$CutoffId = $_POST['CutoffId'];
 
 $decodedPdfData = base64_decode($pdfData);
 
@@ -21,10 +21,10 @@ $result_emp = mysqli_query($conn, "SELECT
                                             ) AS `full_name`
                                             FROM 
                                             `employee_tb`
-                                            WHERE `empid`=  '$employeeId'");
+                                            WHERE `empid`=  '$Empid'");
  $row_emp= mysqli_fetch_assoc($result_emp);
 
- $pdfFilePath = 'Payslip PDF/' . $row_emp['full_name'] . $currentDateTime . "_" . $Cutoff_Numbers . '.pdf';
+ $pdfFilePath = 'Payslip PDF/' . $row_emp['full_name'] . $currentDateTime . "_" . $Cutoffnumber . '.pdf';
  $file = fopen($pdfFilePath, 'wb'); // Open the file in write mode
  if ($file) {
   fwrite($file, $decodedPdfData);
@@ -34,21 +34,21 @@ $result_emp = mysqli_query($conn, "SELECT
     echo "Error writing the PDF file.";
   }
 
-if ($Cutoff_Frequency === 'Monthly'){
+if ($Frequent === 'Monthly'){
 
-}else if($Cutoff_Frequency === 'Semi-Month'){
+}else if($Frequent === 'Semi-Month'){
   $first_cutOFf = '1';
   $last_cutoff ='2';
 }
-else if($Cutoff_Frequency === 'Weekly'){
+else if($Frequent === 'Weekly'){
   $first_cutOFf = '1';
   $last_cutoff ='4';
 }
 
-    if ($Cutoff_Frequency === 'Monthly')
+    if ($Frequent === 'Monthly')
     {
         //for every cutoff loan deductions
-        $query = "SELECT * FROM payroll_loan_tb WHERE `empid` = '$employeeId' AND `loan_status` != 'PAID' AND `status` = 'Approved'";
+        $query = "SELECT * FROM payroll_loan_tb WHERE `empid` = '$Empid' AND `loan_status` != 'PAID' AND `status` = 'Approved'";
         $result = $conn->query($query);
 
         // Check if any rows are fetched
@@ -88,19 +88,19 @@ else if($Cutoff_Frequency === 'Weekly'){
                           }  
                       }
                       $stmt = $conn->prepare("INSERT INTO payslip_tb (col_Payslip_pdf, col_empid, col_cutoffID, col_numDaysWork) VALUES (?, ?, ?, ?)");
-                      $stmt->bind_param("ssii", $pdfFilePath, $employeeId, $cutoffId, $employee_workdays);
+                      $stmt->bind_param("ssii", $pdfFilePath, $Empid, $CutoffId, $WorkingDays);
                       $stmt->execute();
           
                       echo 'Done';
     }else{
       $stmt = $conn->prepare("INSERT INTO payslip_tb (col_Payslip_pdf, col_empid, col_cutoffID, col_numDaysWork) VALUES (?, ?, ?, ?)");
-      $stmt->bind_param("ssii", $pdfFilePath, $employeeId, $cutoffId, $employee_workdays);
+      $stmt->bind_param("ssii", $pdfFilePath, $Empid, $CutoffId, $WorkingDays);
       $stmt->execute();
         echo 'Done';
     }
 } else {
-    if($Cutoff_Numbers === $first_cutOFf){
-        $query = "SELECT * FROM payroll_loan_tb WHERE `empid` = '$employeeId' AND `loan_status` != 'PAID' AND `status` = 'Approved' AND (`applied_cutoff` = 'First Cutoff' OR `applied_cutoff` = 'Every Cutoff')";
+    if($Cutoffnumber === $first_cutOFf){
+        $query = "SELECT * FROM payroll_loan_tb WHERE `empid` = '$Empid' AND `loan_status` != 'PAID' AND `status` = 'Approved' AND (`applied_cutoff` = 'First Cutoff' OR `applied_cutoff` = 'Every Cutoff')";
         $result = $conn->query($query);
 
                   // Check if any rows are fetched
@@ -141,7 +141,7 @@ else if($Cutoff_Frequency === 'Weekly'){
                         // Check if there's existing data in payslip_tb table
                         $existingDataQuery = "SELECT * FROM payslip_tb WHERE col_empid = ? AND col_numDaysWork = ? AND col_cutoffID = ?";
                         $existingDataStmt = $conn->prepare($existingDataQuery);
-                        $existingDataStmt->bind_param("sii", $employeeId, $Cutoff_Numbers, $cutoffId);
+                        $existingDataStmt->bind_param("sii", $Empid, $Cutoffnumber, $CutoffId);
                         $existingDataStmt->execute();
                         $existingDataResult = $existingDataStmt->get_result();
 
@@ -151,7 +151,7 @@ else if($Cutoff_Frequency === 'Weekly'){
                         } else {
                             // Insert data into payslip_tb table
                             $stmt = $conn->prepare("INSERT INTO payslip_tb (col_Payslip_pdf, col_empid, col_cutoffID, col_numDaysWork) VALUES (?, ?, ?, ?)");
-                            $stmt->bind_param("ssii", $pdfFilePath, $employeeId, $cutoffId, $employee_workdays);
+                            $stmt->bind_param("ssii", $pdfFilePath, $Empid, $CutoffId, $WorkingDays);
                             $stmt->execute();
 
                             echo 'Done';
@@ -160,7 +160,7 @@ else if($Cutoff_Frequency === 'Weekly'){
                     // Check if there's existing data in payslip_tb table
                     $existingDataQuery = "SELECT * FROM payslip_tb WHERE col_empid = ? AND col_numDaysWork = ? AND col_cutoffID = ?";
                     $existingDataStmt = $conn->prepare($existingDataQuery);
-                    $existingDataStmt->bind_param("sii", $employeeId, $Cutoff_Numbers, $cutoffId);
+                    $existingDataStmt->bind_param("sii", $Empid, $Cutoffnumber, $CutoffId);
                     $existingDataStmt->execute();
                     $existingDataResult = $existingDataStmt->get_result();
 
@@ -170,14 +170,14 @@ else if($Cutoff_Frequency === 'Weekly'){
                     } else {
                         // Insert data into payslip_tb table
                         $stmt = $conn->prepare("INSERT INTO payslip_tb (col_Payslip_pdf, col_empid, col_cutoffID, col_numDaysWork) VALUES (?, ?, ?, ?)");
-                        $stmt->bind_param("ssii", $pdfFilePath, $employeeId, $cutoffId, $employee_workdays);
+                        $stmt->bind_param("ssii", $pdfFilePath, $Empid, $CutoffId, $WorkingDays);
                         $stmt->execute();
 
                         echo 'Done';
                     }
                   }
-    } else if($Cutoff_Numbers === $first_cutOFf){
-        $query = "SELECT * FROM payroll_loan_tb WHERE empid = $employeeId AND loan_status != 'PAID' AND `status` = 'Approved' AND (`applied_cutoff` = 'Last Cutoff' OR `applied_cutoff` = 'Every Cutoff')";
+    } else if($Cutoffnumber === $first_cutOFf){
+        $query = "SELECT * FROM payroll_loan_tb WHERE empid = $Empid AND loan_status != 'PAID' AND `status` = 'Approved' AND (`applied_cutoff` = 'Last Cutoff' OR `applied_cutoff` = 'Every Cutoff')";
         $result = $conn->query($query);
     
         // Check if any rows are fetched
@@ -218,7 +218,7 @@ else if($Cutoff_Frequency === 'Weekly'){
             // Check if there's existing data in payslip_tb table
             $existingDataQuery = "SELECT * FROM payslip_tb WHERE col_empid = ? AND col_numDaysWork = ? AND col_cutoffID = ?";
             $existingDataStmt = $conn->prepare($existingDataQuery);
-            $existingDataStmt->bind_param("sii", $employeeId, $Cutoff_Numbers, $cutoffId);
+            $existingDataStmt->bind_param("sii", $Empid, $Cutoffnumber, $CutoffId);
             $existingDataStmt->execute();
             $existingDataResult = $existingDataStmt->get_result();
 
@@ -228,7 +228,7 @@ else if($Cutoff_Frequency === 'Weekly'){
             } else {
                 // Insert data into payslip_tb table
                 $stmt = $conn->prepare("INSERT INTO payslip_tb (col_Payslip_pdf, col_empid, col_cutoffID, col_numDaysWork) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssii", $pdfFilePath, $employeeId, $cutoffId, $employee_workdays);
+                $stmt->bind_param("ssii", $pdfFilePath, $Empid, $CutoffId, $WorkingDays);
                 $stmt->execute();
 
                 echo 'Done';
@@ -237,7 +237,7 @@ else if($Cutoff_Frequency === 'Weekly'){
             // Check if there's existing data in payslip_tb table
             $existingDataQuery = "SELECT * FROM payslip_tb WHERE col_empid = ? AND col_numDaysWork = ? AND col_cutoffID = ?";
             $existingDataStmt = $conn->prepare($existingDataQuery);
-            $existingDataStmt->bind_param("sii", $employeeId, $Cutoff_Numbers, $cutoffId);
+            $existingDataStmt->bind_param("sii", $Empid, $Cutoffnumber, $CutoffId);
             $existingDataStmt->execute();
             $existingDataResult = $existingDataStmt->get_result();
 
@@ -247,14 +247,14 @@ else if($Cutoff_Frequency === 'Weekly'){
             } else {
                 // Insert data into payslip_tb table
                 $stmt = $conn->prepare("INSERT INTO payslip_tb (col_Payslip_pdf, col_empid, col_cutoffID, col_numDaysWork) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssii", $pdfFilePath, $employeeId, $cutoffId, $employee_workdays);
+                $stmt->bind_param("ssii", $pdfFilePath, $Empid, $cutoffId, $WorkingDays);
                 $stmt->execute();
 
                 echo 'Done';
             }
         }
-    }else if($Cutoff_Numbers === '2' || $Cutoff_Numbers === '3'){
-        $query = "SELECT * FROM payroll_loan_tb WHERE empid = $employeeId AND loan_status != 'PAID' AND `status` = 'Approved' AND `applied_cutoff` = 'Every Cutoff'";
+    }else if($Cutoffnumber === '2' || $Cutoffnumber === '3'){
+        $query = "SELECT * FROM payroll_loan_tb WHERE empid = $Empid AND loan_status != 'PAID' AND `status` = 'Approved' AND `applied_cutoff` = 'Every Cutoff'";
         $result = $conn->query($query);
     
         // Check if any rows are fetched
@@ -298,7 +298,7 @@ else if($Cutoff_Frequency === 'Weekly'){
             // Check if there's existing data in payslip_tb table
             $existingDataQuery = "SELECT * FROM payslip_tb WHERE col_empid = ? AND col_numDaysWork = ? AND col_cutoffID = ?";
             $existingDataStmt = $conn->prepare($existingDataQuery);
-            $existingDataStmt->bind_param("sii", $employeeId, $Cutoff_Numbers, $cutoffId);
+            $existingDataStmt->bind_param("sii", $Empid, $Cutoffnumber, $CutoffId);
             $existingDataStmt->execute();
             $existingDataResult = $existingDataStmt->get_result();
 
@@ -308,7 +308,7 @@ else if($Cutoff_Frequency === 'Weekly'){
             } else {
                 // Insert data into payslip_tb table
                 $stmt = $conn->prepare("INSERT INTO payslip_tb (col_Payslip_pdf, col_empid, col_cutoffID, col_numDaysWork) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssii", $pdfFilePath, $employeeId, $cutoffId, $employee_workdays);
+                $stmt->bind_param("ssii", $pdfFilePath, $Empid, $CutoffId, $WorkingDays);
                 $stmt->execute();
 
                 echo 'Done';
@@ -317,7 +317,7 @@ else if($Cutoff_Frequency === 'Weekly'){
             // Check if there's existing data in payslip_tb table
             $existingDataQuery = "SELECT * FROM payslip_tb WHERE col_empid = ? AND col_numDaysWork = ? AND col_cutoffID = ?";
             $existingDataStmt = $conn->prepare($existingDataQuery);
-            $existingDataStmt->bind_param("sii", $employeeId, $Cutoff_Numbers, $cutoffId);
+            $existingDataStmt->bind_param("sii", $Empid, $Cutoffnumber, $CutoffId);
             $existingDataStmt->execute();
             $existingDataResult = $existingDataStmt->get_result();
 
@@ -327,7 +327,7 @@ else if($Cutoff_Frequency === 'Weekly'){
             } else {
                 // Insert data into payslip_tb table
                 $stmt = $conn->prepare("INSERT INTO payslip_tb (col_Payslip_pdf, col_empid, col_cutoffID, col_numDaysWork) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssii", $pdfFilePath, $employeeId, $cutoffId, $employee_workdays);
+                $stmt->bind_param("ssii", $pdfFilePath, $Empid, $CutoffId, $WorkingDays);
                 $stmt->execute();
 
                 echo 'Done';

@@ -70,7 +70,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         INNER JOIN employee_tb ON pakyawan_based_work_tb.employee = employee_tb.empid
         WHERE pakyawan_based_work_tb.employee = $empid 
         AND `start_date` >= '$startDate' 
-        AND `end_date` <= '$endDate'";
+        AND `end_date` <= '$endDate'
+        GROUP BY employee_tb.fname, employee_tb.empid, employee_tb.lname";
+        
 
         $result = mysqli_query($conn, $sql);
             

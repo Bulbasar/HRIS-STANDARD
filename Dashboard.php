@@ -221,6 +221,92 @@ if(mysqli_num_rows($result) <= 0) {
         .swiper-button-next:after, .swiper-button-prev:after {
             font-size: 1em;
         }
+          /* Style for the overlay */
+.overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+        z-index: 999; /* Ensure overlay is on top */
+    }
+
+    .modals {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    z-index: 9999; /* Ensure modal is on top of the overlay */
+    height: 33%;
+    width: 25%;
+    border-radius: 0.5em;
+    animation: delayAndFadeIn 0.8s ease-in-out forwards; /* Delay and then fade in */
+}
+
+    
+
+    
+    /* Style for the close button */
+    .modals .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    @keyframes delayAndFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+    /* Bouncing animation for the icon */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Apply the bouncing animation to the icon */
+    .bouncing-icon {
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        /* 15% {
+            transform: rotate(180deg);
+        }
+        30%{
+            transform: rotate(280deg);
+        } */
+        70%{
+            transform: rotate(359deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Apply the rotation animation to the checkmark icon */
+    #insertedModal .rotating-icon {
+        animation: rotate 2.5s infinite; /* 0.5 seconds rotation + 3 seconds pause */
+    }
 
     </style>
 
@@ -831,6 +917,190 @@ if(mysqli_num_rows($result) <= 0) {
 
 </script>
 <!--------------------------------------------------- EDIT MODAL  ------------------------------------------------------------------->
+
+<!-- View Event -->
+                   
+<div class="modal fade" id="view_event" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-xl" >
+            <div class="modal-content" >
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Events</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    
+            <div class="table-responsive mt-2" style="overflow-x:hidden; height: 18.75em;">
+                <table id="order-listing" class="table" >
+                    <thead style="background-color: #ececec;">
+                        <tr>
+                            <th class='d-none'>id</th>
+                            <th>Event Title</th>
+                            <th>Event Type</th>
+                            <th>Event Start</th>
+                            <th>Event End</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <?php 
+                        include 'config.php';
+
+                        $sql = "SELECT * FROM event_tb ORDER BY `start_date` DESC";
+                        $result = mysqli_query($conn, $sql);
+
+                        while($row = mysqli_fetch_assoc($result)){
+                            $id = $row['id'];
+                            $title = $row['event_title'];
+                            $type = $row['event_type'];
+                            $start_date = $row['start_date'];
+                            $end_date = $row['end_date'];
+
+                            echo "<tr>";
+                            echo "<td class='d-none'>$id</td>";
+                            echo "<td style='font-weight: 400'>$title</td>";
+                            echo "<td style='font-weight: 400'>$type</td>";
+                            echo "<td style='font-weight: 400'>$start_date</td>";
+                            echo "<td style='font-weight: 400'>$end_date</td>";
+                            echo "<td>
+                            <button type='button' class='border-0 edit_event' data-bs-toggle='modal' data-bs-target='#edit_event' id='open_edit_event_$id'> <i class='fa-solid fa-pen-to-square fs-5 me-3' title='edit'></i> </button>
+                            
+                            <button class='deletebtn'  title = 'Delete' data-bs-toggle='modal' data-bs-target='#deletemodal' style='border: none; background-color: inherit' id='delete_event_$id'> <i class='fa-sharp fa-solid fa-trash' style='font-size: 1.4em'></i> </button>
+                            </td>";
+                            echo "</tr>";
+                        }
+                        ?>
+
+
+                </table>
+            </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- edit event -->
+    <div class="modal fade" id="edit_event" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close_event"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <form action="Data Controller/Event/update_event.php" method="POST">
+                        <input type="hidden" name="id" id="id">
+
+                        <label for="">Event Title</label><br>
+                        <input type="text" class="form-control" name="event_title" id="title" readonly><br>
+
+                        <label for="">Event Type</label><br>
+                        <input type="text" class="form-control" name="event_type" id="type"><br>
+
+                        <label for="">Start Date</label><br>
+                        <input type="datetime-local" class="form-control" name="start_date" id="start"><br>
+
+                        <label for="">End Date</label><br>
+                        <input type="datetime-local" class="form-control" name="end_date" id="end">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_event">Close</button>
+                <button type="submit" name="update_event" class="btn btn-primary">Update</button>
+                    </form>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deletemodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="Data Controller/Event/delete_event.php" method="POST">
+            <div class="modal-body">
+
+                <input type="hidden" name="id" id="delete_id">
+                <input type="hidden" name="event_title" id="delete_title">
+            
+
+                <h4>Do you want to delete?</h4>
+
+            </div> <!--Modal body div close tag-->
+            <div class="modal-footer">
+            
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="submit" name="delete_data" class="btn btn-primary">Yes</button>
+            </div>
+            </form>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Add a click event handler for all buttons with the class 'edit_event'
+            $(".edit_event").on("click", function () {
+                // Get the unique ID of the clicked button
+                var buttonId = $(this).attr("id");
+                // Extract the ID from the button's ID
+                var eventId = buttonId.split("_")[2];
+                // Close the first modal
+                $("#view_event").modal("hide");
+                // Open the second modal with the corresponding ID
+                $("#edit_event").modal("show");
+                
+                // You can use 'eventId' to fetch data for the specific event and populate the second modal.
+            });
+
+            // When the second modal is closed, show the first modal
+            $('#edit_event').on('hidden.bs.modal', function (e) {
+                $("#view_event").modal("show");
+            });
+        });
+
+        
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Add a click event handler for all buttons with the class 'edit_event'
+            $(".deletebtn").on("click", function () {
+                // Get the unique ID of the clicked button
+                var buttonId = $(this).attr("id");
+                // Extract the ID from the button's ID
+                var eventId = buttonId.split("_")[2];
+                // Close the first modal
+                $("#view_event").modal("hide");
+                // Open the second modal with the corresponding ID
+                $("#deletemodal").modal("show");
+                
+                // You can use 'eventId' to fetch data for the specific event and populate the second modal.
+            });
+
+            // When the second modal is closed, show the first modal
+            $('#deletemodal').on('hidden.bs.modal', function (e) {
+                $("#view_event").modal("show");
+            });
+        });
+
+
+    </script>
+
+
+
+
 
               
                             <!-- Modal of view all Present Employee Start Here --------------------------------------->
@@ -1580,7 +1850,7 @@ if(mysqli_num_rows($result) <= 0) {
                                                     overtime_tb.empid AS col_req_emp,
                                                     overtime_tb.work_schedule AS datefiled,
                                                     overtime_tb.status AS col_status,
-                                                    'OverTime Request' AS request_type
+                                                    'Overtime Request' AS request_type
                                                 FROM overtime_tb
     
                                                 UNION
@@ -1897,34 +2167,46 @@ if(mysqli_num_rows($result) <= 0) {
                                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#add_event" style="cursor: pointer;">Add Event</a>
                                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#add_holiday" style="cursor: pointer;">Add Holiday</a>
                                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view_holiday" style="cursor: pointer;">View Holidays</a>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view_event" style="cursor: pointer;">View Event</a>
                         </div>
                         </div>
                             </div>
                         </div>
                         <div class="event-content">
-                            <div class="first_content">
+                        <div class="first_content">
                                 <?php
-                                  date_default_timezone_set('Asia/Manila');
+                                date_default_timezone_set('Asia/Manila');
 
-                                  // Get the current month's start and end dates
-                                  $startDate = date('Y-m-d');
-                                  $endDate = date('Y-m-t');
-                                  
-                                $query = "SELECT * FROM event_tb WHERE `start_date` BETWEEN '$startDate' AND '$endDate' AND `end_date` BETWEEN '$startDate' AND '$endDate' ORDER BY `start_date` ASC";
+                                // Get the current month's start and end dates
+                                $startDate = date('Y-m-d');
+                                $endDate = date('Y-m-t');
+
+                                $currentDate = date('Y-m-d');
+
+                                $query = "SELECT * FROM event_tb 
+                                        WHERE ('$currentDate' BETWEEN `start_date` AND `end_date`)
+                                        OR (`start_date` BETWEEN '$startDate' AND '$endDate' 
+                                        AND `end_date` >= '$currentDate')
+                                        ORDER BY `start_date` ASC";
+
                                 $result = mysqli_query($conn, $query);
+
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $start_date = date('Y-m-d', strtotime($row['start_date']));
                                     $end_date = date('Y-m-d', strtotime($row['end_date']));
                                     $eventDay = date('l', strtotime($row['start_date']));
-                                ?>
-                                <div class="son_first" style="background-color: #ECECEC;">
-                                    <p><?php echo '<strong style="font-size: 20px; margin-left: 10px;">' . $row['event_title'] . '</strong> ' . '<span style="float: right; margin-right: 10px;">' . $start_date . ' - '. $end_date. '</span>' ; ?></p>
-                                    <p><?php echo '<span style="margin-left: 10px;">' . $row['event_type'] . '</span> ' . '<span style="float: right; margin-right: 10px;">' . $eventDay . '</span>'; ?></p>
-                                </div>
-                                <?php
+
+                                    ?>
+                                    <div class="son_first" style="background-color: #ECECEC;">
+                                        <p><?php echo '<strong style="font-size: 20px; margin-left: 10px;">' . $row['event_title'] . '</strong> ' . '<span style="float: right; margin-right: 10px;">' . $start_date . ' - '. $end_date. '</span>' ; ?></p>
+                                        <p><?php echo '<span style="margin-left: 10px;">' . $row['event_type'] . '</span> ' . '<span style="float: right; margin-right: 10px;">' . $eventDay . '</span>'; ?></p>
+                                    </div>
+                                    <?php
                                 }
                                 ?>
                             </div>
+
+
                             
                             <div class="holiday-content">
                             <div class="first_holiday_content">
@@ -1961,6 +2243,136 @@ if(mysqli_num_rows($result) <= 0) {
             </div>
         </div>
     </div>
+
+    
+    <!-- Validations -->
+
+   <!-- Modal HTML for Duplicate Group Name -->
+   <div id="duplicateModal" class="modals">
+    <span class="close">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+      <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+            <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+          </div>
+          <h4 class="mt-3">Successfully Updated!</h4>
+        
+      </div>
+      <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes">OK</button>
+    </div>
+</div>
+
+   <!-- Overlay div -->
+<div class="overlay"></div>
+
+<!-- Modal HTML for Successfully Inserted -->
+<div id="insertedModal" class="modals">
+    <span class="close">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+        <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+          <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+        </div>
+        <h4 class="mt-3">Successfully Inserted!</h4>
+       
+    </div>
+    <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes">OK</button>
+    </div>
+</div>
+
+<!-- deleted -->
+<div id="deleteModal" class="modals">
+    <span class="close" id="removeParamButton">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+      <div class="d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+            <i class="fa-solid fa-trash bouncing-icon" style="font-size: 6em; color: red"></i>
+          </div>
+          <h4 class="mt-3">Successfully Deleted!</h4>
+        
+      </div>
+      <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes" id="removeParamButton">OK</button>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+<script>
+    // Function to show a modal
+    function showModal(modalId, message) {
+        var modal = document.getElementById(modalId);
+        var overlay = document.querySelector('.overlay');
+        modal.style.display = 'block';
+        overlay.style.display = 'block';
+    }
+
+    // Function to hide a modal
+    function closeModal(modalId) {
+        var modal = document.getElementById(modalId);
+        var overlay = document.querySelector('.overlay');
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+
+        // Remove the parameter from the URL
+        var urlParams = new URLSearchParams(window.location.search);
+        urlParams.delete(modalId === 'duplicateModal' ? 'updated' : 'inserted');
+        var newUrl = window.location.pathname + '?' + urlParams.toString();
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+    // Check if the URL contains a parameter and show the modal accordingly
+    window.onload = function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('updated')) {
+            showModal('duplicateModal', 'Duplicate Group Name!');
+        }
+        if (urlParams.has('inserted')) {
+            showModal('insertedModal', 'Successfully Inserted!');
+        }
+        if(urlParams.has('deleted')){
+            showModal('deleteModal', 'Successfully Deleted!');
+        }
+    }
+
+    // Close the modals when the user clicks the close button
+    var closeBtns = document.querySelectorAll('.close');
+    if (closeBtns) {
+        closeBtns.forEach(function (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                var modalId = this.closest('.modals').id;
+                closeModal(modalId);
+            });
+        });
+    }
+    var closes = document.querySelectorAll('.btn-closes');
+    if (closes) {
+        closes.forEach(function (closes) {
+            closes.addEventListener('click', function () {
+                var modalId = this.closest('.modals').id;
+                closeModal(modalId);
+            });
+        });
+    }
+</script>
+
+<script>
+        // Function to remove a specific parameter from the URL
+        function removeURLParameter(key) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete(key);
+            history.replaceState(null, null, url.toString());
+        }
+
+        // Add an event listener to the button
+        document.getElementById("removeParamButton").addEventListener("click", function () {
+            removeURLParameter('deleted');
+        });
+    </script>
+
 
     <!-- swiper -->
 
@@ -2021,6 +2433,56 @@ if(mysqli_num_rows($result) <= 0) {
              });
 </script>
 <!---------------------------------End ng Script para sa pag pop-up ng view modal------------------------------------------>
+
+<!-- Event edit -->
+<script>
+            $(document).ready(function (){
+                $('.edit_event').on('click' , function(){
+                    $('#edit_event').modal('show');
+
+
+                    $tr = $(this).closest('tr');
+
+                    var data = $tr.children("td").map(function(){
+                        return $(this).text();
+                    }).get();
+
+                    console.log(data);
+
+                    $('#id').val(data[0]);
+                    $('#title').val(data[1]);
+                    $('#type').val(data[2]);
+                    $('#start').val(data[3]);
+                    $('#end').val(data[4]);
+                    // $('#hol_title').val(data[1]);
+                });
+            });
+        </script>
+
+<!-- delete event -->
+
+<script>
+            $(document).ready(function (){
+                $('.deletebtn').on('click' , function(){
+                    $('#deletemodal').modal('show');
+
+
+                    $tr = $(this).closest('tr');
+
+                    var data = $tr.children("td").map(function(){
+                        return $(this).text();
+                    }).get();
+
+                    console.log(data);
+
+                    $('#delete_id').val(data[0]);
+                    $('#delete_title').val(data[1]);
+                    
+                    
+
+                });
+            });
+        </script>
 
     <!---------------------------------------Script sa pagpop-up ng modal para Not-Applicable--------------------------------------------->          
         <script>

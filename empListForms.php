@@ -83,8 +83,11 @@
     <script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  
-   
+<!--   
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> -->
+
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="css/virtual-select.min.css">
     <link rel="stylesheet" href="css/try.css">
     <link rel="stylesheet" href="css/styles.css">
@@ -134,7 +137,9 @@
         height: 45px !important;
     }
 
-
+    .filepond--credits{
+        display: none;
+    }
 
 </style>
 
@@ -283,7 +288,7 @@
                                     }
                                     ?>
                                     <div style="display:flex; flex-direction: row">
-                                    <select name="company_code" id=""  style="display: flex; align-items: center; justify-content: center;width: 60%; padding: 0.2em; margin-right: 2%; height: 40px" required>
+                                    <select name="company_code" id=""  style="display: flex; align-items: center; justify-content: center;width: 60%; padding: 0.2em; margin-right: 2%; height: 40px">
                                         <option value="" selected disabled>Company Code</option>
                                         <?php echo $options; ?>
                                     </select>
@@ -768,6 +773,19 @@
                         <!-- <div class="password_sec">
 
                         </div> -->
+                        <div >
+                            <!-- <div class="mx-auto mt-3 rounded" style="height: 3em; border: black 1px solid; width: 95.5%;">
+                                   <h3>Employee Documents</h3> 
+                            </div> -->
+                            <div class="emp-title">
+                                <h1>Employee Documents</h1>
+                            </div>
+                            <div class="form-group mx-auto mt-3" style="width: 95%;">
+                                <label for="">File Upload</label><br>
+                                <input type="file" name="" class="form-control" id="">
+                            </div>
+                        </div>
+                        
                         
                     <div class="empList-save-btn">
                         <div>
@@ -775,6 +793,7 @@
                             <span class="modalSave" style="border: none"> <input class="submit" id="btn_save" type="submit" value="Save" style="border: none"></span>
                         </div>
                     </div>
+
                 </div>
             </form>
 
@@ -1394,5 +1413,14 @@ $(document).ready(function() {
   
     <script src="vendors/datatables.net/jquery.dataTables.js"></script>
     <script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+    <script>
+    // Get a reference to the file input element
+    const inputElement = document.querySelector('input[type="file"]');
+
+    // Create a FilePond instance
+    const pond = FilePond.create(inputElement);
+</script>
 </body>
 </html>

@@ -256,7 +256,7 @@
                         
                         <div class="mb-3">
                             <label for="title" class="form-label">Holiday Title</label>
-                            <input type="text" name="title_holiday" class="form-control" id="id_title_holiday" required>
+                            <input type="text" name="type_holiday" class="form-control" id="id_title_holiday" required>
                         </div>
 
 
@@ -270,7 +270,7 @@
                             
                         <div class="mb-3">
                             <label for="eventype" class="form-label">Type of Holiday</label>
-                            <select class="form-select form-select-m" name="type_holiday" id="" aria-label=".form-select-sm example" style="height: 50px; cursor: pointer;">
+                            <select class="form-select form-select-m" name="title_holiday" id="" aria-label=".form-select-sm example" style="height: 50px; cursor: pointer;">
                                 <option value="Regular Working Day">Regular Working Day</option>
                                 <option value="Regular Holiday">Regular Holiday</option>
                                 <option value="Special Working Holiday">Special Working Holiday</option>

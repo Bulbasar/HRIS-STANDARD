@@ -583,7 +583,7 @@ include 'config.php';
                     <button class="header-dropdown-btn" style="color: white"><span class="fa-solid fa-chevron-down"></span></button>
                     <div class="header-dropdown-menu" style="background-color: #000">
                         <a href="logout.php" class="header-dd-btn" style="text-decoration: none;color: white">Logout</a>
-                        <a href="emp_profile.php" style="text-decoration:none; color: white">User Profile</a>
+                        <a href="emp_profile" style="text-decoration:none; color: white">User Profile</a>
                     </div>
                 </div>
 

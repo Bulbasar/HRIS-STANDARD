@@ -132,7 +132,9 @@ session_start();
           INNER JOIN employee_tb ON pakyawan_based_work_tb.employee = employee_tb.empid
           WHERE pakyawan_based_work_tb.employee = $pakyawan_empid 
           AND `start_date` >= '$pakyawStart_cutoff' 
-          AND `end_date` <= '$pakyawEnd_cutoff'";
+          AND `end_date` <= '$pakyawEnd_cutoff'
+          GROUP BY employee_tb.fname, employee_tb.empid, employee_tb.lname";
+  
           
           $result = mysqli_query($conn, $sql);
 

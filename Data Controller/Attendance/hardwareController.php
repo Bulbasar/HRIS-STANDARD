@@ -223,7 +223,7 @@
  
                              date_default_timezone_set("Asia/Manila");
                              $current_time = date("H:i:s"); // This format will give you hours, minutes, and seconds
-                                 if($current_time >= '12:00:00'){
+                                 if($bio_timein >= '12:00:00'){
                                      $late = date("H:i:s", strtotime($late) - 3600); 
                                  }
  
@@ -266,7 +266,7 @@
 
                             date_default_timezone_set("Asia/Manila");
                             $current_time = date("H:i:s"); // This format will give you hours, minutes, and seconds
-                                if($current_time >= '12:00:00'){
+                                if($bio_timein >= '12:00:00'){
                                     $late = date("H:i:s", strtotime($late) - 3600); 
                                 }
 
@@ -303,17 +303,18 @@
 
                         if($bio_timein > $grace_period_total){
                             $late = (new DateTime($bio_timein))->diff(new DateTime($wednesday_timein))->format('%H:%I:%S');
-                            echo "your late <br> ";
-                            echo "this is the late when the late is not yet at 12:00 === ", $late ,"<br>";
+                            echo "<br> your late";
+                            // echo "this is the late when the late is not yet at 12:00 === ", $late ,"<br>";
 
 
                             date_default_timezone_set("Asia/Manila");
                             $current_time = date("H:i:s"); // This format will give you hours, minutes, and seconds
-                                if($current_time >= '12:00:00'){
+                                if($bio_timein >= '12:00:00'){
                                     $late = date("H:i:s", strtotime($late) - 3600); 
+                                    
                                 }
 
-                            echo "late when 12:00 === ",$late;
+                            // echo "late when 12:00 === ",$late;
                         }else{
                             $late = '00:00:00';
                             
@@ -324,13 +325,15 @@
                         $total_work = '00:00:00';
                         $total_rest = '00:00:00';
                         $time_out = '00:00:00';    
-                        $status = 'Present';   
+                        $status = 'Present';
                             
                             
                             echo "<br>", $early_out , "<br>",
                                 $overtime , "<br>",
                                 $total_work , "<br>",
-                                $total_rest , "<br>";
+                                $late, "<br>",
+                                $total_rest , "<br>" , $empid , "<br>";
+                                
 
                     }elseif($currentDayOfWeek == $thursday){
                         echo "<br> it is thursday <br>";
@@ -351,7 +354,7 @@
 
                             date_default_timezone_set("Asia/Manila");
                             $current_time = date("H:i:s"); // This format will give you hours, minutes, and seconds
-                                if($current_time >= '12:00:00'){
+                                if($bio_timein >= '12:00:00'){
                                     $late = date("H:i:s", strtotime($late) - 3600); 
                                 }
 
@@ -401,7 +404,7 @@
 
                             date_default_timezone_set("Asia/Manila");
                             $current_time = date("H:i:s"); // This format will give you hours, minutes, and seconds
-                                if($current_time >= '12:00:00'){
+                                if($bio_timein >= '12:00:00'){
                                     $late = date("H:i:s", strtotime($late) - 3600); 
                                 }
 
@@ -445,7 +448,7 @@
 
                             date_default_timezone_set("Asia/Manila");
                             $current_time = date("H:i:s"); // This format will give you hours, minutes, and seconds
-                                if($current_time >= '12:00:00'){
+                                if($bio_timein >= '12:00:00'){
                                     $late = date("H:i:s", strtotime($late) - 3600); 
                                 }
 
@@ -485,7 +488,7 @@
 
                             date_default_timezone_set("Asia/Manila");
                             $current_time = date("H:i:s"); // This format will give you hours, minutes, and seconds
-                                if($current_time >= '12:00:00'){
+                                if($bio_timein >= '12:00:00'){
                                     $late = date("H:i:s", strtotime($late) - 3600); 
                                 }
 
@@ -1006,13 +1009,13 @@
                                                 "this is ot " ,$overtime , "<br>",
                                                 "this is total work ", $total_work , "<br>",
                                                 "this is total rest ",$total_rest , "<br>",
-                                                "this is time_in ",$time_in, "<br>";
+                                                "this is time_in ",$bio_timein, "<br>";
                                                 
                 
                                     }
                                 }
                     
-                                $update = "UPDATE attendances SET `time_in` = '$time_in', `status` = '$status', `late` = '$late' WHERE `empid` = '$empid' AND `date` = '$date' ";
+                                $update = "UPDATE attendances SET `time_in` = '$bio_timein', `status` = '$status', `late` = '$late' WHERE `empid` = '$empid' AND `date` = '$date' ";
 
                                 if($conn->query($update) == TRUE){
                                     echo "update!";
@@ -1701,9 +1704,9 @@
                                 // echo "<br> this is total rest ", $total_rest;
                                 // echo "<br> this is status ", $status;
                             }elseif($currentDayOfWeek == $thursday){
-                                // echo "<br> <br> it is monday";
+                                echo "<br> <br> it is monday";
                                 // late function
-                                $convert_timein = strtotime($wednesday_timein);
+                                $convert_timein = strtotime($thursday_timein);
 
                                 $convert_timein += $grace_period * 60; 
 
@@ -1711,19 +1714,21 @@
 
                                 // echo $grace_period_total;
 
+                                // echo "hehe",$late;
                                 if($time_in > $grace_period_total){
-                                    $late = (new DateTime($time_in))->diff(new DateTime($wednesday_timeout))->format('%H:%I:%S');
+                                    $late = (new DateTime($time_in))->diff(new DateTime($thursday_timein))->format('%H:%I:%S');
                                     // echo $late ,"<br>";
-
+                                    // echo "late when 12:00 === ",$late;
 
                                     date_default_timezone_set("Asia/Manila");
                                     $current_time = date("H:i:s"); // This format will give you hours, minutes, and seconds
                                         if($time_in >= '12:00:00'){
                                             $late = date("H:i:s", strtotime($late) - 3600);
-
+                                            
+                                            echo "this is the late time in and out", $late;
                                         }
 
-                                    // echo "late when 12:00 === ",$late;
+                                   
                                 }else{
                                     $late = '00:00:00';
                                 } //late end
@@ -1863,14 +1868,14 @@
                                 $total_rest = '00:00:00';
                                 $status = 'Present';
                                 
-                                // echo "<br> this is early out " ,$early_out ;
-                                // echo "<br> this is late ", $late;
-                                // echo "<br> this is total work ", $total_work;
-                                // echo "<br> this is overtime ", $overtime;
-                                // echo "<br> this is time in ", $time_in;
-                                // echo "<br> this is time out ", $time_out;
-                                // echo "<br> this is total rest ", $total_rest;
-                                // echo "<br> this is status ", $status ,"<br><br>";
+                                echo "<br> this is early out " ,$early_out ;
+                                echo "<br> this is late ", $late;
+                                echo "<br> this is total work ", $total_work;
+                                echo "<br> this is overtime ", $overtime;
+                                echo "<br> this is time in ", $time_in;
+                                echo "<br> this is time out ", $time_out;
+                                echo "<br> this is total rest ", $total_rest;
+                                echo "<br> this is status ", $status ,"<br><br>";
 
                             }elseif($currentDayOfWeek == $friday){
                                 // echo "<br> <br> it is monday";

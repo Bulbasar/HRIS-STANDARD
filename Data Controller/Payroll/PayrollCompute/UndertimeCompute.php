@@ -197,9 +197,9 @@
                         $UT_mon_totalHour = intval($UT_monday_hour);
                         $UT_mon_totalmin = intval($UT_monday_min);
 
-                        $monday_UT_hours_deduction += $UT_mon_totalHour * $mon_hour_rate;
-                        $monday_UT_minute_deduction += $UT_mon_totalmin * $mon_minute_rate;
-                        $mon_TO_DEDUCT_UT = $monday_UT_hours_deduction + $monday_UT_minute_deduction;
+                        @$monday_UT_hours_deduction += $UT_mon_totalHour * $mon_hour_rate;
+                        @$monday_UT_minute_deduction += $UT_mon_totalmin * $mon_minute_rate;
+                        @$mon_TO_DEDUCT_UT = $monday_UT_hours_deduction + $monday_UT_minute_deduction;
 
                     }else if($day_of_week_UT === 'Tuesday'){
                         $tue_total_work_hour = (int)substr($Tue_total_work, 0, 2);
@@ -215,9 +215,9 @@
                         $UT_tues_totalmin = intval($tues_UT_Minutes);
                         $UT_tues_totalHour = intval($tues_UT_Hour);
 
-                        $tuesday_UT_hours_deduction += $UT_tues_totalHour * $tue_hour_rate;
-                        $tuesday_UT_minute_deduction += $UT_tues_totalmin * $tue_minute_rate;
-                        $tues_TO_DEDUCT_UT = $tuesday_UT_hours_deduction + $tuesday_UT_minute_deduction;
+                        @$tuesday_UT_hours_deduction += $UT_tues_totalHour * $tue_hour_rate;
+                        @$tuesday_UT_minute_deduction += $UT_tues_totalmin * $tue_minute_rate;
+                        @$tues_TO_DEDUCT_UT = $tuesday_UT_hours_deduction + $tuesday_UT_minute_deduction;
 
                     }else if($day_of_week_UT === 'Wednesday'){
                         $weds_total_work_hour = (int)substr($wed_total_work, 0, 2);
@@ -233,9 +233,9 @@
                         $UT_wed_totalmin = intval($wed_UT_Minutes);
                         $UT_wed_totalHour = intval($wed_UT_Hour);
                         
-                        $wednesday_UT_hours_deduction += $UT_wed_totalHour * $weds_hour_rate;
-                        $wednesday_UT_minute_deduction += $UT_wed_totalmin * $weds_minute_rate;                                                                        
-                        $weds_TO_DEDUCT_UT = $wednesday_UT_hours_deduction + $wednesday_UT_minute_deduction;
+                        @$wednesday_UT_hours_deduction += $UT_wed_totalHour * $weds_hour_rate;
+                        @$wednesday_UT_minute_deduction += $UT_wed_totalmin * $weds_minute_rate;                                                                        
+                        @$weds_TO_DEDUCT_UT = $wednesday_UT_hours_deduction + $wednesday_UT_minute_deduction;
                         
                     }else if($day_of_week_UT === 'Thursday'){
                         $thurs_total_work_hour = (int)substr($thurs_total_work, 0, 2);
@@ -269,9 +269,9 @@
                         $UT_fri_totalmin = intval($fri_UT_minutes);
                         $UT_fri_totalHour = intval($fri_UT_hour);
 
-                        $friday_UT_hours_deduction += $UT_fri_totalHour * $fri_hour_rate;
-                        $friday_UT_minute_deduction += $UT_fri_totalmin * $fri_minute_rate; 
-                        $fri_TO_DEDUCT_UT = $friday_UT_hours_deduction + $friday_UT_minute_deduction;
+                        @$friday_UT_hours_deduction += $UT_fri_totalHour * $fri_hour_rate;
+                        @$friday_UT_minute_deduction += $UT_fri_totalmin * $fri_minute_rate; 
+                        @$fri_TO_DEDUCT_UT = $friday_UT_hours_deduction + $friday_UT_minute_deduction;
 
                         }else if($day_of_week_UT === 'Saturday'){
                         $sat_total_work_hour = (int)substr($sat_total_work, 0, 2);
@@ -309,7 +309,7 @@
                         $sun_TO_DEDUCT_UT = $sunday_UT_hours_deduction + $sunday_UT_minute_deduction;
                         }
                 }
-                $UTtotaldeduction = $mon_TO_DEDUCT_UT + $tues_TO_DEDUCT_UT + $weds_TO_DEDUCT_UT + $thurs_TO_DEDUCT_UT + $fri_TO_DEDUCT_UT + $sat_TO_DEDUCT_UT + $sun_TO_DEDUCT_UT;
+                @$UTtotaldeduction = $mon_TO_DEDUCT_UT + $tues_TO_DEDUCT_UT + $weds_TO_DEDUCT_UT + $thurs_TO_DEDUCT_UT + $fri_TO_DEDUCT_UT + $sat_TO_DEDUCT_UT + $sun_TO_DEDUCT_UT;
                 
             }else{
                 $UTtotaldeduction = 0;

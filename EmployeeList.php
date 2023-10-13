@@ -143,7 +143,45 @@
             }
 
 
+        thead th:nth-child(1){
+            width: 13% !important;
+        }
 
+        tr td:nth-child(1){
+            width: 13% !important;
+        }
+
+        thead th:nth-child(2){
+            width: 25% !important;
+        }
+
+        tr td:nth-child(2){
+            width: 25% !important;
+        }
+
+        thead th:nth-child(3){
+            width: 22% !important;
+        }
+
+        tr td:nth-child(3){
+            width: 22% !important;
+        }
+
+        thead th:nth-child(4){
+            width: 22% !important;
+        }
+
+        tr td:nth-child(4){
+            width: 22% !important;
+        }
+        thead th:nth-child(5){
+            width: 22% !important;
+        }
+
+        tr td:nth-child(5){
+            width: 22% !important;
+        }
+           
             
 
     /* .toggle-circle {
@@ -406,7 +444,7 @@
                                     }
 
                                     echo "<button class='tb-view' style='text-decoration:none; border:none;background-color:inherit; outline:none;'>
-                                    <a href='$redirectUrl' style='color:gray; text-decoration:none;'>View</a>
+                                    <a href='$redirectUrl' style='color: black; text-decoration:none;'><i class='fa-regular fa-eye' style='font-size: 1.2em;'></i></a>
                                     </button>";
 
                                     echo "</td>";

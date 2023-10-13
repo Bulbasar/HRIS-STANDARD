@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
         function autoReload() {
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
@@ -33,4 +33,4 @@
 
         // Refresh every 15 seconds (5000 milliseconds)
         setInterval(autoReload, 15000);
-    </script>
+    </script> -->

@@ -17,7 +17,7 @@ session_start();
     $CompanyAddress = $_POST['company_address'];
     $CompanyZipcode = $_POST['company_zipcode'];
     $CompanyDomain = $_POST['company_domain_mail'];
-    $salary_settings = $_POST['col_salary_settings'];
+    @$salary_settings = $_POST['col_salary_settings'];
 
    
     @$piece_rate_toggle = $_POST['piece_rate_toggle'];
