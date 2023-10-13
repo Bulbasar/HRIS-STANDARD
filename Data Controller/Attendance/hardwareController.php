@@ -1187,7 +1187,7 @@
                                         $current_time = date("H:i:s"); // This format will give you hours, minutes, and seconds
                                             if($time_in >= '12:00:00'){
                                                 $late = date("H:i:s", strtotime($late) - 3600);
-
+                      
                                             }
 
                                         // echo "late when 12:00 === ",$late;
