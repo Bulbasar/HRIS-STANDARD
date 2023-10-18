@@ -50,7 +50,6 @@ include 'config.php';
          include 'header.php';
      ?>
 </header>
-
 <style>
    
    html{
@@ -152,6 +151,7 @@ include 'config.php';
                         <div class="modal-body">
                             <div class="mb-3" style="display: none;">
                                 <label for="Select_emp" class="form-label">Employee Name</label>
+
                                 <?php
                                     include 'config.php';
                                 ?>
@@ -160,6 +160,7 @@ include 'config.php';
                             
                             <div class="mb-3">
                                 <label for="company" class="form-label">Date</label>
+                                
                                 <input type="date" name="date_undertime" class="form-control" id="date_id_undertime" required onchange="checkSchedule()" required>
                             </div>
 
@@ -233,7 +234,7 @@ include 'config.php';
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Employee Details</h1>
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Undertime Details</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
                 <div class="modal-body">
@@ -289,6 +290,10 @@ include 'config.php';
                     </div>
 
                 </div> <!---Modal Body End Tag-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    
+                </div>
         </div>
     </div>
 </div>

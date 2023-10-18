@@ -1,5 +1,6 @@
 <?php
 //Undertime pay computation
+error_reporting(0);
         $UTtotaldeduction = 0;
         $sql_UT = "SELECT * FROM `undertime_tb` WHERE `empid` = '$EmployeeID' AND `status` = 'Approved' AND `date` BETWEEN '$str_date' AND '$end_date'";
         $result = mysqli_query($conn, $sql_UT);

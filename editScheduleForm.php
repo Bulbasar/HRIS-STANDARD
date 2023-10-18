@@ -438,7 +438,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <input type="text" name="" id="validation" value='Validation'>
+                                <!-- <button class="btn btn-primary" title="<?php echo $schedrow['mon_timeout'] ?>">HELLO</button> -->
+                                <input type="hidden" name="" id="validation" value='Validation'>
                                 <input type="hidden" name="id" value="<?php echo $schedrow['id']; ?>">
                                 <input type="hidden" name="restday" id="restdayInput" value="<?php echo $schedrow['restday'] ?>" readonly>
                                 <td>

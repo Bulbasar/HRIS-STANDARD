@@ -146,8 +146,8 @@ include 'config.php';
                                 $Interact = $OT_row['last_interact'];
 
                                 $now = time(); // Current timestamp
-                                $InteractTime = strtotime($Interact); // Convert last_pending to timestamp
-                                $timeDiff = $now - $InteractTime; // Difference in seconds
+                                @$InteractTime = strtotime($Interact); // Convert last_pending to timestamp
+                                @$timeDiff = $now - $InteractTime; // Difference in seconds
 
                                 if ($timeDiff < 60) {
                                   $formattedTime = 'Just now';
@@ -215,8 +215,8 @@ include 'config.php';
                               $ActionTaken = $UT_row['actiontaken_ut'];
                               
                               $now = time(); // Current timestamp
-                              $ActionTimeUT = strtotime($ActionTaken); // Convert last_pending to timestamp
-                              $timeDiff = $now - $ActionTimeUT; // Difference in seconds
+                              @$ActionTimeUT = strtotime($ActionTaken); // Convert last_pending to timestamp
+                              @$timeDiff = $now - $ActionTimeUT; // Difference in seconds
 
                               if ($timeDiff < 60) {
                                 $formattedTime = 'Just now';
@@ -281,8 +281,8 @@ include 'config.php';
                               $ActionWFH = $WFH_row['actiontaken_wfh'];
 
                               $now = time(); // Current timestamp
-                              $ActionTimeWFH = strtotime($ActionWFH); // Convert last_pending to timestamp
-                              $timeDiff = $now - $ActionTimeWFH; // Difference in seconds
+                              @$ActionTimeWFH = strtotime($ActionWFH); // Convert last_pending to timestamp
+                              @$timeDiff = $now - $ActionTimeWFH; // Difference in seconds
 
                               if ($timeDiff < 60) {
                                 $formattedTime = 'Just now';
@@ -347,8 +347,8 @@ include 'config.php';
                               $ActionOB = $OB_row['actiontaken_OB'];
 
                               $now = time(); // Current timestamp
-                              $ActionTimeOB = strtotime($ActionOB); // Convert last_pending to timestamp
-                              $timeDiff = $now - $ActionTimeOB; // Difference in seconds
+                              @$ActionTimeOB = strtotime($ActionOB); // Convert last_pending to timestamp
+                              @$timeDiff = $now - $ActionTimeOB; // Difference in seconds
 
                               if ($timeDiff < 60) {
                                 $formattedTime = 'Just now';
@@ -414,8 +414,8 @@ include 'config.php';
                               $ActionDTR = $DTR_row['actiontaken_DTR'];
 
                               $now = time(); // Current timestamp
-                              $ActionTimeDTR = strtotime($ActionDTR); // Convert last_pending to timestamp
-                              $timeDiff = $now - $ActionTimeDTR; // Difference in seconds
+                              @$ActionTimeDTR = strtotime($ActionDTR); // Convert last_pending to timestamp
+                              @$timeDiff = $now - $ActionTimeDTR; // Difference in seconds
 
                               if ($timeDiff < 60) {
                                 $formattedTime = 'Just now';
@@ -460,7 +460,6 @@ include 'config.php';
                       </a>
                       <?php endif; ?>
 
-
                       <!----------Leave Notif----------->
                       <?php
                             include 'config.php';
@@ -481,8 +480,8 @@ include 'config.php';
                               $ActionLeave = $LEAVE_row['actiontaken_Leave'];
 
                               $now = time(); // Current timestamp
-                              $ActionTimeLeave = strtotime($ActionLeave); // Convert last_pending to timestamp
-                              $timeDiff = $now - $ActionTimeLeave; // Difference in seconds
+                              @$ActionTimeLeave = strtotime($ActionLeave); // Convert last_pending to timestamp
+                              @$timeDiff = $now - $ActionTimeLeave; // Difference in seconds
 
                               if ($timeDiff < 60) {
                                 $formattedTime = 'Just now';
