@@ -34,7 +34,7 @@
 
     @$work_pay = $row['cash_total'];
 
-    $fname = $row['fname'];
+    @$fname = $row['fname'];
     
     ?>  
     

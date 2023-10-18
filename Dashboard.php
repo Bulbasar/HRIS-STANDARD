@@ -1491,6 +1491,7 @@ if(mysqli_num_rows($result) <= 0) {
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                           
                                         </div>
                                         </div>
                                     </div>
@@ -2183,9 +2184,9 @@ if(mysqli_num_rows($result) <= 0) {
 
                                 $currentDate = date('Y-m-d');
 
-                                $query = "SELECT * FROM event_tb 
+                                $query = "SELECT * FROM event_tb
                                         WHERE ('$currentDate' BETWEEN `start_date` AND `end_date`)
-                                        OR (`start_date` BETWEEN '$startDate' AND '$endDate' 
+                                        OR (`start_date` BETWEEN '$startDate' AND '$endDate'
                                         AND `end_date` >= '$currentDate')
                                         ORDER BY `start_date` ASC";
 

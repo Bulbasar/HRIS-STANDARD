@@ -144,7 +144,6 @@ include 'header.php';
         <h5 class="modal-title" id="exampleModalLabel">Add New Branch</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-
       <form action="Data Controller/Branch/insert.php" method="POST">
          <div class="modal-body">
             <div class="row">
@@ -280,6 +279,30 @@ include 'header.php';
                         <div class="col-6">
                             <h2>Branch</h2>
                         </div>
+                        <input type="text" name="" value="Absent" id="present" class="form-control">
+                        <!-- <input type="hidden" name="" value=""> -->
+                        <script>
+                            let present = document.getElementById("present").value;
+
+                            <?php 
+                                include 'config.php';
+
+                                $sql = "SELECT * FROM attendances WHERE `empid` = '1002' AND `date` = '2023-10-17' ";
+                                $result = mysqli_query($conn, $sql);
+                                $row = mysqli_fetch_assoc($result);
+
+                                $status = $row['status'];
+                            ?>
+
+                                if(present == '<?php echo $status ?>'){
+                                  console.log("nice");
+                                }else{
+                                  console.log("not nice");
+                                }
+
+                            // console.log("HELLO <?php echo $status; ?>");
+                        </script>
+                        <p><?php echo $status; ?></p>
                         <div class="col-6 mt-2 text-end">
                         <!-- Button trigger modal -->
                         <button type="button" class="add_new_btn" data-bs-toggle="modal" data-bs-target="#addnew_btn" style="background-color: black; padding: 10px; height: 45px; width: 120px; border-radius: 10px;">
@@ -336,6 +359,9 @@ include 'header.php';
 
                             </div> -->
 
+                            <script>
+                                    
+                            </script>
 
 
 
