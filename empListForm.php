@@ -134,6 +134,25 @@
         height: 45px !important;
     }
 
+    #email-status{
+        display :block !important;
+    }
+    .submit{
+    background-color: blue !important;
+    color: white !important;
+  }
+
+      /* Blue color for the button */
+  .blue-button {
+    background-color: blue !important;
+    color: white !important; /* Text color, you can adjust this as needed */
+  }
+
+  /* Gray color for the disabled button */
+  .gray-button {
+    background-color: gray !important;
+    color: white !important; /* Text color, you can adjust this as needed */
+  }
 
 
 </style>
@@ -737,7 +756,8 @@
                             <div class="emp-Access-second-input " style="width: 94%">
                                 <div class="emp-Access-email">
                                         <label for="email">Personal Email</label><br>
-                                        <input pattern="[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}"  type="email" name="email" id="form-email" placeholder="Email Address" title="Must be a valid email."  required>
+                                        <input pattern="[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}" type="email" name="email" id="form-email" placeholder="Email Address" title="Must be a valid email."  required>      
+                                        <div id="email-status" style="color: red"></div>
                                 </div>
                                 <div class="emp-Access-email">
                                         <label for="email">Company Email</label><br>
@@ -795,11 +815,55 @@
 
                 });
             </script>
-             
 
             </div>
     
         </div>
+
+        <!-- email validation -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#form-email').on('input', function() {
+                var email = $(this).val();
+                // console.log(email);
+                if (email) {
+                    checkEmailExistence(email);
+                } else {
+                    $('#email-status').html('');
+                     $('#btn_save').prop('disabled', false).addClass('blue-button').removeClass('gray-button');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function checkEmailExistence(email) {
+    console.log("Checking email: " + email); // Add this line
+
+    $.ajax({
+        type: 'POST',
+        url: 'check_email.php',
+        data: { email: email },
+        success: function(response) {
+            console.log("Response from server: " + response); // Add this line
+
+            if (response == email) {
+                $('#email-status').html('Email exist in our records.');
+                $('#btn_save').prop('disabled', true).addClass('gray-button').removeClass('blue-button');
+            }else{
+                $('#email-status').html('');
+                $('#btn_save').prop('disabled', false).addClass('blue-button').removeClass('gray-button');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log('AJAX Error: ' + error);
+        }
+    });
+}
+
+    </script>
 
 <!--------------------Script sa pagchange ng Label sa allowance---------------------->       
 <script>

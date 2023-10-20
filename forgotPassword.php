@@ -1,140 +1,96 @@
 <?php
 
 include 'config.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
+require 'phpmailer/src/Exception.php';
+
+require 'phpmailer/src/PHPMailer.php';
+
+require 'phpmailer/src/SMTP.php';
+
 
 // error_reporting(0);
 session_start();
+if(isset($_POST['submit'])){
+    $email = $_POST['email'];
 
-if(isset($_POST['signIn'])){
-    $username = $_POST['username'];
-    $passwordnot = $_POST['password'];
-    $password = mysqli_real_escape_string($conn, md5($_POST["password"]));
-    
-    $Superadmin = "SELECT * FROM user_tb WHERE BINARY `username` = '$username' AND BINARY `password` = '$passwordnot'";
-    $superAdminResult = mysqli_query($conn, $Superadmin);
-    
-    if (mysqli_num_rows($superAdminResult) > 0){
-        $row_Superadmin = mysqli_fetch_assoc($superAdminResult);
-        $_SESSION['username'] = $row_Superadmin['username'];
-        $_SESSION['password'] = $row_Superadmin['password'];
-        $_SESSION['userType'] = $row_Superadmin['userType'];
-        $_SESSION['role'] = $row_Superadmin['role'];
-        // $_SESSION['empid'] = $row['empid'];
+    $sql = "SELECT * FROM employee_tb WHERE `email` = '$email' ";
+    $result = mysqli_query($conn, $sql);
+
+    if(mysqli_num_rows($result) > 0){
+        $row = mysqli_fetch_assoc($result);
+        $email = $row['email'];
+        $fname = $row['fname'];
+        $lname = $row['lname'];
+        $mname = $row['mname'];
+        $username = $row['username'];
+        $empid = $row['empid'];
         
-        header("Location: Dashboard");
-        exit();
-    } else {
-        $select_users = mysqli_query($conn, "SELECT * FROM employee_tb WHERE BINARY `username`='$username' AND `password`='$password'");
+        $mail = new PHPMailer(true);
   
-        if(mysqli_num_rows($select_users) > 0){
-            $row = mysqli_fetch_assoc($select_users);
-            if($row['status'] == 'Inactive'){
-                echo '<script type="text/javascript">';
-                echo 'alert("Your Account is already inactive!");';
-                echo '</script>';
-            } else {
-                $_SESSION['id'] = $row['id'];
-                $_SESSION['username'] = $row['username'];
-                $_SESSION['password'] = $row['password'];
-                $_SESSION['empid'] = $row['empid'];
-                $_SESSION['role'] = $row['role'];
-                
-                if($row['role'] == 'admin'){
-                    header("Location: Dashboard.php"); // Redirect to admin dashboard
-                    exit();
-                } else if($row['role'] == 'Employee'){
-                    header("Location: EmpHRIS/Dashboard"); // Redirect to employee dashboard
-                    exit();
-                } else if ($row['role'] == 'Supervisor'){
-                    header("Location: Supervisor HRIS/Dashboard"); // Redirect to supervisor dashboard
-                    exit();
-                }
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'hris.payroll.mailer@gmail.com'; //gmail name
+        $mail->Password = 'ndehozbugmfnhmes'; // app password
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
+      
+        $mail->setFrom('hris.payroll.mailer@gmail.com'); //gmail name
+    
+        
+      
+        $mail->addAddress($email);
+      
+        $mail->isHTML(true);
+        $mail->Subject = 'Forgot Password'; // Set the email subject
+        $otp = mt_rand(1000, 9999);
+      
+        // $imgData = file_get_contents('../../img/panget.png');
+        $imgData64 = base64_encode($imgData);
+        $cid = md5(uniqid(time()));
+        // $mail->addEmbeddedImage('../../img/panget.png', $cid, 'panget.png');
+      
+        // $mail->Body .= '<img src="cid:' . $cid . '" style="height: 100px; width: 200px;">';
+        $mail->Body .= '<h1>Hello, ' . $fname . ' '. $lname . '</h1>';
+        $mail->Body .= '<p>This is your reset password OTP. <span style="font-weight: 500">' . $otp. ' </span> </p>';
+      
+        $mail->send();
+
+        $query = "SELECT * FROM forgot_pass_tb WHERE `empid` = '$empid' AND `email` = '$email' ";
+        $res = mysqli_query($conn, $query);
+
+        if(mysqli_num_rows($res) > 0 ){
+            $sql = "UPDATE forgot_pass_tb SET `otp` = '$otp' WHERE `empid` = '$empid' ";
+
+            if($conn->query($sql) === TRUE){
+                $encodedEmail = base64_encode($email);
+                header("Location:forgot otp?email=$encodedEmail");
+                exit;
+            }else{
+                header("Location:forgotPassword?error");
+                exit;
             }
-        } else {
-            $errorMessage = "Invalid username or password";
-            // echo '<script type="text/javascript">';
-            // echo 'alert("Wrong Email or Password!");';
-            // echo '</script>';
-            header("Location: login?error");
-        }
+        }else{
+            $sql = "INSERT INTO forgot_pass_tb(`email`, `empid`, `otp`) VALUES('$email', '$empid', '$otp') ";
+
+         
+            if(mysqli_query($conn, $sql)){
+                $encodedEmail = base64_encode($email);
+                header("Location:forgot otp?email=$encodedEmail");
+                exit;
+            }else{
+                echo "Error inserting data ". mysqli_error($conn);
+            } 
+        }   
+    }else{
+        header("Location:forgotPassword?error");
+        exit;
     }
 }
-
-
-// if(isset($_POST['signIn'])){
-//     $username = $_POST['username'];
-//     $passwordnot = $_POST['password'];
-//     $password = mysqli_real_escape_string($conn, md5($_POST["password"]));
-   
-
-//                             $Superadmin = "SELECT * FROM user_tb WHERE BINARY `username` = '$username' AND BINARY `password` = '$passwordnot'";
-//                             $superAdminResult = mysqli_query($conn, $Superadmin);
-//                             // Check if employee login is successful
-
-//                             if (mysqli_num_rows($superAdminResult) > 0){
-//                                 $row_Superadmin = mysqli_fetch_assoc($superAdminResult);
-//                                 $_SESSION['username'] = $row_Superadmin ['username'];
-//                                 $_SESSION['password'] = $row_Superadmin['password'];
-//                                 $_SESSION['userType'] = $row_Superadmin['userType'];
-//                                 $_SESSION['role'] = $row_Superadmin['role'];
-//                                 $_SESSION['empid'] = $row['empid'];
-                            
-//                                 header("Location: Dashboard"); // Redirect to admin dashboard
-//                                 exit();
-//                             } else {
-                              
-//                                 $select_users = mysqli_query($conn, "SELECT * FROM employee_tb WHERE `username`='$username' AND `password`='$password' AND `status` = 'Active'");
-  
-  
-//                                 if(mysqli_num_rows($select_users) > 0){
-                                  
-//                                   $row = mysqli_fetch_assoc($select_users);
-                              
-//                                   if($row['role'] == 'admin'){
-                              
-//                                     $_SESSION['id'] = $row['id'];
-//                                     $_SESSION['username'] = $row['username'];
-//                                     $_SESSION['password'] = $row['password'];
-//                                     $_SESSION['empid'] = $row['empid'];
-//                                     $_SESSION['role'] = $row['role'];
-                                             
-//                                     header("Location: Dashboard"); // Redirect to employee dashboard
-//                                     exit();
-                              
-//                                   }else if($row['role'] == 'Employee'){
-                              
-//                                     $_SESSION['id'] = $row['id'];
-//                                     $_SESSION['username'] = $row['username'];
-//                                     $_SESSION['password'] = $row['password'];
-//                                     $_SESSION['empid'] = $row['empid'];
-//                                     $_SESSION['role'] = $row['role'];
-                                             
-//                                     header("Location: EmpHRIS/Dashboard"); // Redirect to employee dashboard
-//                                     exit();
-                              
-//                                   }else if ($row['role'] == 'Supervisor'){
-//                                     $_SESSION['id'] = $row['id'];
-//                                     $_SESSION['username'] = $row['username'];
-//                                     $_SESSION['password'] = $row['password'];
-//                                     $_SESSION['empid'] = $row['empid'];
-//                                     $_SESSION['role'] = $row['role'];
-                                             
-//                                     header("Location: Supervisor HRIS/Dashboard"); // Redirect to employee dashboard
-//                                     exit();
-//                                 }//else{
-//                                 //       $message[] = 'no user found!';
-//                                 //   }
-                              
-//                                 }else{
-//                                     $errorMessage = "Invalid username or password";
-//                                 echo '<script type="text/javascript">';
-//                                     echo 'alert("Wrong Email or Password!");';
-//                                 echo '</script>';
-//                                 }
-//                             }
-
-
-// }
 
 ?>
 
@@ -162,11 +118,11 @@ if(isset($_POST['signIn'])){
     <!-- skydash -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-
+    
   
     <link rel="stylesheet" href="backup/style.css">
     <link rel="stylesheet" href="css/login.css">
-    <title>HRIS | LOG IN</title>
+    <title>HRIS | Forgot Password</title>
 </head>
 <body class="login-container" style="overflow:hidden; background-color: #000">
 
@@ -268,6 +224,33 @@ if(isset($_POST['signIn'])){
     #insertedModal .rotating-icon {
         animation: rotate 2.5s infinite; /* 0.5 seconds rotation + 3 seconds pause */
     }
+    .form-container button{
+        width: 100% !important;
+    }
+
+    .form-containers{
+    height: 400px;
+    width: 680px;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;    
+  
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    
+}
+.signin-container .remember-forgot{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 595px;
+    height: 30px;
+    margin-left: 27px;
+    margin-top: 10px;
+    align-items: center;
+    
+    
+}
 </style>
 
     <div class="container-fluid" style="display:flex; flex: row; height: 100vh; width: 100vw">
@@ -285,28 +268,30 @@ if(isset($_POST['signIn'])){
                     <img src="img/Slash Tech Solutions.png" class="logo" alt="" srcset="" >
                 </div>   
                 
-                <div class="form-container">
-                    <form action="" method="POST">
-                        <input class="input-text" type="text" name="username" id="username" placeholder="Username" value="<?php echo @$username; ?>" required maxlength="50">
-                        
-                        <div class="login-pass-container">   
-                            <input class="input-text" id="login-pass" type="password" name="password" placeholder="Password" required maxlength="50">
-                            <i class="fas fa-eye show-pass" aria-hidden="true" id="eye" onclick="toggle()"></i>
-                        </div>
+                <div class="form-containers">
+                    <div class="w-100 p-3">
+                        <form action="" method="POST">
+                            <!-- <label for="" class="ml-1 fs-5">Enter your email</label> -->
+                            <h3 class="d-flex justify-content-center mt-4">Forgot Password</h3><br>
 
+                            <div class="form-group mt-3  ">
+                                <label for="">Enter your e-mail</label>
+                                <input class="form-control input-text mt-0" style="height: 4em" type="email" name="email" id="username" placeholder="Email" value="<?php echo @$email; ?>" required maxlength="50">
 
-                        <div class="remember-forgot">
-
-                            <div class="chkbox-container">
-                                <input class="checkbox" type="hidden" name="" id="">
-                                <!-- <p>Remember me</p> -->
+                                
+                                <button type="submit" name="submit" class="btn mx-0 w-100" id="">Submit</button> 
                             </div>
-        
-                            <a href="forgotPassword">Forgot Password?</a>
-                        </div>
                         
-                        <button type="submit" name="signIn" class="signin-btn" id="signin-btn">Sign in </button> 
-                    </form>
+                        </form>
+
+                            <div class="remember-forgot">
+                                <div class="chkbox-container">
+                                    <input class="checkbox" type="hidden" name="" id="">
+                                    <!-- <p>Remember me</p> -->
+                                </div>
+                                <a href="login">Login?</a>
+                            </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -322,10 +307,10 @@ if(isset($_POST['signIn'])){
         <div class="border border-danger d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
             <i class="fa-solid fa-exclamation bouncing-icon" style="font-size: 6em; font-weight: 400; color: red"></i>
         </div>
-        <h4 class="mt-3">Wrong Password or Username!</h4>
+        <h4 class="mt-3">The e-mail is not on our records!</h4>
     </div>
     <div class="btn-footer w-100 d-flex justify-content-end mt-3">
-        <button class="btn border border-black btn-closes">Close</button>
+        <button class="btn fs-5 btn-closes" style="color: blue; background-color: inherit">Close</button>
     </div>
 </div>
 
@@ -336,14 +321,16 @@ if(isset($_POST['signIn'])){
 <div id="insertedModal" class="modals">
     <span class="close">&times;</span>
     <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
-        <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
-        <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+        <div class="mb-3 d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%; ">
+        <!-- <i class="fa-regular fa-envelope" style="font-size: 6em; color: black"></i> -->
+        <img src="img/351-3516873_email-symbol-black-and-white.png" alt="" srcset="" style="height: 4.3em; width: 7em">
         </div>
-        <h4 class="mt-3">Successfully Inserted!</h4>
+        <h5 class="">OTP Code has been to your email.</h5>
        
     </div>
     <div class="btn-footer w-100 d-flex justify-content-end mt-3">
-        <button class="btn border border-black btn-closes">Close</button>
+        <!-- <button class="btn btn-closes">Close</button> -->
+        <a href="#" style="text-decoration: none;" class="btn btn-primary w-100  fs-4">Go</a>
     </div>
 </div>
 

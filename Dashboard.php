@@ -1370,7 +1370,7 @@ if(mysqli_num_rows($result) <= 0) {
                                         </div>
                                         <div class="modal-body">
                                             
-                                            <div class="table-responsive mt-2" style=" overflow-x: hidden; height: 300px;">
+                                            <div class="table-responsive mt-2" id="wfh_table" style=" overflow-x: hidden; height: 300px;">
                                                 <table id="order-listing" class="table" style="width: 100%; ">
                                                     <thead style="background-color: #ececec">
                                                 
@@ -1383,7 +1383,7 @@ if(mysqli_num_rows($result) <= 0) {
                                                             <th> Late </th>                           
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody id="wfh_table_body">
                                                         <?php
                                                         include 'config.php';
                                                         date_default_timezone_set('Asia/Manila');
@@ -1419,67 +1419,154 @@ if(mysqli_num_rows($result) <= 0) {
                                                                 $today = date("l", $timestamp);
                                                                 $emp_array_ID =  $empid_Assign['empid'];
 
-                                                                $query_empSched = "SELECT * FROM empschedule_tb
-                                                                                INNER JOIN schedule_tb ON empschedule_tb.schedule_name = schedule_tb.schedule_name
-                                                                                WHERE empschedule_tb.empid = '$emp_array_ID' 
-                                                                                AND empschedule_tb.sched_from <= '$currentDate' 
-                                                                                AND empschedule_tb.sched_to >= '$currentDate'";
-                                                                $result_empSched = mysqli_query($conn, $query_empSched);
+                                                                $sql = "SELECT * FROM wfh_tb WHERE `empid` = '$emp_array_ID' AND `date` = '$currentDate' ";
+                                                                $result = mysqli_query($conn, $sql);
+                                                                if(mysqli_num_rows($result) > 0){
+                                                                    $row = mysqli_fetch_assoc($result);
 
-                                                                if (mysqli_num_rows($result_empSched) > 0) {
-                                                                    $row_empSched = mysqli_fetch_assoc($result_empSched);
+                                                                    $status = $row['status'];
+                                                                    $empids = $row['empid'];
+                                                                    $wfh_date = $row['date'];
 
-                                                                    // Modify the condition to use logical AND (&&) and strict comparison (===)
-                                                                    if ($today === 'Monday' && ($row_empSched['mon_wfh'] !== NULL && $row_empSched['mon_wfh'] !== '')) {
-                                                                        $employeeWFH_bool = true;
-                                                                    } else if ($today === 'Tuesday' && ($row_empSched['tues_wfh'] !== NULL && $row_empSched['tues_wfh'] !== '')) {
-                                                                        $employeeWFH_bool = true;
-                                                                    } else if ($today === 'Wednesday' && ($row_empSched['wed_wfh'] !== NULL && $row_empSched['wed_wfh'] !== '')) {
-                                                                        $employeeWFH_bool = true;
-                                                                    } else if ($today === 'Thursday' && ($row_empSched['thurs_wfh'] !== NULL && $row_empSched['thurs_wfh'] !== '')) {
-                                                                        $employeeWFH_bool = true;
-                                                                    } else if ($today === 'Friday' && ($row_empSched['fri_wfh'] !== NULL && $row_empSched['fri_wfh'] !== '')) {
-                                                                        $employeeWFH_bool = true;
-                                                                    } else if ($today === 'Saturday' && ($row_empSched['sat_wfh'] !== NULL && $row_empSched['sat_wfh'] !== '')) {
-                                                                        $employeeWFH_bool = true;
-                                                                    } else if ($today === 'Sunday' && ($row_empSched['sun_wfh'] !== NULL && $row_empSched['sun_wfh'] !== '')) {
-                                                                        $employeeWFH_bool = true;
-                                                                    } else{
-                                                                        $employeeWFH_bool = false;
+                                                                    if($status == 'Approved'){
+                                                                       
+
+                                                                        date_default_timezone_set('Asia/Manila');
+                                                                        $currentDate = date('Y-m-d');
+
+                                                                        $sql = "SELECT * FROM `employee_tb`
+                                                                        INNER JOIN `attendances` ON `employee_tb`.`empid` = `attendances`.`empid` 
+                                                                        WHERE `attendances`.`date` = '$currentDate' AND `attendances`.`empid` = '$empids' ";
+                                                                        $result = mysqli_query($conn, $sql);
+                                                                        $row = mysqli_fetch_assoc($result);
+
+                                                                        $empidss = $row['empid'];
+                                                                        $fullname = $row['fname'] . " " . $row['lname'];
+                                                                        $time_in = $row['time_in'];
+                                                                        $time_out = $row['time_out'];
+                                                                        $status = $row['status'];
+                                                                        $late = $row_emp_tb['late'];
+
+                                                                        if(empty($time_in)){
+                                                                            $time_in = '00:00:00';
+                                                                        }else{
+                                                                            $time_in = $time_in;
+                                                                        }
+
+                                                                        if(empty($time_out)){
+                                                                            $time_out = '00:00:00';
+                                                                        }else{
+                                                                            $time_out = $time_out;
+                                                                        }
+
+                                                                        if(empty($late)){
+                                                                            $late = '00:00:00';
+                                                                        }else{
+                                                                            $late = $late;
+                                                                        }
+
+
+                                                                        echo "<tr>
+                                                                                <td style='font-weight: 400 '>$status</td>
+                                                                                <td style='font-weight: 400 '>$empidss</td>
+                                                                                <td style='font-weight: 400 '>$fullname</td>
+                                                                                <td style='font-weight: 400 '>$time_in</td>
+                                                                                <td style='font-weight: 400 '>$time_out</td>
+                                                                                <td style='font-weight: 400 '>$late</td>                                                                          
+                                                                            </tr>";
+
+                                                                            
+
+                                                                    }else{
+                                                                        
+                                                                          
+                                                                    } 
+                                                                }else{
+                                                                    $timestamp = strtotime($currentDate);
+                                                                    $today = date("l", $timestamp);
+                                                                    // $emp_array_ID =  $empid_Assign['empid'];
+    
+                                                                    $query_empSched = "SELECT * FROM empschedule_tb
+                                                                                    INNER JOIN schedule_tb ON empschedule_tb.schedule_name = schedule_tb.schedule_name
+                                                                                    WHERE empschedule_tb.empid = '$emp_array_ID' 
+                                                                                    AND empschedule_tb.sched_from <= '$currentDate' 
+                                                                                    AND empschedule_tb.sched_to >= '$currentDate'";
+                                                                    $result_empSched = mysqli_query($conn, $query_empSched);
+    
+                                                                    if (mysqli_num_rows($result_empSched) > 0) {
+                                                                        $row_empSched = mysqli_fetch_assoc($result_empSched);
+    
+                                                                        // Modify the condition to use logical AND (&&) and strict comparison (===)
+                                                                        if ($today === 'Monday' && ($row_empSched['mon_wfh'] !== NULL && $row_empSched['mon_wfh'] !== '')) {
+                                                                            $employeeWFH_bool = true;
+                                                                        } else if ($today === 'Tuesday' && ($row_empSched['tues_wfh'] !== NULL && $row_empSched['tues_wfh'] !== '')) {
+                                                                            $employeeWFH_bool = true;
+                                                                        } else if ($today === 'Wednesday' && ($row_empSched['wed_wfh'] !== NULL && $row_empSched['wed_wfh'] !== '')) {
+                                                                            $employeeWFH_bool = true;
+                                                                        } else if ($today === 'Thursday' && ($row_empSched['thurs_wfh'] !== NULL && $row_empSched['thurs_wfh'] !== '')) {
+                                                                            $employeeWFH_bool = true;
+                                                                        } else if ($today === 'Friday' && ($row_empSched['fri_wfh'] !== NULL && $row_empSched['fri_wfh'] !== '')) {
+                                                                            $employeeWFH_bool = true;
+                                                                        } else if ($today === 'Saturday' && ($row_empSched['sat_wfh'] !== NULL && $row_empSched['sat_wfh'] !== '')) {
+                                                                            $employeeWFH_bool = true;
+                                                                        } else if ($today === 'Sunday' && ($row_empSched['sun_wfh'] !== NULL && $row_empSched['sun_wfh'] !== '')) {
+                                                                            $employeeWFH_bool = true;
+                                                                        } else{
+                                                                            $employeeWFH_bool = false;
+                                                                        }
+    
+                                                                        if ($employeeWFH_bool === true) {
+                                                                            $empid = $row_empSched['empid'];
+                                                                            
+                                                                            $query_emp_tb = "SELECT 
+                                                                                               attendances.status,
+                                                                                               attendances.empid,
+                                                                                               employee_tb.fname,
+                                                                                               employee_tb.lname,
+                                                                                               attendances.time_in,
+                                                                                               attendances.time_out,
+                                                                                               attendances.late                                                
+                                                                                            FROM attendances
+                                                                                            INNER JOIN employee_tb ON attendances.empid = employee_tb.empid
+                                                                                            WHERE DATE(attendances.`date`) = '$currentDate' AND attendances.empid = '$empid'";
+                                                                            $result_emp_tb = mysqli_query($conn, $query_emp_tb);
+    
+                                                                            $row_emp_tb = mysqli_fetch_assoc($result_emp_tb);
+                                                                            $empidss =  $row_emp_tb['empid'];
+                                                                            $status = $row_emp_tb['status'];
+                                                                            $fullname = $row_emp_tb['fname'] . " " . $row_emp_tb['lname'];
+                                                                            $time_in = $row_emp_tb['time_in'];
+                                                                            $time_out = $row_emp_tb['time_out'];
+                                                                            $late = $row_emp_tb['late'];
+
+                                                                            if(empty($time_in)){
+                                                                                $time_in = '00:00:00';
+                                                                            }else{
+                                                                                $time_in = $time_in;
+                                                                            }
+    
+                                                                            if(empty($time_out)){
+                                                                                $time_out = '00:00:00';
+                                                                            }else{
+                                                                                $time_out = $time_out;
+                                                                            }
+    
+                                                                            if(empty($late)){
+                                                                                $late = '00:00:00';
+                                                                            }else{
+                                                                                $late = $late;
+                                                                            }
+                                                                            echo "<tr>
+                                                                                    <td style='font-weight: 400'>$status</td>
+                                                                                    <td style='font-weight: 400'>$empidss</td>
+                                                                                    <td style='font-weight: 400'>$fullname</td>
+                                                                                    <td style='font-weight: 400'>$time_in</td>
+                                                                                    <td style='font-weight: 400'>$time_out</td>
+                                                                                    <td style='font-weight: 400'>$late</td>                                                                          
+                                                                                </tr>";
+                                                                        } 
                                                                     }
 
-                                                                    if ($employeeWFH_bool === true) {
-                                                                        $empid = $row_empSched['empid'];
-                                                                        
-                                                                        $query_emp_tb = "SELECT 
-                                                                                           attendances.status,
-                                                                                           attendances.empid,
-                                                                                           employee_tb.fname,
-                                                                                           employee_tb.lname,
-                                                                                           attendances.time_in,
-                                                                                           attendances.time_out,
-                                                                                           attendances.late                                                
-                                                                                        FROM attendances
-                                                                                        INNER JOIN employee_tb ON attendances.empid = employee_tb.empid
-                                                                                        WHERE DATE(attendances.`date`) = '$currentDate' AND attendances.empid = '$empid'";
-                                                                        $result_emp_tb = mysqli_query($conn, $query_emp_tb);
-
-                                                                        $row_emp_tb = mysqli_fetch_assoc($result_emp_tb);
-                                                                        $empidss =  $row_emp_tb['empid'];
-                                                                        $status = $row_emp_tb['status'];
-                                                                        $fullname = $row_emp_tb['fname'] . " " . $row_emp_tb['lname'];
-                                                                        $time_in = $row_emp_tb['time_in'];
-                                                                        $time_out = $row_emp_tb['time_out'];
-                                                                        $late = $row_emp_tb['late'];
-                                                                        echo "<tr>
-                                                                                <td>$status</td>
-                                                                                <td>$empidss</td>
-                                                                                <td>$fullname</td>
-                                                                                <td>$time_in</td>
-                                                                                <td>$time_out</td>
-                                                                                <td>$late</td>                                                                          
-                                                                            </tr>";
-                                                                    } 
                                                                 }
                                                             }
                                                         }
@@ -1702,12 +1789,25 @@ if(mysqli_num_rows($result) <= 0) {
                                         } else {
                                             $employeeWFH = 0;
                                         }
+
+                                        
                                     ?>
 
-                                <input type="text" name="wfh" value="<?php echo $employeeWFH; ?>" readonly style="margin-top:12px;"> 
-                                <p style=" ">of <span class="wfh-color" style="color: red;"><?php echo $employee_count?> </span></p>
+                                <!-- <input type="text" name="wfh" id="wfh_count" readonly style="margin-top:12px;">  -->
+                                <span id="wfh_count" style="margin-top:12px; font-size: 35px;">0</span>
+                                <p style=" ">of <span class="wfh-color" style="color: red;" ><?php echo $employee_count?> </span></p>
                                 <label for="wfh" style="margin-top: -6px; margin-bottom: 20px"><i class="mdi mdi-home"></i> <span style="font-size: 16px;">Working Home</span></label>
                             </div>
+                                <script>
+                                    // JavaScript to count and display the number of <tr> tags in the tbody
+                                    const tbody = document.getElementById('wfh_table_body');
+                                    const countSpan = document.getElementById('wfh_count');
+
+                                    if (tbody && countSpan) {
+                                        const trCount = tbody.getElementsByTagName('tr').length;
+                                        countSpan.textContent = trCount;
+                                    }
+                                </script>
                             <div  data-bs-toggle="modal" data-bs-target="#IDmodal_ViewLate" style="cursor: pointer;">
                                 <?php
                                 include 'config.php';
