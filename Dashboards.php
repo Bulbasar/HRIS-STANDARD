@@ -433,8 +433,25 @@ if(mysqli_num_rows($result) <= 0) {
                 </div>
             </div>
             
-            <div class="dashboard-body w-100 border pt-2" style="height:73%; ">
-                
+            <div class="dashboard-body w-100 pt-2" style="height:73%; ">
+                <div class="w-100 h-100  mt-2 d-flex flex-row justify-content-between">
+                    <div class="bg-white rounded" style="width: 55%; height:81%; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
+                        
+                    </div>
+                    <div class="h-100" style="width:1.5%">
+
+                    </div>
+                    <div class="d-flex flex-column justify-content-between" style="width: 43.5%; height: 81%">
+                        <div class="w-100 bg-white rounded" style="height: 65%;height:81%; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
+
+                        </div>
+                        <div class="w-100" style="height: 5%;"></div>
+                        <div class="w-100 bg-white rounded" style="height: 30%;height:81%; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
+                            
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
         </div>
     </div>
