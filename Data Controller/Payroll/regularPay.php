@@ -35,7 +35,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                                 {
                                                     $row_check_att_rest = mysqli_fetch_assoc($result_restDay_worked);
 
-                                                    $double_pay_holiday_ = ($daily_rate + $allowance) * 2;
+                                                    $double_pay_holiday_ = ($daily_rate + $allowances) * 2;
                                                     $double_pay_holiday_initial =  ($daily_rate * 2) * 1.3;
 
                                                      $double_pay_holiday_restday +=  $double_pay_holiday_ + $double_pay_holiday_initial;
@@ -69,7 +69,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                             }
                                             else{
 
-                                                $double_pay_holiday += ($daily_rate + $allowance) * 2; //if holiday and worked
+                                                $double_pay_holiday += ($daily_rate + $allowances) * 2; //if holiday and worked
 
                                                 //-------------------------Para sa nag OVERTIME ang employee sa holdiday----------------------
                                                 $result_holiday_OT = mysqli_query($conn, " SELECT
@@ -111,7 +111,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                                 {
                                                     $row_check_att_rest = mysqli_fetch_assoc($result_restDay_worked);
 
-                                                    $double_pay_holiday_ = ($daily_rate + $allowance) * 2;
+                                                    $double_pay_holiday_ = ($daily_rate + $allowances) * 2;
                                                     $double_pay_holiday_initial =  ($daily_rate * 2) * 1.3;
 
                                                      $double_pay_holiday_restday +=  $double_pay_holiday_ + $double_pay_holiday_initial;
@@ -140,7 +140,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                             }
                                             else{
 
-                                                $double_pay_holiday += ($daily_rate + $allowance) * 2; //if holiday and worked
+                                                $double_pay_holiday += ($daily_rate + $allowances) * 2; //if holiday and worked
 
                                                 //-------------------------Para sa nag OVERTIME ang employee sa holdiday----------------------
                                                 $result_holiday_OT = mysqli_query($conn, " SELECT
@@ -183,7 +183,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                                 {
                                                     $row_check_att_rest = mysqli_fetch_assoc($result_restDay_worked);
 
-                                                    $double_pay_holiday_ = ($daily_rate + $allowance) * 2;
+                                                    $double_pay_holiday_ = ($daily_rate + $allowances) * 2;
                                                     $double_pay_holiday_initial =  ($daily_rate * 2) * 1.3;
 
                                                      $double_pay_holiday_restday +=  $double_pay_holiday_ + $double_pay_holiday_initial;
@@ -214,7 +214,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                             else
                                             {
                                                //if HINDI restday
-                                               $double_pay_holiday += ($daily_rate + $allowance) * 2; //if holiday and worked
+                                               $double_pay_holiday += ($daily_rate + $allowances) * 2; //if holiday and worked
 
                                                     //-------------------------Para sa nag OVERTIME ang employee sa holdiday----------------------
                                                 $result_holiday_OT = mysqli_query($conn, " SELECT
@@ -258,7 +258,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                                 {
                                                     $row_check_att_rest = mysqli_fetch_assoc($result_restDay_worked);
 
-                                                    $double_pay_holiday_ = ($daily_rate + $allowance) * 2;
+                                                    $double_pay_holiday_ = ($daily_rate + $allowances) * 2;
                                                     $double_pay_holiday_initial =  ($daily_rate * 2) * 1.3;
 
                                                      $double_pay_holiday_restday +=  $double_pay_holiday_ + $double_pay_holiday_initial;
@@ -289,7 +289,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                             else 
                                             {
                                                  //if HINDI restday
-                                                $double_pay_holiday += ($daily_rate + $allowance) * 2; //if holiday and worked
+                                                $double_pay_holiday += ($daily_rate + $allowances) * 2; //if holiday and worked
 
                                                     //-------------------------Para sa nag OVERTIME ang employee sa holdiday----------------------
                                                 $result_holiday_OT = mysqli_query($conn, " SELECT
@@ -331,7 +331,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                                 {
                                                     $row_check_att_rest = mysqli_fetch_assoc($result_restDay_worked);
 
-                                                    $double_pay_holiday_ = ($daily_rate + $allowance) * 2;
+                                                    $double_pay_holiday_ = ($daily_rate + $allowances) * 2;
                                                     $double_pay_holiday_initial =  ($daily_rate * 2) * 1.3;
 
                                                      $double_pay_holiday_restday +=  $double_pay_holiday_ + $double_pay_holiday_initial;
@@ -361,7 +361,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                             else
                                             {
                                                  //if HINDI restday
-                                                 $double_pay_holiday += ($daily_rate + $allowance) * 2; //if holiday and worked
+                                                 $double_pay_holiday += ($daily_rate + $allowances) * 2; //if holiday and worked
 
                                                     //-------------------------Para sa nag OVERTIME ang employee sa holdiday----------------------
                                                 $result_holiday_OT = mysqli_query($conn, " SELECT
@@ -405,7 +405,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                                 {
                                                     $row_check_att_rest = mysqli_fetch_assoc($result_restDay_worked);
 
-                                                    $double_pay_holiday_ = ($daily_rate + $allowance) * 2;
+                                                    $double_pay_holiday_ = ($daily_rate + $allowances) * 2;
                                                     $double_pay_holiday_initial =  ($daily_rate * 2) * 1.3;
 
                                                      $double_pay_holiday_restday +=  $double_pay_holiday_ + $double_pay_holiday_initial;
@@ -436,7 +436,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                             else
                                             {
                                                  //if HINDI restday
-                                                $double_pay_holiday += ($daily_rate + $allowance) * 2; //if holiday and worked
+                                                $double_pay_holiday += ($daily_rate + $allowances) * 2; //if holiday and worked
 
                                                     //-------------------------Para sa nag OVERTIME ang employee sa holdiday----------------------
                                                 $result_holiday_OT = mysqli_query($conn, " SELECT
@@ -479,7 +479,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                                 {
                                                     $row_check_att_rest = mysqli_fetch_assoc($result_restDay_worked);
 
-                                                    $double_pay_holiday_ = ($daily_rate + $allowance) * 2;
+                                                    $double_pay_holiday_ = ($daily_rate + $allowances) * 2;
                                                     $double_pay_holiday_initial =  ($daily_rate * 2) * 1.3;
 
                                                      $double_pay_holiday_restday +=  $double_pay_holiday_ + $double_pay_holiday_initial;
@@ -509,7 +509,7 @@ $result_valid_holiday = mysqli_query($conn, " SELECT
                                             else
                                             {
                                                     //if HINDI restday
-                                                    $double_pay_holiday += ($daily_rate + $allowance) * 2; //if holiday and worked
+                                                    $double_pay_holiday += ($daily_rate + $allowances) * 2; //if holiday and worked
 
                                                         //-------------------------Para sa nag OVERTIME ang employee sa holdiday----------------------
                                                     $result_holiday_OT = mysqli_query($conn, " SELECT

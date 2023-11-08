@@ -40,6 +40,7 @@ foreach ($inputData as $Employeeslip) {
     $LWOPdeductions = $Employeeslip['DeductionLWOP'];
     $DeductionTotal = $Employeeslip['totalDeduction'];
     $Netpayslip = $Employeeslip['Totalnetpay'];
+    $ThirteenmonthsPay = $Employeeslip['ThirteenPay'];
 
     $checkSlip = "SELECT * FROM payslip_report_tb WHERE `empid` = '$Empid' AND `cutoff_startdate` = '$CutoffstartDate' AND `cutoff_enddate` = '$CutoffendDate'";
     $slipRun = mysqli_query($conn, $checkSlip);
@@ -53,10 +54,29 @@ foreach ($inputData as $Employeeslip) {
         
         if ($result) {
             // Success
-            $response[] = array("status" => "success", "message" => "Data inserted for Employee ID: $Employee");
+            $response[] = array("status" => "success", "message" => "Data inserted for Employee ID");
         } else {
             // Error
-            $response[] = array("status" => "error", "message" => "Error inserting data for Employee ID: $Employee");
+            $response[] = array("status" => "error", "message" => "Error inserting data for Employee ID");
+        }
+    }
+
+    $checkThirteen = "SELECT * FROM thirteenmonth_salary_tb WHERE `empid` = '$Empid' AND `start_date` = '$CutoffstartDate' AND `end_date` = '$CutoffendDate'";
+    $runThirteen = mysqli_query($conn, $checkThirteen);
+
+    if(mysqli_num_rows($runThirteen) > 0){
+        $response[] = array("status" => "error", "message" => "There's already existing data");
+    } else {
+        $inserthirteen = "INSERT INTO thirteenmonth_salary_tb (`empid`, `month_thirteen`, `start_date`, `end_date`, `total_salary`)
+        VALUES ('$Empid', '$Cutoffmonth', '$CutoffstartDate', '$CutoffendDate', '$ThirteenmonthsPay')";
+        $result_thirteen = mysqli_query($conn, $inserthirteen);
+
+        if($result_thirteen) {
+             // Success
+             $response[] = array("status" => "success", "message" => "Data inserted for Employee ID");
+        } else {
+            // Error
+            $response[] = array("status" => "error", "message" => "Error inserting data for Employee ID");
         }
     }
 }

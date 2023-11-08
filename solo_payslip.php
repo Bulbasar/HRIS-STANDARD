@@ -41,6 +41,8 @@ $lwopcut = $inputData['table_lwopdeduction_id'];
 $totaldeduct = $inputData['table_totaldeduction_id'];
 $Netpayslip = $inputData['table_Netpayslip_id'];
 
+$ThirteenPay = $inputData['table_thirteenMonth_id'];
+
 
 $checkSlip = "SELECT * FROM payslip_report_tb WHERE `empid` = '$employeeID' AND `cutoff_startdate` = '$cutoffStart' AND `cutoff_enddate` = '$cutoffEnd'";
 $slipRun = mysqli_query($conn, $checkSlip);
@@ -54,13 +56,31 @@ if(mysqli_num_rows($slipRun) > 0){
     
     if ($result) {
         // Success
-        $response[] = array("status" => "success", "message" => "Data inserted for Employee ID: $Employee");
+        $response[] = array("status" => "success", "message" => "Data inserted for Employee ID");
     } else {
         // Error
-        $response[] = array("status" => "error", "message" => "Error inserting data for Employee ID: $Employee");
+        $response[] = array("status" => "error", "message" => "Error inserting data for Employee ID");
     }
 }
 
+$checkthirteen = "SELECT * FROM thirteenmonth_salary_tb WHERE `empid` = '$employeeID' AND `start_date` = '$cutoffStart' AND `end_date` = '$cutoffEnd'";
+$thirteenRun = mysqli_query($conn, $checkthirteen);
+
+if(mysqli_num_rows($thirteenRun) > 0){
+    $response[] = array("status" => "error", "message" => "There's already existing data");
+}else{
+    $inserThirteen = "INSERT INTO thirteenmonth_salary_tb(`empid`, `month_thirteen`, `start_date`, `end_date`, `total_salary`)
+    VALUES('$employeeID', '$monthcutoff', '$cutoffStart', '$cutoffEnd', '$ThirteenPay')";
+    $resInsert = mysqli_query($conn, $inserThirteen);
+
+    if($resInsert){
+        //success
+        $response[] = array("status" => "success", "message" => "Data inserted for Employee ID");
+    } else {
+        //error
+        $response[] = array("status" => "error", "message" => "Error inserting data for Employee ID");
+    }
+}
 echo json_encode($response);
 
 ?>

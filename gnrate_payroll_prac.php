@@ -383,6 +383,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                             <th style="display: none;">Net Pay</th>
                                             <th style="display: none;">Total Working hours</th>
                                             <th style="display: none;">Total Leave</th>
+                                            <th style="display: none;">13 Month Pay</th>
                                             <th>View Details</th>
                                             <th>Print</th>
                                         </tr>
@@ -417,7 +418,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                         $payruleResult = mysqli_query($conn, $payruleQuery);
                                                         if($payruleResult){
                                                             $payrow = $payruleResult->fetch_assoc();
-                                                            $payrules = $payrow['payrules']; //gagamitin ko sa condition kung fixed salary o daily paid
+                                                            $payrules = $payrow['payrules']; 
                                                         }else{
                                                             echo "No Employee Found";
                                                         }
@@ -861,18 +862,26 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                             if($Frequency === 'Monthly'){
                                                                 $Salarycutoff = $EmpSalary;
                                                                 $PayslipSalary = $EmpSalary; //Para sa payslip
+
+                                                                $ThirteenSalary = $EmpSalary; //Para sa thirteen month
                                                             }else if($Frequency === 'Semi-Month'){
                                                                 $Salarycutoff = $EmpSalary / 2;
                                                                 $PayslipSalary = $EmpSalary / 2; //Para sa payslip
+
+                                                                $ThirteenSalary = $EmpSalary / 2; //Para sa thirteen month
                                                             }else if($Frequency === 'Weekly'){
                                                                 $Salarycutoff = $EmpSalary / 4;
                                                                 $PayslipSalary = $EmpSalary / 4; //Para sa payslip
+
+                                                                $ThirteenSalary = $EmpSalary / 4; //Para sa thirteen month
                                                             }
 
                                                             $BasicTotalPay = $Salarycutoff + $time_OT_TOTAL + $LeavewithPay + $allowances; //ito yung total para sa modal na wala pang deduction
                                                         } else if($EmpPayRule === 'Daily Paid'){
                                                             $Salarycutoff = $EmpDrate;
                                                             $PayslipSalary = $EmpDrate * $Totaldailyworks;//Basic pay para sa payslip modal
+
+                                                            $ThirteenSalary = $EmpDrate * $Totaldailyworks;
 
                                                             $DailyrateTotalworks = $Salarycutoff * $Totaldailyworks;
                                                             $BasicTotalPay = $DailyrateTotalworks + $time_OT_TOTAL + $LeavewithPay + $allowances; //ito yung total para sa modal na wala pang deduction
@@ -882,6 +891,10 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                         //----------------------------------Total ng Deduction para sa modal----------------------------------\\
                                                         @$TotalDeduction = $AbsentDeduction + $LateTotalDeduction + $UTtotaldeduction + $LWOPDeduction + $Governmentformat; //Total deduction ng modal
                                                         //----------------------------------End ng total Deduction para sa modal----------------------------------\\
+
+                                                        //----------------------------------Deduction para sa thirteen Month--------------------------------------\\
+                                                        $DeductionThirteen = $AbsentDeduction + $LateTotalDeduction + $UTtotaldeduction + $LWOPDeduction;
+                                                        //----------------------------------End Deduction para sa thirteen Month--------------------------------------\\
 
                                                         //---------------------------------Check kung regular ba o hindi------------------------------\\
                                                         $EmpClassification = mysqli_query($conn, "SELECT
@@ -939,7 +952,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                                             include 'Data Controller/Payroll/regularPay.php'; // Para sa computation ng regular Holiday Pay
                                                                         }
                                                                         else if($valid_holiday_type === 'Special Non-Working Holiday' || $valid_holiday_type === 'Special Working Holiday'){
-                                                                        include 'Data Controller/Payroll/specialPay.php'; // Para sa computation ng Special Holiday Pay
+                                                                            include 'Data Controller/Payroll/specialPay.php'; // Para sa computation ng Special Holiday Pay
                                                                   } 
                                                                 }
                                                               }
@@ -961,8 +974,13 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                         //------------------------------Net Payslip-------------------------------\\
                                                         $NotformatNetpay = $BasicTotalPay - $TotalDeduction;
                                                         $PayslipNetPay = "₱" . number_format($NotformatNetpay, 2);
-
-                                                        //------------------------------Net Payslip-------------------------------\\                                                        
+                                                        //------------------------------Net Payslip-------------------------------\\   
+                                                        
+                                                        //-----------------------------for 13month basis---------------------------\\
+                                                        $Notthirteenformat = $ThirteenSalary - $DeductionThirteen;
+                                                        $ThirteenMonthPay = number_format($Notthirteenformat, 2);
+                                                        //----------------------------End ng 13month basis-------------------------\\
+                                                        
                                             ?>  
                                         <tr>
                                             <td style="font-weight: 400;"><?php echo $EmployeeID ?></td> <!--0-->
@@ -1015,6 +1033,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                             <td style="font-weight: 400; display: none;"><?php echo $PayslipNetPay?></td><!--47-->
                                             <td style="font-weight: 400; display: none;"><?php echo $Totalwork ?></td><!--48-->
                                             <td style="font-weight: 400; display: none;"><?php echo $TotalLeavePaid ?></td><!--49-->
+                                            <td style="font-weight: 400; display: none;"><?php echo $ThirteenMonthPay ?></td><!--50-->
                                             <td style="font-weight: 400;"><button type="button" class="btn btn-primary payrolldetails" data-bs-toggle="modal" data-bs-target="#Payrollbootstrap">View</button></td>
                                             <td><button type="button" class="btn btn-success textempID" data-bs-toggle="modal" data-bs-target="#viewPayslip">Payslip</button></td>
                                         </tr>
@@ -1077,6 +1096,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                 <input type="hidden" id="hidden_lwopdeduction">
                                 <input type="hidden" id="hidden_totaldeduction">
                                 <input type="hidden" id="hidden_netpay">
+                                <input type="hidden" id="hidden_thirteenmonths">
 
 
 
@@ -1165,40 +1185,25 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
 
                                             <div class="div_mdlcontnt_left">
                                                 <p class="lbl_bsc_pay">Basic Pay</p>
-                                                <p class="p_Thrs" id="empTotalwork" name="basic_total_work"></p>
-                                                <p class="p_Tamount" id="empAmount" name="basic_salary_amount"></p>
-
+                                                <p class="lbl_bsc_pay">Overtime Pay</p>
+                                                <p class="lbl_bsc_pay">Allowance</p>
+                                                <p class="lbl_bsc_pay">PAID LEAVES</p>
+                                                <p class="lbl_bsc_pay">HOLIDAY PAY</p>
                                             </div>
 
                                              <div class="div_mdlcontnt_left1">
-                                                <p class="lbl_bsc_pay">Overtime Pay</p>
+                                                <p class="p_Thrs" id="empTotalwork" name="basic_total_work"></p>
                                                 <p class="p_Thrs" id="empOThours" name="overtime_hours_name"></p>
-                                                <p class="p_Tamount" id="OTamount" name="overtime_amount_name"></p>
+
                                             </div>
 
                                             <div class="div_mdlcontnt_left2">
-                                                <p class="lbl_bsc_pay">Allowance</p>
-                                                <p class="p_Thrs"></p>
-                                                <p class="p_Tamount" id="allowanceAmount" name="allowance_total_name"></p>
+                                                <p class="amountInall" id="empAmount" name="basic_salary_amount"></p>
+                                                <p class="amountInall" id="OTamount" name="overtime_amount_name"></p>
+                                                <p class="amountInall" id="allowanceAmount" name="allowance_total_name"></p>
+                                                <p class="amountInall" id="leaveAmount" name="paid_leave_name"></p>
+                                                <p class="amountInall" id="holidayAmount" name="holiday_pay_name"></p>
                                             </div>
-
-                                            <div class="div_mdlcontnt_left3">
-                                                <p class="lbl_bsc_pay">PAID LEAVES</p>
-                                                <p class="p_Thrs"></p>
-                                                <p class="p_Tamount" id="leaveAmount" name="paid_leave_name"></p>
-                                            </div>
-
-                                            <div class="div_mdlcontnt_left4">
-                                                <p class="lbl_bsc_pay">HOLIDAY PAY</p>
-                                                <p class="p_Thrs"></p>
-                                                <p class="p_Tamount" id="holidayAmount" name="holiday_pay_name"></p>
-                                            </div>
-
-                                            <!-- <div class="div_mdlcontnt_left5">
-                                                <p class="lbl_bsc_pay">HOLIDAY OT PAY</p>
-                                                <p class="p_Thrs"></p>
-                                                <p class="p_Tamount"><?php //echo $totalOT_pay_holiday + $totalOT_pay_holiday_restday;?></p>
-                                            </div> -->
 
                                        </div><!--headbdy_pnl11-->
                                         
@@ -1263,7 +1268,6 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                         </div>
 
                                         <div class="headbdy_pnl3">
-                                        <!-- <p class="lbl_deduct">Net Total : </p> -->
                                         <p class="lbl_Balance"></p>
                                     </div>
                                     </div> <!---headbody2---->
@@ -1329,7 +1333,8 @@ document.getElementById("pdfPrint").addEventListener("click", function () {
                 table_lwopcount_id: document.getElementById("hidden_lwop").value,
                 table_lwopdeduction_id: document.getElementById("hidden_lwopdeduction").value,
                 table_totaldeduction_id: document.getElementById("hidden_totaldeduction").value,
-                table_Netpayslip_id: document.getElementById("hidden_netpay").value
+                table_Netpayslip_id: document.getElementById("hidden_netpay").value,
+                table_thirteenMonth_id: document.getElementById("hidden_thirteenmonths").value
                 
                 
     };
@@ -1590,6 +1595,7 @@ $(document).ready(function(){
         var TotalNetPay = data[47];
         var TotalWorkinghours = data[48];
         var LeaveCount = data[49];
+        var ThirteenMonthCalculation = data[50];
 
 
         // Set the value of the <p> tag
@@ -1664,6 +1670,8 @@ $(document).ready(function(){
         $('#hidden_totaldeduction').val(TotalDeduction);
 
         $('#hidden_netpay').val(TotalNetPay);
+
+        $('#hidden_thirteenmonths').val(ThirteenMonthCalculation);
 
 
     });
