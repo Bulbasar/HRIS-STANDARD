@@ -18,7 +18,7 @@
     
     <div class="container-fluid">
         <div class="position-absolute" style="top: 50%; left: 50%; transform: translate(-50%, -50%)">
-            <p>Login ka na tara <span><a href="login" style="text-decoration:none">Click here</a></span></p>
+            <p>Login, <span><a href="login" style="text-decoration:none">Click here</a></span></p>
         </div>
     </div>
 

@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $sql = "INSERT INTO pakyawan_based_work_tb (work_frequency, start_date, end_date, employee, unit_type_text, work_pay ) VALUES ('$work_frequency','$start_date','$end_date','$employee', '$unit_type_text' , '$work_pay')";
 
     if (mysqli_query($conn, $sql)) {
-        header("Location: ../../pakyawan_work");
+        header("Location: ../../pakyawan_work?inserted");
     } else {
         echo "Error inserting data: " . mysqli_error($conn);
     }

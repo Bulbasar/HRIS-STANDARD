@@ -39,7 +39,7 @@
         $query_run = mysqli_query($conn, $sql);
 
         if($query_run){
-            header("Location: ../../pakyawan_work");
+            header("Location: ../../pakyawan_work?updated");
           
         }
         else{

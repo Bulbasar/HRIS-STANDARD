@@ -50,7 +50,7 @@ if(isset($_POST['submit'])){
         $otp = mt_rand(1000, 9999);
       
         // $imgData = file_get_contents('../../img/panget.png');
-        $imgData64 = base64_encode($imgData);
+        // $imgData64 = base64_encode($imgData);
         $cid = md5(uniqid(time()));
         // $mail->addEmbeddedImage('../../img/panget.png', $cid, 'panget.png');
       

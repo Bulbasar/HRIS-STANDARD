@@ -155,6 +155,32 @@ include 'config.php';
 </div>
 <!--------------------------------------Modal For Time Out Button---------------------------------------->
 
+<!---------------------------------------Announcement Download Modal Start Here -------------------------------------->
+<div class="modal fade" id="download" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form action="actions/Announcement/download.php" method="POST">
+      <div class="modal-body">
+        <input type="hidden" name="table_id" id="id_table">
+        <input type="hidden" name="table_name" id="name_table">
+        <h3>Are you sure you want download the PDF File?</h3>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" name="yes_download" class="btn btn-primary">Yes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+      </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+<!--------------------------------------- Announcement Download Modal End Here --------------------------------------->
+
     <div class="emp-dashboard-container">
             <div class="emp-dashboard-content">
                 <div class="emp-dash-card">
@@ -463,8 +489,8 @@ include 'config.php';
                                                 $row = mysqli_fetch_assoc($result); // Fetch a single row
 
                                                 if ($row) {
-                                                    $time_in = date('h:i A', strtotime($row['time_in'])); // Format time_in to AM/PM
-                                                    $time_out = date('h:i A', strtotime($row['time_out'])); // Format time_out to AM/PM
+                                                    @$time_in = date('h:i A', strtotime($row['time_in'])); // Format time_in to AM/PM
+                                                    @$time_out = date('h:i A', strtotime($row['time_out'])); // Format time_out to AM/PM
                                                     ?>
                                                     <h1>Yesterday</h1>
                                                     <h5><?php echo $time_in . " - " . $time_out; ?></h5>
@@ -808,10 +834,31 @@ include 'config.php';
                                                     if (mysqli_num_rows($result) > 0) {
                                                         while ($row = mysqli_fetch_assoc($result)) {
                                                             if ($slideIndex % 1 === 0) {
+                                                                $file = $row['file_attachment'];
+                                                                $id = $row['id'];
+                                                                $title = $row['announce_title'];
                                                                 echo "<div class='swiper-slide pl-5 pr-5 pt-3'>";
                                                             }
                                                             ?>                          
-                                                            <h4 class="mt-2 ml-2"><?php echo $row['announce_title'] ?></h4>
+                                                            <div class="w-100 mt-2 ml-2 d-flex pr-3 flex-row justify-content-between"><h4 class=""><?php echo $row['announce_title'] ?></h4> <?php if(empty($file)) { echo ''; }else{ 
+                                                            echo '
+                                                            <table>
+                                                                <thead>
+                                                                    <th class="d-none">id </th>
+                                                                    <th class="d-none">tb name </th>
+                                                                    <th class="d-none"> button </th>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="d-none">'?><?php echo $id;?><?php echo'</td>
+                                                                        <td class="d-none">'?><?php echo $title;?><?php echo'</td>
+                                                                        <td><button class="border-0 p-0 downloadbtn" style="font-style: italic; color: blue; text-decoration: underline;" type="button"
+                                                                        data-bs-toggle="modal" data-bs-target="#download">File Attachment</button> </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>'; 
+                                                            
+                                                            }  ?></div>
                                                             <p class="ml-2"><span style="color: #7F7FDD; font-style: Italic;"><?php echo $row['full_name'] ?></span> - <?php echo $row['announce_date'] ?></p>
                                                             <p class="ml-2"><?php echo $row['description'] ?></p>
                                                             <?php
@@ -973,6 +1020,22 @@ include 'config.php';
             el: '.swiper-scrollbar',
         },
         });
+    </script>
+
+    <script>
+     $(document).ready(function(){
+               $('.downloadbtn').on('click', function(){
+                $('#download').modal('show');
+                      $tr = $(this).closest('tr');
+
+                    var data = $tr.children("td").map(function () {
+                    return $(this).text();
+                    }).get();
+                   console.log(data);
+                   $('#id_table').val(data[0]);
+                   $('#name_table').val(data[1]);
+               });
+             });
     </script>
 
 

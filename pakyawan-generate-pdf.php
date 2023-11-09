@@ -385,7 +385,7 @@ session_start();
       </div>
 
             <div class="modal-footer">
-              <a href="pakyawan_payroll" style="text-decoration:none; "  class="mr-3">Close</a>
+              <a href="generate_pakyawan_payroll?id=<?php echo $cutOffID; ?> " style="text-decoration:none; "  class="mr-3">Close</a>
               <button type="button" class="btn btn-primary" id="pdfPrint" onclick="makePDF()">Print</button>
 
           </div>

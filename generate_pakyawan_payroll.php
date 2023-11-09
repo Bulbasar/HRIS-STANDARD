@@ -214,7 +214,7 @@ session_start();
                                         include 'config.php';
 
                                         //select data db
-                                        $cutOffID = $_POST['id'];
+                                        $cutOffID = $_GET['id'];
 
                                         $result_cutOff= mysqli_query($conn, "SELECT
                                             *  

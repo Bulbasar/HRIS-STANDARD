@@ -154,6 +154,92 @@
     color: white !important; /* Text color, you can adjust this as needed */
   }
 
+  .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+        z-index: 999; /* Ensure overlay is on top */
+    }
+
+    .modals {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    z-index: 9999; /* Ensure modal is on top of the overlay */
+    height: 33%;
+    width: 25%;
+    border-radius: 0.5em;
+    animation: delayAndFadeIn 0.8s ease-in-out forwards; /* Delay and then fade in */
+}
+
+    
+
+    
+    /* Style for the close button */
+    .modals .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    @keyframes delayAndFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+    /* Bouncing animation for the icon */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Apply the bouncing animation to the icon */
+    .bouncing-icon {
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        /* 15% {
+            transform: rotate(180deg);
+        }
+        30%{
+            transform: rotate(280deg);
+        } */
+        70%{
+            transform: rotate(359deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Apply the rotation animation to the checkmark icon */
+    #insertedModal .rotating-icon {
+        animation: rotate 2.5s infinite; /* 0.5 seconds rotation + 3 seconds pause */
+    }
+
 
 </style>
 
@@ -243,11 +329,11 @@
                                 </div>
                                 <div class="emp-info-mname">
                                         <label for="lname">Middle Name</label><br>
-                                        <input type="text" name="mname" id="form-lname" placeholder="Middle Name" id="lname" onkeyup='saveValue(this);' value="<?php echo isset($_GET['mname']) ? $_GET['mname'] : ''; ?>" required>
+                                        <input type="text" name="mname" id="form-lname" placeholder="Middle Name" id="mname" onkeyup='saveValue(this);' value="<?php echo isset($_GET['mname']) ? $_GET['mname'] : ''; ?>" >
                                 </div>
                                 <div class="emp-info-lname">
                                         <label for="lname">Last Name</label><br>
-                                        <input type="text" name="lname" id="form-lname" placeholder="Last Name" id="mname" onkeyup='saveValue(this);' value="<?php echo isset($_GET['lname']) ? $_GET['lname'] : ''; ?>" required>
+                                        <input type="text" name="lname" id="form-lname" placeholder="Last Name" id="lname" onkeyup='saveValue(this);' value="<?php echo isset($_GET['lname']) ? $_GET['lname'] : ''; ?>" required>
                                 </div>
                             </div>
                             <div class="emp-info-second-input">
@@ -258,7 +344,7 @@
                                 </div>
                                 <div class="emp-info-contact">
                                         <label for="contact">Contact Number</label><br>
-                                        <input type="text" id="numberInput" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0, 11);" name="contact" placeholder="Contact Number" value="<?php echo isset($_GET['contact']) ? $_GET['contact'] : ''; ?>" required>
+                                        <input type="text" id="numberInput" oninput='this.value = this.value.replace(/[^0-9]/g, ""); if(this.value.length > 11) this.value = this.value.slice(0, 11);' name="contact" placeholder="Contact Number" value="<?php echo isset($_GET['contact']) ? $_GET['contact'] : ''; ?>" required>
                                         
                                 </div>
                             </div>
@@ -820,6 +906,8 @@
     
         </div>
 
+           
+
         <!-- email validation -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -1319,7 +1407,116 @@ function matchPass(){
   });
 </script>
 
+ <!-- Validations -->
 
+   <!-- Modal HTML for Duplicate Group Name -->
+   <div id="duplicateModal" class="modals">
+    <span class="close">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+      <div class="border border-danger d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+            <i class="fa-solid fa-exclamation bouncing-icon" style="font-size: 6em; color: red"></i>
+          </div>
+          <h4 class="mt-3">The user already exists in our database!</h4>
+        
+      </div>
+      <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes">OK</button>
+    </div>
+</div>
+
+   <!-- Overlay div -->
+<div class="overlay"></div>
+
+<!-- Modal HTML for Successfully Inserted -->
+<div id="insertedModal" class="modals">
+    <span class="close">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+        <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+          <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+        </div>
+        <h4 class="mt-3">Successfully Inserted!</h4>
+       
+    </div>
+    <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes">OK</button>
+    </div>
+</div>
+
+<!-- deleted -->
+<div id="deleteModal" class="modals">
+    <span class="close" id="removeParamButton">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+      <div class="d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+            <i class="fa-solid fa-trash bouncing-icon" style="font-size: 6em; color: red"></i>
+          </div>
+          <h4 class="mt-3">Successfully Deleted!</h4>
+        
+      </div>
+      <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes" id="removeParamButton">OK</button>
+    </div>
+</div>
+
+
+
+<script>
+    // Function to show a modal
+    function showModal(modalId, message) {
+        var modal = document.getElementById(modalId);
+        var overlay = document.querySelector('.overlay');
+        modal.style.display = 'block';
+        overlay.style.display = 'block';
+
+    }
+
+    // Function to hide a modal
+    function closeModal(modalId) {
+        var modal = document.getElementById(modalId);
+        var overlay = document.querySelector('.overlay');
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+
+        // Remove the parameter from the URL
+        var urlParams = new URLSearchParams(window.location.search);
+        urlParams.delete(modalId === 'duplicateModal' ? 'err' : 'inserted');
+        var newUrl = window.location.pathname + '?' + urlParams.toString();
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+    // Check if the URL contains a parameter and show the modal accordingly
+    window.onload = function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('err')) {
+            showModal('duplicateModal', 'Duplicate Group Name!');
+        }
+        if (urlParams.has('inserted')) {
+            showModal('insertedModal', 'Successfully Inserted!');
+        }
+        if(urlParams.has('deleted')){
+            showModal('deleteModal', 'Successfully Deleted!');
+        }
+    }
+
+    // Close the modals when the user clicks the close button
+    var closeBtns = document.querySelectorAll('.close');
+    if (closeBtns) {
+        closeBtns.forEach(function (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                var modalId = this.closest('.modals').id;
+                closeModal(modalId);
+            });
+        });
+    }
+    var closes = document.querySelectorAll('.btn-closes');
+    if (closes) {
+        closes.forEach(function (closes) {
+            closes.addEventListener('click', function () {
+                var modalId = this.closest('.modals').id;
+                closeModal(modalId);
+            });
+        });
+    }
+</script>
 
 
 
@@ -1447,7 +1644,7 @@ $(document).ready(function() {
     <script src="skydash/template.js"></script>
     <script src="skydash/settings.js"></script>
     <script src="skydash/todolist.js"></script>
-     <script src="main.js"></script>
+     <!-- <script src="main.js"></script> -->
     <script src="bootstrap js/data-table.js"></script>
 
 

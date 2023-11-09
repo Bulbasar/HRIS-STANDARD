@@ -13,7 +13,7 @@
         $query_run = mysqli_query($conn, $sql);
 
         if($query_run){
-            header("Location: ../../Piece_rate");
+            header("Location: ../../Piece_rate?updated");
           
         }
         else{

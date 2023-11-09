@@ -159,7 +159,7 @@ include 'config.php';
                             </div>
                             
                             <div class="mb-3">
-                                <label for="company" class="form-label">Date</label>
+                                <label for="company" class="form-label" id="">Date</label>
                                 
                                 <input type="date" name="date_undertime" class="form-control" id="date_id_undertime" required onchange="checkSchedule()" required>
                             </div>
@@ -418,7 +418,7 @@ include 'config.php';
                                 <td><?php echo $row['ut_action_taken'];?></td>
                                 <td><?php echo $row['ut_remarks'];?></td>
                                 <td <?php if ($row['status'] == 'Approved') {echo 'style="color:green;"';} elseif ($row['status'] == 'Rejected') {echo 'style="color:red;"';} elseif ($row['status'] == 'Pending') {echo 'style="color:orange;"';} elseif ($row['status'] == 'Cancelled') {echo 'style="color:gray;"';} ?>><?php echo $row['status']; ?>
-                            </td>
+                                 </td>
                                 <td style="display: none;"><?php echo $row['date_file']?></td>
                                 <td><a href="" class="btn btn-primary viewbtn" data-bs-toggle="modal" data-bs-target="#view_undertime_modal">View</a></td>
                             </tr>
@@ -435,6 +435,22 @@ include 'config.php';
     </div>
 </div>
 
+    <script>
+        // Calculate the date 18 years ago
+        var today = new Date();
+        var maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        // Calculate the date 31 years ago (minimum year is 1990)
+        var minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 12);
+
+        // Format the maxDate and minDate as YYYY-MM-DD
+        var maxDateFormatted = maxDate.toISOString().split("T")[0];
+        var minDateFormatted = minDate.toISOString().split("T")[0];
+
+        // Set the max and min attributes of the input element
+        // document.getElementById("date_id_undertime").setAttribute("max", maxDateFormatted);
+        document.getElementById("date_id_undertime").setAttribute("min", minDateFormatted);
+    </script>
 
 <!-----------------------------Script sa pagremove ng message sa link------------------------------------>
 <script>

@@ -28,16 +28,14 @@ while ($row = mysqli_fetch_assoc($result)) {
 
     $subtotal += $unit_rate / $unit_quantity;
 
-
     $options .= "
-                <tr>
-                    <td class='' style='font-weight: 400' id='box-cn'><div class='d-flex flex-row' id='boxes'><input class='checkbox-item' type='checkbox' id='box' name=''> <span class='unit_type'>".$unit_type."</span> <span class='subtotal d-none'>".$subtotal."</span></div</td>
-                    <td class='' style='font-weight: 400'><input type='text' class='form-control quantity-item' style='width: 10em; margin-left: -3em' id='quantity' disabled> </td>
-                    <td class='' style='font-weight: 400'><input type='text' class='form-control total-amount' style='width: 10em; margin-left: -2em' id='total' readonly></td>
-                <tr>
+    <tr>
+        <td class='' style='font-weight: 400' id='box-cn'><div class='d-flex flex-row' id='boxes'><input class='checkbox-item' type='checkbox' id='box' name=''> <span class='unit_type'>".$unit_type."</span> <span class='subtotal d-none'>".$subtotal."</span></div</td>
+        <td class='' style='font-weight: 400'><input type='text' class='form-control quantity-item' style='width: 10em; margin-left: -3em' id='quantity' disabled step='1' oninput='this.value = this.value.replace(/[^0-9]/g, \"\");'> </td>
+        <td class='' style='font-weight: 400'><input type='text' class='form-control total-amount' style='width: 10em; margin-left: -2em' id='total' readonly></td>
+    <tr>
+";
 
-                
-            ";
 
         
 }

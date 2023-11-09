@@ -57,6 +57,8 @@ if (isset($_POST["import"])) {
 
               if (!$updateResult) {
                   echo "Error updating data: " . mysqli_error($conn);
+              }else{
+                    header("Location: ../../Piece_rate?updated");
               }
           } else {
               // If the unit type doesn't exist, insert a new record
@@ -65,6 +67,8 @@ if (isset($_POST["import"])) {
 
               if (!$insertResult) {
                   echo "Error inserting data: " . mysqli_error($conn);
+              }else{
+                header("Location: ../../Piece_rate?inserted");
               }
           }
       }
@@ -124,7 +128,7 @@ if (isset($_POST["import"])) {
     <link rel="stylesheet" href="css/try.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/piece_rate.css">
-    <title>HRIS | Schedule</title>
+    <title>HRIS | Piece Rate</title>
 </head>
 <body>
 
@@ -132,6 +136,93 @@ if (isset($_POST["import"])) {
         <?php include("header.php")?>
     </header>
     
+    <style>
+        .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+        z-index: 999; /* Ensure overlay is on top */
+    }
+
+    .modals {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    z-index: 9999; /* Ensure modal is on top of the overlay */
+    height: 33%;
+    width: 25%;
+    border-radius: 0.5em;
+    animation: delayAndFadeIn 0.8s ease-in-out forwards; /* Delay and then fade in */
+}
+
+    
+
+    
+    /* Style for the close button */
+    .modals .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    @keyframes delayAndFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+    /* Bouncing animation for the icon */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Apply the bouncing animation to the icon */
+    .bouncing-icon {
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        /* 15% {
+            transform: rotate(180deg);
+        }
+        30%{
+            transform: rotate(280deg);
+        } */
+        70%{
+            transform: rotate(359deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Apply the rotation animation to the checkmark icon */
+    #insertedModal .rotating-icon {
+        animation: rotate 2.5s infinite; /* 0.5 seconds rotation + 3 seconds pause */
+    }
+    </style>
 
     <!-- insert modal -->
 
@@ -154,7 +245,7 @@ if (isset($_POST["import"])) {
                         <div class="input-group-prepend">
                             <span class="input-group-text" style="height: 50%">&#8369;</span>
                         </div>
-                        <input type="text" name="unit_rate" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0, 11);" required>
+                            <input type="text" name="unit_rate" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if(this.value.indexOf('.') !== -1) { if(this.value.split('.')[1].length > 2) { this.value = this.value.slice(0, this.value.indexOf('.') + 3); } } if(this.value.length > 13) this.value = this.value.slice(0, 13);" required>
                         </div>
                       </div>
                   </div>
@@ -189,7 +280,7 @@ if (isset($_POST["import"])) {
                           <label for="" class="mt-3">Unit Rate:</label><br>
                           <div class="d-flex flex-row">
                           <span class="input-group-text" style="height: 100%; padding: 0.8em; padding-top: 0.7em" >&#8369;</span>
-                            <input type="text" name="unit_rate" class="form-control" id="unit_rate" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0, 11);">
+                            <input type="text" name="unit_rate" class="form-control" id="unit_rate" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0, 11);">
                           </div>
                           
                       </div>
@@ -269,7 +360,7 @@ if (isset($_POST["import"])) {
                             die("Connection failed: " . mysqli_connect_error());
                         }
 
-                        $sql = "SELECT * FROM piece_rate_tb";
+                        $sql = "SELECT * FROM piece_rate_tb  ";
                         $result = mysqli_query($conn, $sql);
 
                         if (mysqli_num_rows($result) > 0) {
@@ -300,6 +391,128 @@ if (isset($_POST["import"])) {
             
         </div>
     </div>
+
+       <!-- Validations -->
+
+   <!-- Modal HTML for Duplicate Group Name -->
+   <div id="duplicateModal" class="modals">
+    <span class="close">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+        <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+          <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+        </div>
+        <h4 class="mt-3">Successfully Updated!</h4>
+       
+    </div>
+      <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes">OK</button>
+    </div>
+</div>
+
+   <!-- Overlay div -->
+<div class="overlay"></div>
+
+<!-- Modal HTML for Successfully Inserted -->
+<div id="insertedModal" class="modals">
+    <span class="close">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+        <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+          <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+        </div>
+        <h4 class="mt-3">Successfully Inserted!</h4>
+       
+    </div>
+    <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes">OK</button>
+    </div>
+</div>
+
+<!-- deleted -->
+<div id="deleteModal" class="modals">
+    <span class="close" id="removeParamButton">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+      <div class="d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+            <i class="fa-solid fa-trash bouncing-icon" style="font-size: 6em; color: red"></i>
+          </div>
+          <h4 class="mt-3">Successfully Deleted!</h4>
+        
+      </div>
+      <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes">OK</button>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+<script>
+        // Function to show a modal
+        function showModal(modalId, message) {
+            var modal = document.getElementById(modalId);
+            var overlay = document.querySelector('.overlay');
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        // Function to hide a modal and remove parameters from the URL
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            var overlay = document.querySelector('.overlay');
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+
+            // Remove the parameter from the URL based on modalId
+            var urlParams = new URLSearchParams(window.location.search);
+
+            if (modalId === 'duplicateModal') {
+                urlParams.delete('updated');
+            } else if (modalId === 'deleteModal') {
+                urlParams.delete('deleted');
+            } else if (modalId === 'insertedModal') {
+                urlParams.delete('inserted');
+            }
+
+            var newUrl = window.location.pathname + '?' + urlParams.toString();
+            window.history.replaceState({}, document.title, newUrl);
+        }
+
+        // Check if the URL contains a parameter and show the modal accordingly
+        window.onload = function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('updated')) {
+                showModal('duplicateModal', 'Duplicate Group Name!');
+            }
+            if (urlParams.has('inserted')) {
+                showModal('insertedModal', 'Successfully Inserted!');
+            }
+            if (urlParams.has('deleted')) {
+                showModal('deleteModal', 'Successfully Deleted!');
+            }
+        }
+
+        // Close the modals when the user clicks the close button
+        var closeBtns = document.querySelectorAll('.close');
+        if (closeBtns) {
+            closeBtns.forEach(function (closeBtn) {
+                closeBtn.addEventListener('click', function () {
+                    var modalId = this.closest('.modals').id;
+                    closeModal(modalId);
+                });
+            });
+        }
+        var closes = document.querySelectorAll('.btn-closes');
+        if (closes) {
+            closes.forEach(function (closes) {
+                closes.addEventListener('click', function () {
+                    var modalId = this.closest('.modals').id;
+                    closeModal(modalId);
+                });
+            });
+        }
+    </script>
 
     <script>
 

@@ -10,7 +10,7 @@ if(isset($_POST['delete_data']))
     
         if($query_run)
         {
-            header("Location: ../../Piece_rate");
+            header("Location: ../../Piece_rate?deleted");
         }
         else
         {

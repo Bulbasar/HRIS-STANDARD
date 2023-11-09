@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $updateSql = "UPDATE piece_rate_tb SET unit_quantity = '$unitQuantity', unit_rate = '$unitRate' WHERE unit_type = '$unitType'";
         
         if (mysqli_query($conn, $updateSql)) {
-            header("Location: ../../Piece_rate");
+            header("Location: ../../Piece_rate?updated");
         } else {
             echo "Error updating data: " . mysqli_error($conn);
         }
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $insertSql = "INSERT INTO piece_rate_tb (unit_type, unit_quantity, unit_rate) VALUES ('$unitType', '$unitQuantity', '$unitRate')";
         
         if (mysqli_query($conn, $insertSql)) {
-            header("Location: ../../Piece_rate");
+            header("Location: ../../Piece_rate?inserted");
         } else {
             echo "Error inserting data: " . mysqli_error($conn);
         }

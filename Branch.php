@@ -279,7 +279,7 @@ include 'header.php';
                         <div class="col-6">
                             <h2>Branch</h2>
                         </div>
-                        <input type="text" name="" value="Absent" id="present" class="form-control">
+                        <!-- <input type="text" name="" value="Absent" id="present" class="form-control"> -->
                         <!-- <input type="hidden" name="" value=""> -->
                         <script>
                             let present = document.getElementById("present").value;
@@ -302,7 +302,7 @@ include 'header.php';
 
                             // console.log("HELLO <?php echo $status; ?>");
                         </script>
-                        <p><?php echo $status; ?></p>
+                        <!-- <p><?php echo $status; ?></p> -->
                         <div class="col-6 mt-2 text-end">
                         <!-- Button trigger modal -->
                         <button type="button" class="add_new_btn" data-bs-toggle="modal" data-bs-target="#addnew_btn" style="background-color: black; padding: 10px; height: 45px; width: 120px; border-radius: 10px;">

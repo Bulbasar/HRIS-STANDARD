@@ -16,8 +16,11 @@
                 employee_tb.empid,
                 CONCAT(employee_tb.fname, ' ', employee_tb.lname) AS full_name,
                 COUNT(attendances.`status`) AS totalPresent
-                FROM attendances INNER JOIN employee_tb ON employee_tb.empid = attendances.empid
-                WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave') AND attendances.`empid` = '$EmployeeID' AND attendances.`date` BETWEEN '$startDate' AND '$endDate'";
+                FROM attendances
+                INNER JOIN employee_tb ON employee_tb.empid = attendances.empid
+                WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave') AND attendances.`empid` = '$EmployeeID' AND attendances.`date` BETWEEN '$startDate' AND '$endDate'
+                GROUP BY attendances.id, attendances.status, attendances.empid, employee_tb.empid, full_name";
+
             $attrun = $conn->query($attendances);
 
             $TotalPresent = 0;
@@ -33,7 +36,9 @@
             CONCAT(employee_tb.fname, ' ', employee_tb.lname) AS full_name,
             COUNT(attendances.`status`) AS totalAbsent
             FROM attendances INNER JOIN employee_tb ON employee_tb.empid = attendances.empid
-            WHERE (attendances.status = 'Absent' OR attendances.status = 'LWOP') AND attendances.`empid` = '$EmployeeID' AND attendances.`date` BETWEEN '$startDate' AND '$endDate'";
+            WHERE (attendances.status = 'Absent' OR attendances.status = 'LWOP') AND attendances.`empid` = '$EmployeeID' AND attendances.`date` BETWEEN '$startDate' AND '$endDate'
+            GROUP BY attendances.id, attendances.status, attendances.empid, employee_tb.empid, full_name";
+
             $query_run = $conn->query($attquery);    
 
             $TotalAbsent = 0;
@@ -60,7 +65,9 @@
                     'M'
                 ) AS total_hours_minutesLATE
             FROM attendances INNER JOIN employee_tb ON employee_tb.empid = attendances.empid
-            WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave') AND attendances.`empid` = '$EmployeeID' AND attendances.`date` BETWEEN '$startDate' AND '$endDate'";
+            WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave') AND attendances.`empid` = '$EmployeeID' AND attendances.`date` BETWEEN '$startDate' AND '$endDate'
+            GROUP BY attendances.id, attendances.status, attendances.empid, employee_tb.empid, full_name";
+
             $late_run = $conn->query($latequery);
             
             $TotalLate = "0H:0M";
@@ -130,7 +137,10 @@
                     'M'
                 ) AS total_hours_minutestotalHours
             FROM attendances INNER JOIN employee_tb ON employee_tb.empid = attendances.empid
-            WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave') AND attendances.`empid` = '$EmployeeID' AND attendances.`date` BETWEEN '$startDate' AND '$endDate'";
+            WHERE (attendances.status = 'Present' OR attendances.status = 'On-Leave') AND attendances.`empid` = '$EmployeeID' AND attendances.`date` BETWEEN '$startDate' AND '$endDate'
+            GROUP BY attendances.id, attendances.status, attendances.empid, employee_tb.empid, full_name";
+
+            
             $total_run = $conn->query($totalquery);
             
             $TotalworkingHours = "0H:0M";

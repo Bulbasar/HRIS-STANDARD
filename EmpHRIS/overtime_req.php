@@ -467,6 +467,33 @@ include 'config.php';
     </div>
 </div>
 
+<script>
+ // Calculate the date 18 years ago
+var today = new Date();
+var maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+// Calculate the date 31 years ago (minimum year is 1990)
+var minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 12);
+
+// Format the maxDate and minDate as YYYY-MM-DD
+var maxDateFormatted = maxDate.toISOString().split("T")[0];
+var minDateFormatted = minDate.toISOString().split("T")[0];
+
+// Set the max and min attributes of the input element
+// document.getElementById("date_id_undertime").setAttribute("max", maxDateFormatted);
+document.getElementById("date_id").setAttribute("min", minDateFormatted);
+</script>
+
+<!-----------------------------Script sa pagremove ng message sa link------------------------------------>
+<script>
+    function removeErrorFromURL() {
+        var url = new URL(window.location.href);
+        url.searchParams.delete('error');
+        url.searchParams.delete('msg');
+        window.history.replaceState({}, document.title, url);
+    }
+</script>
+
 
 <!-----------------------------Script sa pagremove ng message sa link------------------------------------>
 <script>

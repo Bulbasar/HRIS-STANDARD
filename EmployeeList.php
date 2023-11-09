@@ -63,7 +63,7 @@
 
     <!-- skydash -->
 
-<link rel="stylesheet" href="skydash/feather.css">
+<!-- <link rel="stylesheet" href="skydash/feather.css"> -->
 <link rel="stylesheet" href="skydash/themify-icons.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css">
 <link rel="stylesheet" href="skydash/vendor.bundle.base.css">
@@ -71,16 +71,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <!-- Bootstrap JavaScript library -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
 
 <link rel="stylesheet" href="skydash/style.css">
 
-<script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
+<!-- <script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script> -->
 
-
+<link rel="stylesheet" href="fontawesome/css/all.css">
 <link rel="stylesheet" href="css/try.css">
     <link rel="stylesheet" href="css/styles.css"> 
-    <link rel="stylesheet" href="css/hardware.css">
+    <!-- <link rel="stylesheet" href="css/hardware.css"> -->
     <title>Employee List</title>
 </head>
 <body>
@@ -182,17 +182,70 @@
             width: 22% !important;
         }
            
-            
+    #update-biometrics-modal {
+  display: none; /* Hide the modal by default */
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Initial background color with transparency */
+  z-index: 9999;
+}
 
-    /* .toggle-circle {
-      width: 1.3em;
-      height: 1.3em;
-      border-radius: 50%;
-      border: 2px solid #ccc;
-      cursor: pointer;
-      background-color: <?= $status === 'Inactive' ? 'red' : 'green' ?>;
-      transition: background-color 0.3s;
-    } */
+.update-content {
+  position: absolute;
+  width: 40%;
+  height: 40%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17) !important;
+  
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  cursor: pointer;
+}
+
+
+.bioBtn:hover{
+  border-radius: 50% !important;
+  background-color: #dfd9d9 !important;
+}
+
+
+
+
+#add-biometrics-modal {
+  display: none; /* Hide the modal by default */
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Initial background color with transparency */
+  z-index: 9999;
+}
+
+.add-content {
+  position: absolute;
+  width: 30% !important;
+  height: 63% !important;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17) !important;
+
+  
+}
+
+.scrollable-content::-webkit-scrollbar{
+         width: 1px;
+        }
+        .scrollable-content::-webkit-scrollbar-thumb{
+        background-color: #888;
+         }
 
 </style>
 
@@ -256,7 +309,7 @@
 </div>
 
         
-        <div style="width: 95%; margin:auto; margin-top: 30px;">
+        <div style="width: 95%; margin:auto; margin-top: 30px;" class="scrollable-content">
             <table id="order-listing" class="table" style="width: 100%">
                             <thead>
                             <!-- <th>
@@ -789,8 +842,8 @@ $(document).ready(function() {
 
         console.log(data);
         //id_colId
-        $('#employID').val(data[11].trim());
-        $('#statuses').val(data[8].trim()); // Remove spaces using trim()
+        $('#employID').val(data[10].trim());
+        $('#statuses').val(data[7].trim()); // Remove spaces using trim()
     });
 });
 </script>
@@ -859,7 +912,7 @@ $(document).ready(function () {
        <!-- Add the Bootstrap 5 JS and jQuery (required by Bootstrap) links before closing the <body> tag -->
        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.1/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script> -->
 
     <script>
         // Add an event listener for the 'Incomplete' button click
@@ -986,8 +1039,8 @@ $(document).ready(function() {
 <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap4.min.js"></script>
 
-    <script src="vendors/datatables.net/jquery.dataTables.js"></script>
-    <script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+    
+    
 
            <!--skydash-->
     <script src="skydash/vendor.bundle.base.js"></script>
@@ -996,7 +1049,7 @@ $(document).ready(function() {
     <script src="skydash/template.js"></script>
     <script src="skydash/settings.js"></script>
     <script src="skydash/todolist.js"></script>
-     <script src="main.js"></script>
+     
     <script src="bootstrap js/data-table.js"></script>
 
 

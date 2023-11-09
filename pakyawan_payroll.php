@@ -165,10 +165,11 @@ session_start();
                     </div>
                     <div class="col-6">
                         <div class="mb-3">
-                            <select id="" required name="work_type" class='form-select form-select-m' aria-label='.form-select-sm example' style='cursor: pointer;'>
+                            <!-- <select id="" required name="work_type" class='form-select form-select-m' aria-label='.form-select-sm example' style='cursor: pointer;'>
                                 <option selected value='Pakyawan'>Pakyawan</option>
                                 
-                            </select>
+                            </select> -->
+                            <input type="text" name="work_type" value="Pakyawan" class="form-control" id="" readonly>
                         </div> <!-- Second mb-3 end-->
                     </div> <!-- col-6 end-->
             </div> <!--END row2 -->
@@ -220,7 +221,7 @@ session_start();
                     <div class="col-3">
                         <div class="mb-3">
                         
-                        <select name="year" class="form-control"  required style="color:black">
+                        <select name="year" class="form-select"  required style="color:black">
                         <option value="" disabled selected>Year</option>
                         <?php
                             $currentYear = date("Y");
@@ -421,7 +422,8 @@ session_start();
                                 echo '</div>';
                             echo '</div>';
                             echo '<div class="foot">';
-                                echo '<button style="text-decoration: none;" type="submit" name="id" value="'. $row["id"] .'" class="btnq">[ View ]</button>';
+                                // echo '<button style="text-decoration: none;" type="submit" name="id" value="'. $row["id"] .'" class="btnq">[ View ]</button>';
+                                echo '<a href="generate_pakyawan_payroll?id='.$row["id"].' " class="btnq" style="text-decoration:none; background-color: #F0F0F0 ">[ View ]</a>';
                                 echo '<button style="text-decoration: none;" type="button" class="btnq btn-delete" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-id="' . $row["id"] . '">[ Delete ]</button>';
                                 echo '<button style="text-decoration: none;" type="button" class="btnq btn-addEmp" data-bs-toggle="modal" data-bs-target="#modal_addEMp" data-id1="' . $row["id"] . '">[ Add Employee ]</button>';
                             echo '</div>';

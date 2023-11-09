@@ -117,24 +117,358 @@
           font-weight: 500;
         }
 
-        
-       
+              /* Animation for appearing */
+      @keyframes slideIn {
+          0% {
+              opacity: 0;
+              transform: translateY(-20px);
+          }
+          100% {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      /* Animation for disappearing */
+      @keyframes slideOut {
+          0% {
+              opacity: 1;
+              transform: translateY(0);
+          }
+          100% {
+              opacity: 0;
+              transform: translateY(-20px);
+          }
+      }
+
+      /* Apply animations to the d-block and d-none classes */
+      .d-block {
+          animation: slideIn 0.3s ease-in-out forwards;
+      }
+
+      .d-none {
+          animation: slideOut 0.3s ease-in-out forwards;
+      }
+              
+            
     </style>
         
     <div class="calendar-container" style="position: absolute; left: 19%; top: 14.6%; width: 78%; height: 80%; background-color: #fff; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17); border-radius: 0.6em;">
       <div class="container-fluidd p-3 py-4 h-100" id="page-container" style="height: 100%">
-          <div class="row w-100" style="height: 80%">
+          <div class="row w-100" style="height: 100%">
               <div class="col-md-9">
                   <h2 class="fs-2 ">Calendar</h2>
                   <div id="calendar" ></div>
               </div>
-              <div class="col-md-3 h-100">
-                    <div class="button-container w-100 d-flex flex-column justify-content-between" style="margin-top: 20%" >
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_event">Add Event</button>
-                            <button class="btn btn-primary mt-3"  data-bs-toggle="modal" data-bs-target="#add_holiday">Add Holiday</button>
-                            <!-- <button class="btn btn-primary mt-3"  data-bs-toggle="modal" data-bs-target="#add_cutoff">Add Cutoff Date</button> -->
-                    </div>
-                  
+              <div class="col w-100 h-100 d-flex flex-column justify-content-between" style="position: inherit">
+                  <div class=" w-100 d-flex align-items-center justify-content-end mt-2" style="height: 14%">
+                  <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_event">Add Event</button> -->
+                        <div class="w-100 d-flex mt-5 flex-row justify-content-between align-items-center pl-1 pr-1">
+                              <h2 class="fs-4 mt-3">Events & Holidays</h2>
+                              <div class="d-flex justify-content-center align-items-center" style="height: 2.8em; width: 2.8em; border-radius: 50%; cursor: pointer;   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 10px 0 rgba(0, 0, 0, 0.17)" id="addBtn">
+                                  <i class="fa-solid fa-plus fs-4"></i>
+                              </div>
+                        </div>
+                        <div class="d-flex flex-column p-3 d-none" style="background-color: white; position: absolute; top: 18%; width: 21em; box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 10px 0 rgba(0, 0, 0, 0.17); border-radius: 0.3em;" id="btn-container">
+                          <button class="btn btn-dark mb-2" data-bs-toggle="modal" data-bs-target="#add_event">Add Event</button>
+                          <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#add_holiday">Add Holiday</button>
+                      </div>
+                  </div>
+                    <script>
+                        // Get references to the elements
+                        const addBtn = document.getElementById("addBtn");
+                        const btnContainer = document.getElementById("btn-container");
+
+                        // Add a click event listener to the addBtn
+                        addBtn.addEventListener("click", () => {
+                            // Toggle the visibility of the btn-container
+                            btnContainer.classList.toggle("d-none");
+                            btnContainer.classList.toggle("d-block");
+                        });
+                    </script>
+
+                  <div class=" w-100 rounded mt-2 border p-2 d-flex flex-column" style="height: 82.5%;">
+                    <!-- today -->
+                        <div style="height: 33%" class="w-100 p-2">
+                              <div class="w-100">
+                                  <p class="pl-1 pt-2 fs-5" style="font-weight: 500" >Today</p>
+                              </div>
+                            <?php 
+                            include 'config.php';
+                            $currentTimestamp = time();
+                            $currentDate = date('Y-m-d', $currentTimestamp);
+                            
+                            $sql = "SELECT * FROM `schedule_list` 
+                                    WHERE DATE(`start_datetime`) = '$currentDate' OR DATE(`end_datetime`) = '$currentDate'";
+                            
+                            $result = mysqli_query($conn, $sql);
+                            $row = mysqli_fetch_assoc($result);
+
+                            @$start_date = $row['start_datetime'];
+                            ?>
+                            <style>
+                              .scrollable-content::-webkit-scrollbar{
+                                width: 1px;
+                              }
+                              .scrollable-content::-webkit-scrollbar-thumb{
+                                background-color: #888;
+                              }
+                            </style>
+
+                              <div class="w-100 h-75 mb-3 p-1 scrollable-content" style="<?php if(empty($start_date)){ echo ''; }else { echo 'overflow-y: scroll'; } ?>">
+                                  <?php 
+                                  include 'config.php';
+                                  $currentTimestamp = time();
+                                  $currentDate = date('Y-m-d', $currentTimestamp);
+                                  $currentDayOfWeek = date('l', $currentTimestamp);
+                                  
+                                  $sql = "SELECT * FROM `schedule_list` 
+                                          WHERE DATE(`start_datetime`) = '$currentDate' OR DATE(`end_datetime`) = '$currentDate'";
+
+                                    $result = $conn->query($sql);
+
+                                    if($result->num_rows > 0){
+                                      while($row = $result->fetch_assoc()){
+                                        $title = $row['title'];
+                                        $description = $row['description'];
+                                        $start_date = $row['start_datetime'];
+                                        $end_date = $row['end_datetime'];
+                                        
+                                        $start_times = date('h:i a', strtotime($start_date));
+                                        $end_time = date('h:i a', strtotime($end_date));
+
+                                        $start_date = date('Y-m-d', strtotime($start_date));
+
+                                        // Get the day of the week for the converted date
+                                        $dayOfWeek = date('l', strtotime($start_date));
+
+                                      ?>   
+                                          <div style="height: 50%; width: 100%" class="mb-2">
+                                            <div style="background-color: #F0F7FF; height: 100%; width: 100%; border-radius: 0.5em">
+                                                <div class="d-flex flex-row w-100 h-100">
+                                                    <div class="pl-3 pt-2 " style="width: 13%;">
+                                                      <div style="height: 0.8em; width: 0.8em; border-radius: 50%; background-color: blue"></div>
+                                                    </div>
+                                                    <div class=" w-100 h-100">
+                                                        <div class="p-2">
+                                                              <h5 class=" "><?php echo $title ?></h5>
+                                                              <p class="p-0" style="color: gray"><?php echo $start_times ?> - <span><?php echo $end_time ?></span> | <span><?php echo $dayOfWeek ?> </span></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          </div>      
+                                      <?php
+                                      }
+                                    }else{ ?>
+                                          <div class="d-flex justify-content-center w-100 h-100 align-items-center">
+                                              <h4 style="color: gray; font-weight: 500" class="fs-5">No events or holiday today</h4>
+                                          </div>
+                                    <?php
+                                    }
+                                  
+                                  
+                                  ?>
+                             </div>
+                              <div class="w-100 border" style="height: 1px"></div>
+                        </div>
+                        <!-- This month -->
+                        <div style="height: 33%" class="mb-2 w-100 p-2"> 
+                          <div class="w-100">
+                                    <p class="pl-1 pt-2 fs-5" style="font-weight: 500" >This Month</p>
+                                </div>
+                                <?php 
+                                $currentTimestamp = time();
+
+                                // Get the current month (numeric)
+                                $currentMonth = date('n', $currentTimestamp);
+                                
+                                // Get the first day of the current month
+                                $firstDayOfMonth = date('Y-m-01', $currentTimestamp);
+                                
+                                // Get the last day of the current month
+                                $lastDayOfMonth = date('Y-m-t', $currentTimestamp);
+                                
+                                $sql = "SELECT * FROM `schedule_list` 
+                                WHERE DATE(`start_datetime`) BETWEEN '$firstDayOfMonth' AND '$lastDayOfMonth' ";
+                                  
+                                $result = mysqli_query($conn, $sql);
+                                $row = mysqli_fetch_assoc($result);
+
+                                @$start_date = $row['start_datetime'];
+
+                                ?>
+
+                                <div class="w-100 h-75 mb-3 p-2 scrollable-content" style="<?php if(empty($start_date)){ echo ''; }else { echo 'overflow-y: scroll'; } ?>">
+                                    
+                                    <?php 
+                                    include 'config.php';
+                                     $currentTimestamp = time();
+
+                                      // Get the current month (numeric)
+                                      $currentMonth = date('n', $currentTimestamp);
+                                      
+                                      // Get the first day of the current month
+                                      $firstDayOfMonth = date('Y-m-01', $currentTimestamp);
+                                      
+                                      // Get the last day of the current month
+                                      $lastDayOfMonth = date('Y-m-t', $currentTimestamp);
+                                      
+                                      $sql = "SELECT * FROM `schedule_list` 
+                                      WHERE DATE(`start_datetime`) BETWEEN '$firstDayOfMonth' AND '$lastDayOfMonth' 
+                                      ORDER BY `start_datetime` ASC";
+                              
+
+                                      $result = $conn->query($sql);
+
+                                      if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $title = $row['title'];
+                                            $description = $row['description'];
+                                            $start_datetime = $row['start_datetime']; // Keep the original datetime value
+                                            $end_datetime = $row['end_datetime']; // Keep the original datetime value
+                                    
+                                            // Convert datetime to date and time
+                                            $start_date = date('Y-m-d', strtotime($start_datetime));
+                                            $end_date = date('Y-m-d', strtotime($end_datetime));
+                                            $start_time = date('h:i a', strtotime($start_datetime));
+                                            $end_time = date('h:i a', strtotime($end_datetime));
+                                    
+                                            // Get the day of the week for the converted date
+                                            $dayOfWeek = date('l', strtotime($start_date));
+                                            ?>
+                                            <div style="height: 50%; width: 100%" class="mb-2">
+                                                <div style="background-color: #ABEBC6; height: 100%; width: 100%; border-radius: 0.5em">
+                                                    <div class="d-flex flex-row w-100 h-100">
+                                                        <div class="pl-3 pt-2 " style="width: 13%;">
+                                                            <div style="height: 0.8em; width: 0.8em; border-radius: 50%; background-color: blue"></div>
+                                                        </div>
+                                                        <div class=" w-100 h-100">
+                                                            <div class="p-2">
+                                                                <h5 class=" "><?php echo $title ?></h5>
+                                                                <p class="p-0" style="color: gray"><?php echo $start_time ?> - <span><?php echo $end_time ?></span> | <span><?php echo $dayOfWeek ?></span></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>    
+                                        <?php  
+                                        }
+                                      }else{ ?>
+                                            <div class="d-flex justify-content-center w-100 h-100 align-items-center">
+                                              <h4 style="color: gray; font-weight: 500" class="fs-5">No events or holiday this month</h4>
+                                          </div>
+                                    <?php
+                                      }
+                                    ?>
+
+                                </div>
+                                <div class="w-100 border" style="height: 1px"></div>
+                          </div>
+                          <!-- next month -->
+                        <div style="height: 33%" class="mb-2 w-100 p-2">
+                          <div class="w-100">
+                                  <p class="pl-1 pt-2 fs-5" style="font-weight: 500" >Nexth Month </p>
+                              </div>
+                              <?php 
+                              $currentTimestamp = time();
+
+                              // Get the current month (numeric)
+                              $currentMonth = date('n', $currentTimestamp);
+                              
+                              // Get the first day of the current month
+                              $firstDayOfMonth = date('Y-m-01', $currentTimestamp);
+                              
+                              // Get the last day of the current month
+                              $lastDayOfMonth = date('Y-m-t', $currentTimestamp);
+                              
+                              // Calculate the first day of the next month
+                              $firstDayOfNextMonth = date('Y-m-01', strtotime('+1 month', $currentTimestamp));
+                              
+                              // Calculate the last day of the next month
+                              $lastDayOfNextMonth = date('Y-m-t', strtotime('+1 month', $currentTimestamp));
+                              
+                              
+                              $sql = "SELECT * FROM `schedule_list` 
+                              WHERE DATE(`start_datetime`) BETWEEN '$firstDayOfNextMonth' AND '$lastDayOfNextMonth' ";
+                                
+                              $result = mysqli_query($conn, $sql);
+                              $row = mysqli_fetch_assoc($result);
+
+                              @$start_date = $row['start_datetime'];
+                              
+                              ?>
+                              <div class="w-100 h-75 mb-3 p-2 scrollable-content" style="<?php if(empty($start_date)){ echo ''; }else { echo 'overflow-y: scroll'; } ?>">
+                              <?php 
+                                    include 'config.php';
+                                    $currentTimestamp = time();
+
+                                    // Get the current month (numeric)
+                                    $currentMonth = date('n', $currentTimestamp);
+                                    
+                                    // Get the first day of the current month
+                                    $firstDayOfMonth = date('Y-m-01', $currentTimestamp);
+                                    
+                                    // Get the last day of the current month
+                                    $lastDayOfMonth = date('Y-m-t', $currentTimestamp);
+                                    
+                                    // Calculate the first day of the next month
+                                    $firstDayOfNextMonth = date('Y-m-01', strtotime('+1 month', $currentTimestamp));
+                                    
+                                    // Calculate the last day of the next month
+                                    $lastDayOfNextMonth = date('Y-m-t', strtotime('+1 month', $currentTimestamp));
+                                    
+                                    
+                                    $sql = "SELECT * FROM `schedule_list` 
+                                    WHERE DATE(`start_datetime`) BETWEEN '$firstDayOfNextMonth' AND '$lastDayOfNextMonth' ";
+                              
+
+                                      $result = $conn->query($sql);
+
+                                      if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $title = $row['title'];
+                                            $description = $row['description'];
+                                            $start_datetime = $row['start_datetime']; // Keep the original datetime value
+                                            $end_datetime = $row['end_datetime']; // Keep the original datetime value
+                                    
+                                            // Convert datetime to date and time
+                                            $start_date = date('Y-m-d', strtotime($start_datetime));
+                                            $end_date = date('Y-m-d', strtotime($end_datetime));
+                                            $start_time = date('h:i a', strtotime($start_datetime));
+                                            $end_time = date('h:i a', strtotime($end_datetime));
+                                    
+                                            // Get the day of the week for the converted date
+                                            $dayOfWeek = date('l', strtotime($start_date));
+                                            ?>
+                                            <div style="height: 50%; width: 100%" class="mb-2">
+                                                <div style="background-color: #F5B7B1; height: 100%; width: 100%; border-radius: 0.5em">
+                                                    <div class="d-flex flex-row w-100 h-100">
+                                                        <div class="pl-3 pt-2 " style="width: 13%;">
+                                                            <div style="height: 0.8em; width: 0.8em; border-radius: 50%; background-color: blue"></div>
+                                                        </div>
+                                                        <div class=" w-100 h-100">
+                                                            <div class="p-2">
+                                                                <h5 class=" "><?php echo $title ?></h5>
+                                                                <p class="p-0" style="color: gray"><?php echo $start_time ?> - <span><?php echo $end_time ?></span> | <span><?php echo $dayOfWeek ?></span></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>   
+                                        <?php  
+                                        }
+                                      }else{ ?>
+                                            <div class="d-flex justify-content-center w-100 h-100 align-items-center">
+                                              <h4 style="color: gray; font-weight: 500" class="fs-5">No events or holiday this month</h4>
+                                          </div>
+                                    <?php
+                                      }
+                                    ?>
+                          </div>
+                      </div>
+
+                  </div>
               </div>
           </div>
       </div>
@@ -157,7 +491,8 @@
                               <dd id="start" class=""></dd>
                               <dt class="text-muted">End</dt>
                               <dd id="end" class=""></dd>
-
+                             
+                           
                               
                           </dl>
                       </div>

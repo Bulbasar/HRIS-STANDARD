@@ -1,38 +1,138 @@
 <?php
-    session_start();
-    if(!isset($_SESSION['username'])){
-        header("Location: login.php"); 
-    } else {
-        // Check if the user's role is not "admin"
-        if($_SESSION['role'] != 'Supervisor'){
-            // If the user's role is not "admin", log them out and redirect to the logout page
-            session_unset();
-            session_destroy();
-            header("Location: logout.php");
-            // echo "<script> alert('Something went wrong.'); </script>";
-            exit();
-        }
-    }
+  session_start();
+//   error_reporting(0);
+  include 'config.php';
+  //    $empid = $_SESSION['empid'];
+     if (!isset($_SESSION['username'])) {
+      header("Location: login.php");
+  } else {
+      // Check if the user's role is not "admin"
+      if ($_SESSION['role'] != 'admin') {
+          // If the user's role is not "admin", log them out and redirect to the logout page
+          session_unset();
+          session_destroy();
+          header("Location: logout.php");
+          exit();
+      } else{
+          @$userId = $_SESSION['empid'];
+         
+          $iconResult = mysqli_query($conn, "SELECT id, emp_img_url, empid FROM employee_tb WHERE empid = '$userId'");
+          $iconRow = mysqli_fetch_assoc($iconResult);
+  
+          if ($iconRow) {
+              $image_url = $iconRow['emp_img_url'];
+          } else {
+              // Handle the case when the user ID is not found in the database
+              $image_url = '../img/user.jpg'; // Set a default image or handle the situation accordingly
+          }
+      
+      }
+  }
 
-include 'config.php';
-    $approver_ID = $_SESSION['empid'];
-    $sql = "SELECT COUNT(*) AS employee_count
-        FROM employee_tb
-        INNER JOIN approver_tb ON approver_tb.empid = employee_tb.empid
-        WHERE approver_tb.approver_empid = $approver_ID";
+ 
+
     
+    $sql = "SELECT COUNT(*) AS employee_count FROM employee_tb WHERE classification != 3";
     $result = mysqli_query($conn, $sql);
-    
-    if (!$result) {
-        die("Query Failed: " . mysqli_error($conn));
-    }
-    
+
     $row = mysqli_fetch_assoc($result);
     $employee_count = $row["employee_count"];
-    
+
+   include 'Data Controller/Dashboard/fetchHoliday.php'; //para sa pag fetch ng holidays using API
+   include 'Data Controller/Dashboard/fetchCalendar.php';
+
+// FOR ATTENDANCE AUTO REFRESHER ABSENT
+    $_query_attendance = "SELECT * FROM attendances";
+    $result_attendance = mysqli_query($conn, $_query_attendance);
+    if(mysqli_num_rows($result_attendance) > 0){
+        include ('Data Controller/Attendance/absent_refreshed.php'); // para mag generate ng automatic absent feature    
+    }
+// FOR ATTENDANCE AUTO REFRESHER ABSENT END
+   
+
+
+//     // for payroll holiday rule for holiday computations
+   $query_check = "SELECT * FROM settings_tb";
+   $result = mysqli_query($conn, $query_check);
+
+   if(mysqli_num_rows($result) <= 0){
+    $query = "INSERT INTO settings_tb (`holiday_pay`) VALUES ('Default')";
+    $query_run = mysqli_query($conn, $query);      
+   } 
+//    // for payroll holiday rule for holiday computations END
+
+
+   // may error
+   $query = "SELECT * FROM settings_company_tb";
+   $result = mysqli_query($conn, $query);
+
+   if (mysqli_num_rows($result) <= 0){
+    //    $row = mysqli_fetch_assoc($result);
+
+       $query = "INSERT INTO settings_company_tb (`col_salary_settings`)
+       VALUES ('Fixed Salary')";
+       $query_run = mysqli_query($conn, $query);   
+   }
+
+
+
+
+// //CLASSIFICATION AUTO INSERT
+
+//    //para sa holiday payroll computation kasi need na Regular ang employee para  may holiday pay
+$query = "SELECT * FROM classification_tb WHERE classification = 'Regular'";
+$result = mysqli_query($conn, $query);
+
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO classification_tb (`id`, `classification`) VALUES (1, 'Regular')";
+    $query_run = mysqli_query($conn, $query);    
+} 
+
+
+// //para sa holiday payroll computation kasi need na Regular ang employee para  may holiday pay
+$query = "SELECT * FROM classification_tb WHERE classification = 'Internship/OJT'";
+$result = mysqli_query($conn, $query);
+
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO classification_tb (`id`, `classification`) VALUES (2, 'Internship/OJT')";
+    $query_run = mysqli_query($conn, $query);    
+} 
+
+
+$query = "SELECT * FROM classification_tb WHERE classification = 'Pakyawan'";
+$result = mysqli_query($conn, $query);
+
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO classification_tb (`id`,`classification`) VALUES (3, 'Pakyawan')";
+    $query_run = mysqli_query($conn, $query);    
+} 
+
+
+//error
+$query = "SELECT * FROM positionn_tb WHERE position = 'Pakyawan'";
+$result = mysqli_query($conn, $query);
+
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO positionn_tb (`id`,`position`) VALUES (1,'Pakyawan')";
+    $query_run = mysqli_query($conn, $query);    
+} 
+
+
+$query = "SELECT * FROM dept_tb WHERE col_deptname = 'Pakyawan'";
+$result = mysqli_query($conn, $query);
+
+if(mysqli_num_rows($result) <= 0) {
+    // Position does not exist, insert the new record
+    $query = "INSERT INTO dept_tb (`col_ID`,`col_deptname`) VALUES (1,'Pakyawan')";
+    $query_run = mysqli_query($conn, $query);    
+} 
+
     mysqli_close($conn);
 ?>
-
 
 
 <!DOCTYPE html>
@@ -41,10 +141,16 @@ include 'config.php';
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php 
+      
+      include 'configHardware.php';
+      
+      
+      ?>
     <!-- <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/data .bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="vendors/feather/feather.css">
     <link rel="stylesheet" href="vendors/ti-icons/themify-icons.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css">
@@ -77,7 +183,7 @@ include 'config.php';
 
 <!-- skydash -->
 
-<!-- <link rel="stylesheet" href="skydash/feather.css"> -->
+<link rel="stylesheet" href="skydash/feather.css">
     <link rel="stylesheet" href="skydash/themify-icons.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css">
     <link rel="stylesheet" href="skydash/vendor.bundle.base.css">
@@ -112,93 +218,147 @@ include 'config.php';
         ?>
     </header>
     <style>
-        html{
-            overflow: hidden !important;
-        }
-        .hhe{
-            box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);
-        }
-        .scrollable-content::-webkit-scrollbar{
-         width: 1px;
-        }
-        .scrollable-content::-webkit-scrollbar-thumb{
-        background-color: #888;
-         }
         .swiper-button-next:after, .swiper-button-prev:after {
             font-size: 1em;
-            position: absolute !important;
-            bottom: 10% !important;
         }
-        /* .swiper-button-next:after {
-            position: absolute !important;
-            bottom: 10% !important;
-            margin-top: 10% !important; */
+          /* Style for the overlay */
+.overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+        z-index: 999; /* Ensure overlay is on top */
+    }
 
-            .announce-img{
-                width: 70% !important;
-            }
-        
-        #announce-modal a:hover{
-            background-color: inherit;
-            color: blue;
-        }
-
-        #event-modal a:hover{
-            background-color: inherit;
-            color: blue;
-        }
-
-        .highlight{
-            background-color: #fff;
-             box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.12);
-             /* border-radius: 1em; */
-        }
-
-        .req-btn h5:hover{
-            color: blue;
-        }
-
-        .req-btn:hover{
-            color:blue;
-        }
-
-        .tables thead th:nth-child(2){
-            
-            width: 33% !important;
-            
-        }
-        .tables tbody tr td:nth-child(2){
-            
-            width: 33% !important;
-        }
-
-        .tables thead th:nth-child(3){
-            
-            width: 43% !important;
-        }
-        .tables tbody tr td:nth-child(3){
-            
-            width: 43% !important;
-        }
-        .tables thead th:nth-child(4){
-           
-            width: 23% !important;
-        }
-        .tables tbody tr td:nth-child(4){
-            
-            width: 23% !important;
-        }
-
-        table thead{
-            width: 100em !important;
-        }
-
-        #table_loan{
-            width: 100% !important;
-        }
-    </style>
+    .modals {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    z-index: 9999; /* Ensure modal is on top of the overlay */
+    height: 33%;
+    width: 25%;
+    border-radius: 0.5em;
+    animation: delayAndFadeIn 0.8s ease-in-out forwards; /* Delay and then fade in */
+}
 
     
+
+    
+    /* Style for the close button */
+    .modals .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    @keyframes delayAndFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+    /* Bouncing animation for the icon */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Apply the bouncing animation to the icon */
+    .bouncing-icon {
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        /* 15% {
+            transform: rotate(180deg);
+        }
+        30%{
+            transform: rotate(280deg);
+        } */
+        70%{
+            transform: rotate(359deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Apply the rotation animation to the checkmark icon */
+    #insertedModal .rotating-icon {
+        animation: rotate 2.5s infinite; /* 0.5 seconds rotation + 3 seconds pause */
+    }
+
+    </style>
+
+<!------------------------------------Message alert------------------------------------------------->
+<?php
+        // if (isset($_GET['msg'])) {
+        //     $msg = $_GET['msg'];
+        //     echo '<div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+        //     '.$msg.'
+        //     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        //   </div>';
+        // }
+?>
+<!------------------------------------End Message alert------------------------------------------------->
+
+<!------------------------------------Message alert------------------------------------------------->
+<?php
+        // if (isset($_GET['error'])) {
+        //     $err = $_GET['error'];
+        //     echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+        //     '.$err.'
+        //     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        //   </div>';
+        // }
+?>
+<!------------------------------------End Message alert------------------------------------------------->
+    <?php 
+    include 'config.php';
+
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    
+    // Query the attendances table to count the number of present employees with an empid
+    $query = "SELECT COUNT(*) AS present_count FROM attendances WHERE Status = 'Present' AND empid IS NOT NULL";
+    $results = mysqli_query($conn, $query);
+    
+    // Check for errors
+    if (!$results) {
+        die("Query failed: " . mysqli_error($conn));
+    }
+    
+    // Fetch the result and store it in a variable
+    $rows = mysqli_fetch_assoc($results);
+    $present_count = $rows["present_count"];
+    
+    // Close the connection
+    mysqli_close($conn);
+
+    ?>
+
+
 <!-------------------------------------------Modal of Announce Start Here--------------------------------------------->
 <div class="modal fade" id="announcement_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -219,6 +379,7 @@ include 'config.php';
                                 <input type="text" class="form-control" name="name_emp" value="<?php 
                                     error_reporting(E_ERROR | E_PARSE);
                                     if($employeeid == NULL){
+                                        
                                         echo '0909090909';
                                     }else{
                                         echo $employeeid;
@@ -594,6 +755,9 @@ include 'config.php';
                                 <td>$holiday_type</td>
                                 <td>";
                                     echo "
+                                    <button type='button' class='border-0 edit' title='Working days' data-bs-toggle='modal' data-bs-target='#edit' style='background: transparent; font-size: 20px; margin-right: 10px;' >
+                                        <i class='fa-solid fa-pen-to-square fs-5 me-3' title='edit'></i>
+                                    </button>
                                     
                                     ";
                                     
@@ -641,6 +805,7 @@ include 'config.php';
                 <div class="mb-4">
                     <label for="eventype" class="form-label">Type of Day</label>
                     <select class="form-select form-select-m" onchange="holiday_change()" name="type_day" id="type_id" aria-label=".form-select-sm example" style="height: 50px; cursor: pointer;">
+                        <option value="" selected disabled>Select Holiday</option>
                         <option value="Regular Working Day">Regular Working Day</option>
                         <option value="Holiday">Holiday</option>                       
                     </select>
@@ -962,20 +1127,16 @@ include 'config.php';
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php
+                                                        <?php
                                                         include 'config.php';
                                                         date_default_timezone_set('Asia/Manila');
                                                         $approver_ID = $_SESSION['empid'];
                                                         $currentDate = date('Y-m-d');
 
                                                         // Query the department table to retrieve department names
-                                                        $present_query = "SELECT 
-                                                                           *
-                                                                            
-                                                                        FROM attendances
-                                                                        INNER JOIN approver_tb ON approver_tb.empid = attendances.empid
-                                                                        WHERE approver_tb.approver_empid = $approver_ID  
-                                                                        AND `status` = 'Present' AND DATE(`date`) = '$currentDate'";
+                                                        $present_query = "SELECT * FROM attendances 
+                                                        INNER JOIN employee_tb ON attendances.empid = employee_tb.empid
+                                                        WHERE attendances.status = 'Present' AND employee_tb.classification != 3 AND DATE(`date`) = '$currentDate'";
                                                         $present_result = mysqli_query($conn, $present_query);
                                                         
                                                         // Generate the HTML table header
@@ -1052,20 +1213,16 @@ include 'config.php';
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php
+                                                        <?php
                                                         include 'config.php';
                                                         date_default_timezone_set('Asia/Manila');
                                                         $approver_ID = $_SESSION['empid'];
                                                         $currentDate = date('Y-m-d');
 
                                                         // Query the department table to retrieve department names
-                                                        $present_query = "SELECT 
-                                                                           *
-                                                                            
-                                                                        FROM attendances
-                                                                        INNER JOIN approver_tb ON approver_tb.empid = attendances.empid
-                                                                        WHERE approver_tb.approver_empid = $approver_ID  
-                                                                        AND `status` = 'Absent' AND DATE(`date`) = '$currentDate'";
+                                                        $present_query = "SELECT * FROM attendances 
+                                                                            INNER JOIN employee_tb ON attendances.empid = employee_tb.empid
+                                                                            WHERE attendances.status = 'Absent' AND employee_tb.classification != 3 AND DATE(`date`) = '$currentDate'";
                                                         $present_result = mysqli_query($conn, $present_query);
                                                         
                                                         // Generate the HTML table header
@@ -1142,20 +1299,16 @@ include 'config.php';
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php
+                                                        <?php
                                                         include 'config.php';
                                                         date_default_timezone_set('Asia/Manila');
                                                         $approver_ID = $_SESSION['empid'];
                                                         $currentDate = date('Y-m-d');
 
                                                         // Query the department table to retrieve department names
-                                                        $present_query = "SELECT 
-                                                                           *
-                                                                            
-                                                                        FROM attendances
-                                                                        INNER JOIN approver_tb ON approver_tb.empid = attendances.empid
-                                                                        WHERE approver_tb.approver_empid = $approver_ID  
-                                                                        AND `status` = 'On-Leave' AND DATE(`date`) = '$currentDate'";
+                                                        $present_query = "SELECT * FROM attendances 
+                                                        INNER JOIN employee_tb ON attendances.empid = employee_tb.empid
+                                                        WHERE attendances.status = 'On-Leave' AND employee_tb.classification != 3 AND DATE(`date`) = '$currentDate'";
                                                         $present_result = mysqli_query($conn, $present_query);
                                                         
                                                         // Generate the HTML table header
@@ -1457,20 +1610,18 @@ include 'config.php';
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php
+                                                        <?php
                                                         include 'config.php';
                                                         date_default_timezone_set('Asia/Manila');
                                                         $approver_ID = $_SESSION['empid'];
                                                         $currentDate = date('Y-m-d');
 
                                                         // Query the department table to retrieve department names
-                                                        $present_query = "SELECT 
-                                                                           *
-                                                                            
-                                                                        FROM attendances
-                                                                        INNER JOIN approver_tb ON approver_tb.empid = attendances.empid
-                                                                        WHERE approver_tb.approver_empid = $approver_ID  
-                                                                        AND `late` != '00:00:00' AND `late` != '' AND DATE(`date`) = '$currentDate'";
+                                                        $present_query = " SELECT * FROM attendances 
+                                                        INNER JOIN employee_tb ON attendances.empid = employee_tb.empid
+                                                        WHERE `late` != '00:00:00' AND `late` != ''  AND employee_tb.classification != 3 AND DATE(`date`) = '$currentDate'
+                                                                       ";
+                                                                        
                                                         $present_result = mysqli_query($conn, $present_query);
                                                         
                                                         // Generate the HTML table header
@@ -1522,76 +1673,67 @@ include 'config.php';
                                     </div>
                                     </div>
                             <!--------------------------- Modal of view all LAte Employee End Here ---------------------------------->
-    
-    <div class="dashboard-container" style="position: absolute; width:82%; height: 100%; top: 9%; left: 16% ">
-        <div class="dashboard-content pl-4 pr-4 d-flex flex-column justify-content-between mx-auto " style="width: 97%; height: 98%;">
-            <div class="dashboard-title  d-flex justify-content-between flex-row align-items-center p-2" style="height: 7%;">
-                <div>
-                    <h3 class="fs-2">DASHBOARD</h3>
-                </div>
-                <div>
-                   <?php 
-                   date_default_timezone_set('Asia/Manila'); // Set the time zone to Philippines
 
-                   $today = date('l, j F Y'); 
-                   ?>
-                   <h5 class="fs-4" style="font-weight: 500"><?php echo $today; ?></h5>
-                </div>
+
+
+                            
+
+    <div class="dashboard-container" id="dashboard-container">
+        <div class="dashboard-content" style="margin-left: 320px;">
+            <div class="dashboard-title">
+                <h1>DASHBOARD</h1>
             </div>
-            <div class="dashboard-overview d-flex align-items-center justify-content-center" style="height: 20%;">
-                <div class="bg-white rounded d-flex flex-column justify-content-between" style="height: 100%; width: 100%; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
-                    <div class="w-100 p-3" style="height: 25%">
-                        <p class="fs-5" style="font-weight: 600">Employee Status Overview</p>
-                    </div>
-                    <div class="w-100" style="height: 75%">
-                        <div class="w-100 h-100 mx-auto d-flex flex-row justify-content-between">
-                            <!-- Present -->
-                            <div class="w-25 h-100 d-flex justify-content-center align-items-center">
-                                <div style="width: 80%; height: 80%; box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.1); cursor: pointer;" class="border rounded mb-2 d-flex flex-column justify-content-between" data-bs-toggle="modal" data-bs-target="#IDmodal_ViewPresent">
-                                    <?php
+            <div class="dashboard-contents">
+                <div class="first-dash-contents">
+                    <div class="employee-status-overview">
+                        <div class="emp-status-title">
+                            <p>Employee Status Overview</p>
+                            <p>Real time status</p>
+                        </div>
+                        <div class="emp-status-container">
+                            <div  data-bs-toggle="modal" data-bs-target="#IDmodal_ViewPresent" style="cursor: pointer;">
+                                    <?php 
                                         include 'config.php';
                                         date_default_timezone_set('Asia/Manila');
-                                        $approver_ID = $_SESSION['empid'];
+                                        
+                                        // Get the current date in Manila, Philippines
                                         $currentDate = date('Y-m-d');
-
-                                        $query = "SELECT COUNT(*) AS employee_present FROM attendances
-                                        INNER JOIN approver_tb ON approver_tb.empid = attendances.empid WHERE approver_tb.approver_empid = $approver_ID  
-                                        AND `status` = 'Present' AND DATE(`date`) = '$currentDate'";
+                                        
+                                        // Query to count the employees with a "Present" status for the current date
+                                        $query = "SELECT COUNT(*) AS employee_count FROM attendances 
+                                                  INNER JOIN employee_tb ON attendances.empid = employee_tb.empid 
+                                                   WHERE attendances.status = 'Present' AND 
+                                                   employee_tb.classification != 3 AND
+                                                   DATE(`date`) = '$currentDate'";
                                         $result = mysqli_query($conn, $query);
-
+                                        
                                         if ($result) {
                                             $row = mysqli_fetch_assoc($result);
-                                            $employeePresent = $row['employee_present'];
+                                            $employeePresent = $row['employee_count'];
                                         } else {
                                             $employeePresent = 0;
                                         }
                                     ?>
-                                    <div class="w-100 d-flex align-items-center pl-4 pt-1" style="height:40%">
-                                        <p style="color: green; font-weight: 400; font-size: 23px; margin-top: 0.3em">Active</p>
-                                    </div>
-                                    <div class="w-100 pl-4" style="height:60%">
-                                        <div class="d-flex flex-row position-relative w-100 h-100">
-                                            <input type="text" style="border:none;padding: 0;height: 90%; width: 33%; font-size: 2.8em; cursor: pointer" name="present" value="<?php echo $employeePresent; ?>" readonly>
-                                            <p class="d-flex align-items-end" style="margin-bottom:1em">Of <span class="ml-2" style="color:red"><?php echo $employee_count; ?></span></p>
-                                        </div>  
-                                    </div>
+                                    <input type="text" name="present" value="<?php echo $employeePresent; ?>" readonly>
+                                    <p style="margin-top: -7px;">of <span style="color: red;"><?php echo $employee_count; ?></span></p>
+                                    <label for="present" style="margin-top: 3px;"><i class="mdi mdi-alarm-check"></i>Present</label>   
                                 </div>
-                            </div>
-
-                            <!-- Absent -->
-                            <div class="w-25 h-100 d-flex justify-content-center align-items-center  ">
-                                <div style="width: 80%; height: 80%; box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.1); cursor:pointer" class="border rounded mb-2" data-bs-toggle="modal" data-bs-target="#IDmodal_ViewAbsent">
-                                    <?php
+                            <div data-bs-toggle="modal" data-bs-target="#IDmodal_ViewAbsent" style="cursor: pointer;"> 
+                                <?php 
                                         include 'config.php';
                                         date_default_timezone_set('Asia/Manila');
-                                        $approver_ID = $_SESSION['empid'];
+                                        
+                                        // Get the current date in Manila, Philippines
                                         $currentDate = date('Y-m-d');
-
+                                        
+                                        // Query to count the employees with a "Present" status for the current date
                                         $query = "SELECT COUNT(*) AS employee_absent FROM attendances
-                                        INNER JOIN approver_tb ON approver_tb.empid = attendances.empid WHERE approver_tb.approver_empid = $approver_ID  
-                                        AND `status` = 'Absent' AND DATE(`date`) = '$currentDate'";
+                                                  INNER JOIN employee_tb ON attendances.empid = employee_tb.empid 
+                                                  WHERE attendances.status = 'Absent' AND 
+                                                  employee_tb.classification != 3 AND
+                                                  DATE(`date`) = '$currentDate'";
                                         $result = mysqli_query($conn, $query);
-
+                                        
                                         if ($result) {
                                             $row = mysqli_fetch_assoc($result);
                                             $employeeAbsent = $row['employee_absent'];
@@ -1599,23 +1741,12 @@ include 'config.php';
                                             $employeeAbsent = 0;
                                         }
                                     ?>
-
-                                    <div class="w-100 d-flex align-items-center pl-4 pt-1" style="height:40%">
-                                        <p style="color: red; font-weight: 400; font-size: 23px; margin-top: 0.3em">Absent</p>
-                                    </div>
-                                    <div class="w-100 pl-4" style="height:60%">
-                                        <div class="d-flex flex-row position-relative w-100 h-100">
-                                            <input type="text" style="border:none;padding: 0;height: 90%; width: 33%; font-size: 2.8em; cursor:pointer" name="present" value="<?php echo $employeeAbsent; ?>" readonly>
-                                            <p class="d-flex align-items-end" style="margin-bottom:1em">Of <span class="ml-2" style="color:red"><?php echo $employee_count; ?></span></p>
-                                        </div>  
-                                    </div>
-                                </div>
+                                <input type="text" name="absent" value="<?php echo $employeeAbsent; ?>" readonly >
+                                <p style="margin-top: -7px; ">of <span style="color: red;"><?php echo $employee_count?> </span></p>
+                                <label for="absent" style="margin-top: 3px;" ><i class="mdi mdi-alarm-off"></i> Absent</label>
                             </div>
-
-                            <!-- On Leave -->
-                            <div class="w-25 h-100 d-flex justify-content-center align-items-center ">
-                                <div style="width: 80%; height: 80%; box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.1); cursor:pointer" class="border rounded mb-2" data-bs-toggle="modal" data-bs-target="#IDmodal_ViewOnleave">
-                                <?php 
+                            <div  data-bs-toggle="modal" data-bs-target="#IDmodal_ViewOnleave" style="cursor: pointer;">
+                                 <?php 
                                         include 'config.php';
                                         date_default_timezone_set('Asia/Manila');
                                         
@@ -1637,22 +1768,12 @@ include 'config.php';
                                             $employeeOnleave = 0;
                                         }
                                     ?>
-                                    <div class="w-100 d-flex align-items-center pl-4 pt-1" style="height:40%">
-                                        <p style="color: gray; font-weight: 400; font-size: 23px; margin-top: 0.3em">On Leave</p>
-                                    </div>
-                                    <div class="w-100 pl-4" style="height:60%">
-                                        <div class="d-flex flex-row position-relative w-100 h-100">
-                                            <input type="text" style="border:none;padding: 0;height: 90%; width: 33%; font-size: 2.8em; cursor:pointer; " name="present" value="<?php echo $employeeOnleave; ?>" readonly>
-                                            <p class="d-flex align-items-end" style="margin-bottom:1em">Of <span class="ml-2" style="color:red"><?php echo $employee_count; ?></span></p>
-                                        </div>  
-                                    </div>
-                                </div>
+                                <input type="text" name="on_leave" value="<?php echo $employeeOnleave; ?>" readonly >
+                                <p style="margin-top: -7px; ">of <span style="color: red;"><?php echo $employee_count?> </span></p>
+                                <label for="on_leave" style="margin-top: 3px;" ><i class="mdi mdi-airplane-takeoff"></i>On Leave</label>
                             </div>
-                            
-                            <!-- Working home  -->
-                            <div class="w-25 h-100 d-flex justify-content-center align-items-center ">
-                                <div style="width: 80%; height: 80%; box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.1); cursor:pointer " class="border rounded mb-2" data-bs-toggle="modal" data-bs-target="#IDmodal_ViewWFH">
-                                    <?php 
+                            <div data-bs-toggle="modal" data-bs-target="#IDmodal_ViewWFH" style="cursor: pointer;">
+                                <?php 
                                         include 'config.php';
                                         date_default_timezone_set('Asia/Manila');
                                         
@@ -1672,855 +1793,613 @@ include 'config.php';
 
                                         
                                     ?>
-                                    <div class="w-100 d-flex align-items-center pl-4 pt-1" style="height:40%">
-                                        <p style="color: #2087C1; font-weight: 400; font-size: 23px; margin-top: 0.3em">Working Home</p>
-                                    </div>
-                                    <div class="w-100 pl-4" style="height:60%">
-                                        <div class="d-flex flex-row position-relative w-100 h-100">
-                                            <span id="wfh_count" style="margin-top: 3px; font-size: 2.8em; margin-right: 2em; cursor:pointer">0</span>
-                                            <p class="d-flex align-items-end" style="margin-bottom:1em">Of <span class="ml-2" style="color:red"><?php echo $employee_count; ?></span></p>
-                                        </div>  
-                                    </div>
-                                </div>
-                            </div>
-                            <script>
-                                    // JavaScript to count and display the number of <tr> tags in the tbody
-                                    const tbodies = document.getElementById('wfh_table_body');
-                                    const countSpans = document.getElementById('wfh_count');
 
-                                    if (tbodies && countSpans) {
-                                        const trCount = tbodies.getElementsByTagName('tr').length;
-                                        countSpans.textContent = trCount;
+                                <!-- <input type="text" name="wfh" id="wfh_count" readonly style="margin-top:12px;">  -->
+                                <span id="wfh_count" style="margin-top:12px; font-size: 35px;">0</span>
+                                <p style=" ">of <span class="wfh-color" style="color: red;" ><?php echo $employee_count?> </span></p>
+                                <label for="wfh" style="margin-top: -6px; margin-bottom: 20px"><i class="mdi mdi-home"></i> <span style="font-size: 16px;">Working Home</span></label>
+                            </div>
+                                <script>
+                                    // JavaScript to count and display the number of <tr> tags in the tbody
+                                    const tbody = document.getElementById('wfh_table_body');
+                                    const countSpan = document.getElementById('wfh_count');
+
+                                    if (tbody && countSpan) {
+                                        const trCount = tbody.getElementsByTagName('tr').length;
+                                        countSpan.textContent = trCount;
                                     }
                                 </script>
-                            <div class="w-25 h-100 d-flex justify-content-center align-items-center  ">
-                                <div style="width: 80%; height: 80%; box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.1); cursor:pointer" class="border rounded mb-2" data-bs-toggle="modal" data-bs-target="#IDmodal_ViewLate">
-                                        <?php
-                                            include 'config.php';
-                                            date_default_timezone_set('Asia/Manila');
-                                            $approver_ID = $_SESSION['empid'];
-                                            $currentDate = date('Y-m-d');
+                            <div  data-bs-toggle="modal" data-bs-target="#IDmodal_ViewLate" style="cursor: pointer;">
+                                <?php
+                                include 'config.php';
+                                date_default_timezone_set('Asia/Manila');
 
-                                            $query = "SELECT COUNT(*) AS employee_late FROM attendances
-                                            INNER JOIN approver_tb ON approver_tb.empid = attendances.empid WHERE approver_tb.approver_empid = $approver_ID  
-                                            AND `late` != '00:00:00' AND `late` != '' AND DATE(`date`) = '$currentDate'";
-                                            $result = mysqli_query($conn, $query);
+                                // Get the current date in Manila, Philippines
+                                $currentDate = date('Y-m-d');
 
-                                            if ($result) {
-                                                $row = mysqli_fetch_assoc($result);
-                                                $employeeLate = $row['employee_late'];
-                                            } else {
-                                                $employeeLate = 0;
-                                            }
-                                        ?>
-                                    <div class="w-100 d-flex align-items-center pl-4 pt-1" style="height:40%">
-                                        <p style="color: Orange; font-weight: 400; font-size: 23px; margin-top: 0.3em">Late</p>
-                                    </div>
-                                    <div class="w-100 pl-4" style="height:60%">
-                                        <div class="d-flex flex-row position-relative w-100 h-100">
-                                            <input type="text" style="border:none;padding: 0;height: 90%; width: 33%; font-size: 2.8em; cursor:pointer" name="present" value="<?php echo $employeeLate; ?>" readonly>
-                                            <p class="d-flex align-items-end" style="margin-bottom:1em">Of <span class="ml-2" style="color:red"><?php echo $employee_count; ?></span></p>
-                                        </div>  
-                                    </div>
-                                </div>
+                                $query = "SELECT COUNT(*) AS employee_late FROM attendances
+                                 INNER JOIN employee_tb ON attendances.empid = employee_tb.empid 
+                                 WHERE attendances.status != '00:00:00' AND `late` != '' AND 
+                                 employee_tb.classification != 3 AND 
+                                 DATE(`date`) = '$currentDate'";
+                                $result = mysqli_query($conn, $query);
+
+                                if ($result) {
+                                    $row = mysqli_fetch_assoc($result);
+                                    $employeeLate = $row['employee_late'];
+                                } else {
+                                    $employeeLate = 0;
+                                }
+                                ?>
+
+                                <input type="text" name="late" value="<?php echo $employeeLate; ?>" readonly style="margin-bottom: 5px; margin-left: 3px;">
+                                <p style="margin-top: -7px; margin-left: 3px;">of <span style="color: red;"><?php echo $employee_count; ?></span></p>
+                                <label for="present" style="margin-top: 3px;"><i class="mdi mdi-run"></i>Late</label>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="dashboard-body w-100 pt-2" style="height:73%; ">
-                <div class="w-100 h-100  mt-2 d-flex flex-row justify-content-between">
-                    <div class="bg-white rounded" style="width: 55%; height:81%; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
-                        <div class="w-100 h-100 p-4">
-                            <div class="request-title w-100 d-flex align-items-center" style="height: 8%; margin-bottom: 0.5em">
-                                <h4 class="fs-4">Employee Request</h4>
-                            </div>
-                            <div class="request-button w-100" style="height: 13%">
-                                <div class="request-button-container border border-secondary rounded d-flex flex-row justify-content-between align-items-center pl-2 pr-2" style="height: 100%; background-color: #cececece; width: 85% ">
-                                    <div class="req-btn rounded d-flex flex-row align-items-center highlight p-2 justify-content-around" style="height: 80%; width: 22%; cursor: pointer;" id="request">
-                                        <h5>All Request </h5>
-                                        <div class="border d-flex flex-row align-items-center justify-content-center mb-2 rounded" style="height: 1.7em; width: 1.7em">
-                                            <span id="request_count" style="color: blue">
-                                            <?php
-                                                $sql = "
-                                                    SELECT COUNT(*) AS total_requests
-                                                    FROM (
-                                                        SELECT applyleave_tb.col_ID
-                                                        FROM employee_tb
-                                                        INNER JOIN applyleave_tb ON employee_tb.empid = applyleave_tb.col_req_emp
-                                                        WHERE applyleave_tb.col_status = 'Pending'
-                                                        
-                                                        UNION ALL
-                                                        
-                                                        SELECT overtime_tb.id
-                                                        FROM employee_tb
-                                                        INNER JOIN overtime_tb ON employee_tb.empid = overtime_tb.empid
-                                                        WHERE overtime_tb.status = 'Pending'
-                                                        
-                                                        UNION ALL
-                                                        
-                                                        SELECT undertime_tb.id
-                                                        FROM employee_tb
-                                                        INNER JOIN undertime_tb ON employee_tb.empid = undertime_tb.empid
-                                                        WHERE undertime_tb.status = 'Pending'
-                                                        
-                                                        UNION ALL
-                                                        
-                                                        SELECT wfh_tb.id
-                                                        FROM employee_tb
-                                                        INNER JOIN wfh_tb ON employee_tb.empid = wfh_tb.empid
-                                                        WHERE wfh_tb.status = 'Pending'
-                                                        
-                                                        UNION ALL
-                                                        
-                                                        SELECT emp_official_tb.id
-                                                        FROM employee_tb
-                                                        INNER JOIN emp_official_tb ON employee_tb.empid = emp_official_tb.employee_id
-                                                        WHERE emp_official_tb.status = 'Pending'
-                                                        
-                                                        UNION ALL
-                                                        
-                                                        SELECT emp_dtr_tb.id
-                                                        FROM employee_tb
-                                                        INNER JOIN emp_dtr_tb ON employee_tb.empid = emp_dtr_tb.empid
-                                                        WHERE emp_dtr_tb.status = 'Pending'
-                                                    ) AS requests";
 
-                                                    $result = $conn->query($sql);
+                    <div class="emp-request-list-container">
+                      <div class="emp-btn-container">
+                        <div class="emp-request-btn">
+                            <div>
+                                <button id="tab-0" class="mb-2 active-tab">Employee Request List
+                                <p>
+                                <?php
+                                    $sql = "
+                                    SELECT COUNT(*) AS total_requests
+                                    FROM (
+                                        SELECT applyleave_tb.col_ID
+                                        FROM employee_tb
+                                        INNER JOIN applyleave_tb ON employee_tb.empid = applyleave_tb.col_req_emp
+                                        WHERE applyleave_tb.col_status = 'Pending'
+                                        
+                                        UNION ALL
+                                        
+                                        SELECT overtime_tb.id
+                                        FROM employee_tb
+                                        INNER JOIN overtime_tb ON employee_tb.empid = overtime_tb.empid
+                                        WHERE overtime_tb.status = 'Pending'
+                                        
+                                        UNION ALL
+                                        
+                                        SELECT undertime_tb.id
+                                        FROM employee_tb
+                                        INNER JOIN undertime_tb ON employee_tb.empid = undertime_tb.empid
+                                        WHERE undertime_tb.status = 'Pending'
+                                        
+                                        UNION ALL
+                                        
+                                        SELECT wfh_tb.id
+                                        FROM employee_tb
+                                        INNER JOIN wfh_tb ON employee_tb.empid = wfh_tb.empid
+                                        WHERE wfh_tb.status = 'Pending'
+                                        
+                                        UNION ALL
+                                        
+                                        SELECT emp_official_tb.id
+                                        FROM employee_tb
+                                        INNER JOIN emp_official_tb ON employee_tb.empid = emp_official_tb.employee_id
+                                        WHERE emp_official_tb.status = 'Pending'
+                                        
+                                        UNION ALL
+                                        
+                                        SELECT emp_dtr_tb.id
+                                        FROM employee_tb
+                                        INNER JOIN emp_dtr_tb ON employee_tb.empid = emp_dtr_tb.empid
+                                        WHERE emp_dtr_tb.status = 'Pending'
+                                    ) AS requests";
+
+                                    $result = $conn->query($sql);
+                                    if ($result->num_rows > 0) {
+                                        $row = $result->fetch_assoc();
+                                        echo $row['total_requests'];
+                                    } else {
+                                        echo 0;
+                                    }
+                                    ?>
+                                </p>
+                                </button>
+
+                            </div>
+
+                            <div>
+                                <button id="tab-1">Leave</button>
+                            </div>
+
+                            <div>
+                                <button id="tab-2">Loans</button>
+                            </div>
+
+                            <div>
+                                <button id="tab-3">Overtime</button>
+                            </div>
+
+                            </div>
+                        </div>
+                            <div class="emp-request-table table-responsive" style="overflow-x: hidden;">
+                              <form action="actions/Employee List/empreq.php" method="POST">
+                                <input type="hidden" name="name_reqType" id="id_reqType">
+                                  <input type="hidden" name="emp_req_id" id="id_emp">
+                                    <table id="table-0" class="table request-table table-borderless" >
+                                            <?php
+                                                include 'config.php';
+
+                                                $sql = "
+                                                SELECT
+                                                CONCAT(employee_tb.`fname`, ' ', employee_tb.`lname`) AS `full_name`,
+                                                positionn_tb.position AS Position,
+                                                dept_tb.col_deptname AS Department,
+                                                request_data.col_ID AS col_ID,
+                                                request_data.col_req_emp AS col_req_emp,
+                                                request_data.datefiled AS datefiled,
+                                                request_data.col_status AS col_status,
+                                                request_data.request_type AS request_type
+                                            FROM employee_tb
+                                            INNER JOIN (
+                                                SELECT
+                                                    applyleave_tb.col_ID,
+                                                    applyleave_tb.col_req_emp,
+                                                    applyleave_tb.col_strDate AS datefiled,
+                                                    applyleave_tb.col_status,
+                                                    'Leave Request' AS request_type
+                                                FROM applyleave_tb
+    
+                                                UNION
+    
+                                                SELECT
+                                                    overtime_tb.id AS col_ID,
+                                                    overtime_tb.empid AS col_req_emp,
+                                                    overtime_tb.work_schedule AS datefiled,
+                                                    overtime_tb.status AS col_status,
+                                                    'Overtime Request' AS request_type
+                                                FROM overtime_tb
+    
+                                                UNION
+    
+                                                SELECT
+                                                    undertime_tb.id AS col_ID,
+                                                    undertime_tb.empid AS col_req_emp,
+                                                    undertime_tb.date AS datefiled,
+                                                    undertime_tb.status AS col_status,
+                                                    'Undertime Request' AS request_type
+                                                FROM undertime_tb
+    
+                                                UNION
+    
+                                                SELECT
+                                                    wfh_tb.id AS col_ID,
+                                                    wfh_tb.empid AS col_req_emp,
+                                                    wfh_tb.date AS datefiled,
+                                                    wfh_tb.status AS col_status,
+                                                    'WFH Request' AS request_type
+                                                FROM wfh_tb
+    
+                                                UNION
+    
+                                                SELECT
+                                                    emp_official_tb.id AS col_ID,
+                                                    emp_official_tb.employee_id AS col_req_emp,
+                                                    emp_official_tb.str_date AS datefiled,
+                                                    emp_official_tb.status AS col_status,
+                                                    'Official Business' AS request_type
+                                                FROM emp_official_tb
+    
+                                                UNION
+    
+                                                SELECT
+                                                    emp_dtr_tb.id AS col_ID,
+                                                    emp_dtr_tb.empid AS col_req_emp,
+                                                    emp_dtr_tb.date AS datefiled,
+                                                    emp_dtr_tb.status AS col_status,
+                                                    'DTR Request' AS request_type
+                                                FROM emp_dtr_tb
+                                            ) AS request_data ON employee_tb.empid = request_data.col_req_emp
+                                            INNER JOIN positionn_tb ON employee_tb.empposition = positionn_tb.id
+                                            INNER JOIN dept_tb ON employee_tb.department_name = dept_tb.col_ID
+                                            WHERE request_data.col_status = 'Pending'";
+
+                                                $result = $conn->query($sql);
+
+                                                ?>
+                                            <thead>
+                                                <th style="display: none;">ID</th>
+                                                <th class="emp-table-adjust" style="color: blue; width: 40%;">Type of Request</th>
+                                                <th style="color: blue; width: 40%;">Requestor</th>
+                                                <th style="color: blue; width: 20%;">Action</th>
+                                            </thead>
+                                            <?php
                                                     if ($result->num_rows > 0) {
-                                                        $row = $result->fetch_assoc();
-                                                        echo $row['total_requests'];
+                                                        while ($row = $result->fetch_assoc()) {
+                                                            echo "<tr>";
+                                                            echo "<td style='font-weight: 500; font-size: 14px; display: none;'>" . $row['col_ID'] . "</td>";
+                                                            echo "<td style='font-weight: 500; font-size: 14px'>" . $row['request_type'] . "</td>";
+                                                            echo "<td style='font-weight: 500; font-size: 14px'>" . $row['full_name'] . "</td>";
+                                                            echo "<td><button type='submit' name='view_data' class='btn btn-primary viewrequest'>View</button></td>";
+                                                            echo "</tr>";
+                                                        }
+                                                    }
+                                                    ?>
+                                    </table>   
+                                </form>
+
+                                    <div class="table-responsive" style="overflow-x: hidden">
+                                    <table id="table-1" class="table request-table table-borderless ml-5 mt-3" style="display: none;">
+                                    <thead>
+                                            <th class="emp-table-adjust" style="color: blue">Type of Request</th>
+                                            <th style="color: blue">Requestor</th>
+                                    </thead>
+                                            <tbody>
+                                                 <?php 
+                                                    include 'config.php';
+                                                    date_default_timezone_set('Asia/Manila');
+                                                    
+                                                    // Get the current date in Manila, Philippines
+                                                    $currentDate = date('Y-m-d');
+                                                    
+                                                    $query = "SELECT applyleave_tb.col_ID,
+                                                                employee_tb.empid,
+                                                                CONCAT(employee_tb.fname, ' ', employee_tb.lname) AS full_name, 
+                                                                COUNT(*) AS employee_leave,
+                                                                applyleave_tb.col_LeaveType
+                                                                FROM applyleave_tb 
+                                                                INNER JOIN employee_tb ON applyleave_tb.col_req_emp = employee_tb.empid
+                                                                WHERE applyleave_tb.`col_status` = 'Pending'
+                                                                GROUP BY applyleave_tb.col_ID, employee_tb.empid, full_name, col_LeaveType";
+                                                    
+                                                    $result = mysqli_query($conn, $query);
+                                                    
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        while ($row = mysqli_fetch_assoc($result)) {
+                                                            ?>
+                                                            <tr>
+                                                                <td style="font-weight: 500; font-size: 14px"><?php echo $row['col_LeaveType'] ?></td>
+                                                                <td style="font-weight: 500; font-size: 14px"><?php echo $row['full_name'] ?></td>
+                                                            </tr>
+                                                            <?php
+                                                        }
                                                     } else {
-                                                        echo 0;
+                                                        ?>
+                                                        <tr>
+                                                            <td colspan="2" style="text-align: center; font-weight: bold;">No Request</td>
+                                                        </tr>
+                                                        <?php
                                                     }
                                                 ?>
-                                            </span>
-                                        </div>
+                                            </tbody>
+                                    </table>
                                     </div>
-                                    <div class="req-btn rounded d-flex flex-row align-items-center p-2 justify-content-center" style="height: 80%; width: 17%; cursor: pointer;" id="leave">
-                                        <h5>Leave</h5>
-                                    </div>
-                                    <div class="req-btn rounded d-flex flex-row align-items-center p-2 justify-content-center" style="height: 80%; width: 17%; cursor: pointer;" id="loan">
-                                        <h5>Loan</h5>   
-                                    </div>
-                                    <div class="req-btn rounded d-flex flex-row align-items-center p-2 justify-content-center" style="height: 80%; width: 17%; cursor: pointer;" id="under">
-                                        <h5>Undertime</h5>
-                                    </div>
-                                    <div class="req-btn rounded d-flex flex-row align-items-center p-2 justify-content-center" style="height: 80%; width: 17%; cursor: pointer;" id="over">
-                                        <h5>Overtime</h5>   
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="w-100 pt-3 pl-2 pr-2" style="height: 75%">
-                                <div class="w-100 h-100 table-responsive border rounded tables-container " id="table-responsive" style="box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2), 0 2px 6px 0 rgba(0, 0, 0, 0.1);">
-                                    <table class="table table-borderless p-0 scrollable-content tables" style="width: 100%; overflow-y: scroll; height: 100%; display:table;" id="table_request">
-                                        <thead class="" style="background-color: #cecece; border-bottom-left-radius: 10px; width: 100%">
-                                            <th class="d-none">ID</th>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Action</th>
-                                        </thead>
-                                        <tbody style="width: 100%">
-                                       
+
+                                    <div class="table-responsive" style="overflow-x: hidden">
+                                    <table id="table-2" class="table request-table table-borderless ml-5 mt-3" style="display: none;">
+                                    <thead>
+                                            <th class="emp-table-adjust" style="color: blue">Type of Request</th>
+                                            <th style="color: blue">Requestor</th>
+                                    </thead>
+                                            <tbody>
+                                            <?php 
+                                                    include 'config.php';
+                                                    date_default_timezone_set('Asia/Manila');
+                                                    
+                                                    // Get the current date in Manila, Philippines
+                                                    $currentDate = date('Y-m-d');
+                                                    
+                                                    $query = "SELECT payroll_loan_tb.id,
+                                                                employee_tb.empid,
+                                                                CONCAT(employee_tb.fname, ' ', employee_tb.lname) AS full_name, 
+                                                                COUNT(*) AS employee_loan,
+                                                                payroll_loan_tb.loan_type
+                                                                FROM payroll_loan_tb 
+                                                                INNER JOIN employee_tb ON payroll_loan_tb.empid = employee_tb.empid
+                                                                WHERE payroll_loan_tb.`loan_status` = 'Pending'
+                                                                GROUP BY payroll_loan_tb.id, employee_tb.empid, full_name, loan_type";
+                                                    
+                                                    $result = mysqli_query($conn, $query);
+                                                    
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        while ($row = mysqli_fetch_assoc($result)) {
+                                                            ?>
+                                                            <tr>
+                                                                <td style="font-weight: 500; font-size: 14px"><?php echo $row['loan_type'] ?></td>
+                                                                <td style="font-weight: 500; font-size: 14px"><?php echo $row['full_name'] ?></td>
+                                                            </tr>
+                                                            <?php
+                                                        }
+                                                    } else {
+                                                        ?>
+                                                        <tr>
+                                                            <td colspan="2" style="text-align: center; font-weight: bold;">No Request</td>
+                                                        </tr>
+                                                        <?php
+                                                    }
+                                                ?>
+                                            </tbody>
+                                    </table>
+                                    </div>
+
+                                    <div class="table-responsive" style="overflow-x: hidden">
+                                    <table id="table-3" class="table request-table table-borderless ml-5 mt-3 pd-2" style="display: none;">
+                                    <thead>
+                                            <th class="emp-table-adjust" style="color: blue">Type of Request</th>
+                                            <th style="color: blue">Requestor</th>
+                                    </thead>
+                                        <tbody>
                                         <?php 
-                                             include 'config.php';
-
-                                             $sql = "
-                                             SELECT
-                                             CONCAT(employee_tb.`fname`, ' ', employee_tb.`lname`) AS `full_name`,
-                                             positionn_tb.position AS Position,
-                                             dept_tb.col_deptname AS Department,
-                                             request_data.col_ID AS col_ID,
-                                             request_data.col_req_emp AS col_req_emp,
-                                             request_data.datefiled AS datefiled,
-                                             request_data.col_status AS col_status,
-                                             request_data.request_type AS request_type
-                                         FROM employee_tb
-                                         INNER JOIN (
-                                             SELECT
-                                                 applyleave_tb.col_ID,
-                                                 applyleave_tb.col_req_emp,
-                                                 applyleave_tb.col_strDate AS datefiled,
-                                                 applyleave_tb.col_status,
-                                                 'Leave Request' AS request_type
-                                             FROM applyleave_tb
- 
-                                             UNION
- 
-                                             SELECT
-                                                 overtime_tb.id AS col_ID,
-                                                 overtime_tb.empid AS col_req_emp,
-                                                 overtime_tb.work_schedule AS datefiled,
-                                                 overtime_tb.status AS col_status,
-                                                 'Overtime Request' AS request_type
-                                             FROM overtime_tb
- 
-                                             UNION
- 
-                                             SELECT
-                                                 undertime_tb.id AS col_ID,
-                                                 undertime_tb.empid AS col_req_emp,
-                                                 undertime_tb.date AS datefiled,
-                                                 undertime_tb.status AS col_status,
-                                                 'Undertime Request' AS request_type
-                                             FROM undertime_tb
- 
-                                             UNION
- 
-                                             SELECT
-                                                 wfh_tb.id AS col_ID,
-                                                 wfh_tb.empid AS col_req_emp,
-                                                 wfh_tb.date AS datefiled,
-                                                 wfh_tb.status AS col_status,
-                                                 'WFH Request' AS request_type
-                                             FROM wfh_tb
- 
-                                             UNION
- 
-                                             SELECT
-                                                 emp_official_tb.id AS col_ID,
-                                                 emp_official_tb.employee_id AS col_req_emp,
-                                                 emp_official_tb.str_date AS datefiled,
-                                                 emp_official_tb.status AS col_status,
-                                                 'Official Business' AS request_type
-                                             FROM emp_official_tb
- 
-                                             UNION
- 
-                                             SELECT
-                                                 emp_dtr_tb.id AS col_ID,
-                                                 emp_dtr_tb.empid AS col_req_emp,
-                                                 emp_dtr_tb.date AS datefiled,
-                                                 emp_dtr_tb.status AS col_status,
-                                                 'DTR Request' AS request_type
-                                             FROM emp_dtr_tb
-                                         ) AS request_data ON employee_tb.empid = request_data.col_req_emp
-                                         INNER JOIN positionn_tb ON employee_tb.empposition = positionn_tb.id
-                                         INNER JOIN dept_tb ON employee_tb.department_name = dept_tb.col_ID
-                                         WHERE request_data.col_status = 'Pending'";
-
-                                         $result = $conn->query($sql);
-
-                                         if ($result->num_rows > 0) {
-                                            while ($row = $result->fetch_assoc()) {
-                                                    echo "<tr>";
-                                                        echo "<td style='font-weight: 500; font-size: 14px; display: none;'>" . $row['col_ID'] . "</span></td>";
-                                                        echo "<td style='font-weight: 500; font-size: 14px' class='mb-2'>" . $row['full_name'] . " <br> <span style='color:gray; font-size: 0.835em; font-weight: 700'>". $row['Position'] ."</td>";
-                                                        echo "<td style='font-weight: 400; font-size: 14px'>" . $row['request_type'] . "</td>";
-                                                        echo "<td><button type='submit' name='view_data' class='btn btn-primary viewrequest'>View</button></td>";
-                                                    echo "</tr>";
-                                            }
-                                         }
-                                        
-                                        ?>
+                                                    include 'config.php';
+                                                    date_default_timezone_set('Asia/Manila');
+                                                    
+                                                    // Get the current date in Manila, Philippines
+                                                    $currentDate = date('Y-m-d');
+                                                    
+                                                    $query = "SELECT overtime_tb.id,
+                                                                employee_tb.empid,
+                                                                CONCAT(employee_tb.fname, ' ', employee_tb.lname) AS full_name, 
+                                                                COUNT(*) AS employee_overtime
+                                                                FROM overtime_tb 
+                                                                INNER JOIN employee_tb ON overtime_tb.empid = employee_tb.empid
+                                                                WHERE overtime_tb.`status` = 'Pending'
+                                                                GROUP BY overtime_tb.id, employee_tb.empid, full_name";
+                                                    
+                                                    $result = mysqli_query($conn, $query);
+                                                    
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        while ($row = mysqli_fetch_assoc($result)) {
+                                                            ?>
+                                                            <tr>
+                                                                <td style="font-weight: 500; font-size: 14px">Overtime Request</td>
+                                                                <td style="font-weight: 500; font-size: 14px"><?php echo $row['full_name'] ?></td>
+                                                            </tr>
+                                                            <?php
+                                                        }
+                                                    } else {
+                                                        ?>
+                                                        <tr>
+                                                            <td colspan="2" style="text-align: center; font-weight: bold;">No Request</td>
+                                                        </tr>
+                                                        <?php
+                                                    }
+                                                ?>
                                         </tbody>
                                     </table>
+                                    </div>
 
-                                    <table class="table table-borderless p-0 scrollable-content tables" style="width: 100%; overflow-y: scroll; height: 100%; display:none" id="table_leave">
-                                        <thead class="" style="background-color: #cecece; border-bottom-left-radius: 10px;width: 100%">
-                                            <th class="d-none">ID</th>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Action</th>
-                                        </thead>
-                                        <tbody style="width: 100%">
-                                       
-                                        <?php 
-                                             include 'config.php';
-
-                                             $sql = "SELECT * FROM applyleave_tb 
-                                             INNER JOIN employee_tb ON `applyleave_tb`.`col_req_emp` = `employee_tb`.`empid`
-                                             INNER JOIN positionn_tb ON `employee_tb`.`empposition` = `positionn_tb`.`id`
-                                             WHERE `applyleave_tb`.`col_status` = 'Pending'";
-
-
-                                         $result = $conn->query($sql);
-
-                                         if ($result->num_rows > 0) {
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                    echo "<td style='font-weight: 500; font-size: 14px; display: none;'>" . @$row['col_ID'] . "</span></td>";
-                                                    echo "<td style='font-weight: 500; font-size: 14px' class='mb-2'>" . $row['fname'] . " " . $row['lname'] . " <br> <span style='color:gray; font-size: 0.835em; font-weight: 700'>". $row['position'] ."</td>";
-                                                    echo "<td style='font-weight: 400; font-size: 14px'>" . $row['col_LeaveType'] . "</td>";
-                                                    echo "<td><button type='submit' name='view_data' class='btn btn-primary viewrequest'>View</button></td>";
-                                                echo "</tr>";
-
-                                            }
-                                         }
-                                        
-                                        ?>
-                                        </tbody>
-                                    </table>
-
-                                    <table class="table table-borderless p-0 scrollable-content tables" style="width: 100%; overflow-y: scroll; height: 100%; display:none" id="table_loan">
-                                        <thead class="" style="background-color: #cecece; border-bottom-left-radius: 10px;width: 100%">
-                                            <th class="d-none">ID</th>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Action</th>
-                                        </thead>
-                                        <tbody style="width: 100%">
-                                       
-                                        <?php 
-                                             include 'config.php';
-
-                                             $sql = "SELECT * FROM payroll_loan_tb 
-                                             INNER JOIN employee_tb ON `payroll_loan_tb`.`empid` = `employee_tb`.`empid`
-                                             INNER JOIN positionn_tb ON `employee_tb`.`empposition` = `positionn_tb`.`id`
-                                             WHERE `payroll_loan_tb`.`status` = 'Pending'";
-
-
-                                         $result = $conn->query($sql);
-
-                                         if ($result->num_rows > 0) {
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                    echo "<td style='font-weight: 500; font-size: 14px; display: none;'>" . @$row['col_ID'] . "</span></td>";
-                                                    echo "<td style='font-weight: 500; font-size: 14px' class='mb-2'>" . $row['fname'] . " " . $row['lname'] . " <br> <span style='color:gray; font-size: 0.835em; font-weight: 700'>". $row['position'] ."</td>";
-                                                    echo "<td style='font-weight: 400; font-size: 14px'>" . $row['loan_type'] . "</td>";
-                                                    echo "<td><button type='submit' name='view_data' class='btn btn-primary viewrequest'>View</button></td>";
-                                                echo "</tr>";
-
-                                            }
-                                         }
-                                        
-                                        ?>
-                                        </tbody>
-                                    </table>
-
-                                    <table class="table table-borderless p-0 scrollable-content tables" style="width: 100%; overflow-y: scroll; height: 100%; display:none" id="table_under">
-                                        <thead class="" style="background-color: #cecece; border-bottom-left-radius: 10px;width: 100%">
-                                            <th class="d-none">ID</th>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Action</th>
-                                        </thead>
-                                        <tbody style="width: 100%">
-                                       
-                                        <?php 
-                                             include 'config.php';
-
-                                             $sql = "SELECT * FROM undertime_tb 
-                                             INNER JOIN employee_tb ON `undertime_tb`.`empid` = `employee_tb`.`empid`
-                                             INNER JOIN positionn_tb ON `employee_tb`.`empposition` = `positionn_tb`.`id`
-                                             WHERE `undertime_tb`.`status` = 'Pending'";
-
-
-                                         $result = $conn->query($sql);
-
-                                         if ($result->num_rows > 0) {
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                    echo "<td style='font-weight: 500; font-size: 14px; display: none;'>" . @$row['col_ID'] . "</span></td>";
-                                                    echo "<td style='font-weight: 500; font-size: 14px' class='mb-2'>" . $row['fname'] . " " . $row['lname'] . " <br> <span style='color:gray; font-size: 0.835em; font-weight: 700'>". $row['position'] ."</td>";
-                                                    echo "<td style='font-weight: 400; font-size: 14px'>Undertime Request</td>";
-                                                    echo "<td><button type='submit' name='view_data' class='btn btn-primary viewrequest'>View</button></td>";
-                                                echo "</tr>";
-
-                                            }
-                                         }
-                                        
-                                        ?>
-                                        </tbody>
-                                    </table>
-
-                                    <table class="table table-borderless p-0 scrollable-content tables" style="width: 100%; overflow-y: scroll; height: 100%; display:none" id="table_over">
-                                        <thead class="" style="background-color: #cecece; border-bottom-left-radius: 10px;width: 100%">
-                                            <th class="d-none">ID</th>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Action</th>
-                                        </thead>
-                                        <tbody style="width: 100%">
-                                       
-                                        <?php 
-                                             include 'config.php';
-
-                                             $sql = "SELECT * FROM overtime_tb 
-                                             INNER JOIN employee_tb ON `overtime_tb`.`empid` = `employee_tb`.`empid`
-                                             INNER JOIN positionn_tb ON `employee_tb`.`empposition` = `positionn_tb`.`id`
-                                             WHERE `overtime_tb`.`status` = 'Pending'";
-
-
-                                         $result = $conn->query($sql);
-
-                                         if ($result->num_rows > 0) {
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                    echo "<td style='font-weight: 500; font-size: 14px; display: none;'>" . @$row['col_ID'] . "</span></td>";
-                                                    echo "<td style='font-weight: 500; font-size: 14px' class='mb-2'>" . $row['fname'] . " " . $row['lname'] . " <br> <span style='color:gray; font-size: 0.835em; font-weight: 700'>". $row['position'] ."</td>";
-                                                    echo "<td style='font-weight: 400; font-size: 14px'>Overtime Request</td>";
-                                                    echo "<td><button type='submit' name='view_data' class='btn btn-primary viewrequest'>View</button></td>";
-                                                echo "</tr>";
-
-                                            }
-                                         }
-                                        
-                                        ?>
-                                        </tbody>
-                                    </table>
-                                    
-                                </div>
                             </div>
                         </div>
-                    </div>
-                        
-                    <div class="h-100" style="width:1.5%">
+                    </div>   
 
-                    </div>
-                    <div class="d-flex flex-column justify-content-between" style="width: 43.5%; height: 81%">
-                        <div class="w-100 bg-white rounded p-3" style="height: 52.5%; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
-                            <div class="w-100 h-100">
-                                <div class="announce-title w-100 d-flex flex-row justify-content-between align-items-center pl-2 pr-2" style="height: 17%;">
-                                    <h4 style="font-size: 1.4em; font-weight: 400; margin-top: 0.5em">Announcement</h4>
-                                    <div class="w-25 d-flex flex-row justify-content-between">
-                                        <div class="" >
-                                            <div class="position-absolute border" id="announce-modal" style="display:none; border-radius: 0.4em;height: 5em; width: 12em; z-index: 1000; right: 5.3em; box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.1);">
-                                                <a class="dropdown-item mt-2" data-bs-toggle="modal" data-bs-target="#announcement_modal" style="cursor: pointer;">Add Announcement</a>
-                                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view_summary" style="cursor: pointer;">View Summary</a>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <i class="fa-solid fa-ellipsis-vertical fs-5" id="announcement-btn" style="color: #959595; cursor: pointer;"></i>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <div style="height: 83%" class="w-100 swiper">
-                                    <div class="swiper-wrapper">
-                                        <?php 
-                                            include 'config.php';
-                                            date_default_timezone_set('Asia/Manila');
-                                            $currentDate = date('Y-m-d');
+                <div class="second-dash-contents">
+                <div class="announcement-container" >
+                        <div class="announce-title">
+                            <h3 style="margin-bottom: -1em" class="ml-1">Announcement</h3>
+                            <h3 class="mb-0 d-inline-block mt-2 ml-2"> </h3>
+                                <i class="mdi mdi-arrow-down-drop-circle float-right mt-2 mr-2 dropdown-icon" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
 
-                                            $query = "SELECT announcement_tb.id,
-                                                announcement_tb.announce_title,
-                                                employee_tb.empid,
-                                                CONCAT(employee_tb.`fname`, ' ', employee_tb.`lname`) AS `full_name`,
-                                                announcement_tb.announce_date,
-                                                announcement_tb.description,
-                                                announcement_tb.date_file,
-                                                announcement_tb.file_attachment 
-                                            FROM announcement_tb 
-                                            INNER JOIN employee_tb ON announcement_tb.empid = employee_tb.empid
-                                            WHERE WEEK(announcement_tb.announce_date) = WEEK('$currentDate')
-                                            ORDER BY announcement_tb.date_file DESC";
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#announcement_modal" style="cursor: pointer;">Add Announcement</a>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view_summary" style="cursor: pointer;">View Summary</a>
+                        </div>
+                                                    <!-- Slider main container -->
+                            <div class="swiper mt-3 " style="height: 20em; border-radius: 0.8em; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 5px 0 rgba(0, 0, 0, 0.17); background-color: white; padding-bottom: 2em">
+                            <!-- Additional required wrapper -->
+                            <div class="swiper-wrapper" style="border-radius: 0.8em; "> 
+                                <!-- Slides -->
+                                <!-- <div class="swiper-slide">hah</div>
+                                <div class="swiper-slide">Slide 2</div>
+                                <div class="swiper-slide">Slide 3</div> -->
+
+                                <?php 
+                                    include 'config.php';
+                                    date_default_timezone_set('Asia/Manila');
+                                    $currentDate = date('Y-m-d');
+
+                                    $query = "SELECT announcement_tb.id,
+                                    announcement_tb.announce_title,
+                                    employee_tb.empid,
+                                    CONCAT(employee_tb.`fname`, ' ', employee_tb.`lname`) AS `full_name`,
+                                    announcement_tb.announce_date,
+                                    announcement_tb.description,
+                                    announcement_tb.file_attachment 
+                                    FROM announcement_tb 
+                                    INNER JOIN employee_tb ON announcement_tb.empid = employee_tb.empid
+                                    WHERE WEEK(announcement_tb.announce_date) = WEEK('$currentDate')
+                                    ORDER BY announcement_tb.date_file DESC";
                                                 $result = mysqli_query($conn, $query);
                                                 $slideIndex = 0;
-                                                                            
+                                                                
                                                 if (mysqli_num_rows($result) > 0){  
                                                 while ($row = mysqli_fetch_assoc($result)) {
                                                     if ($slideIndex % 1 === 0) {
-                                                        $empid = $row['empid'];
-                                                     echo "<div class='swiper-slide bg-white w-100 position-relative '>";
-                                                }
-                                            ?>
-                                            <div class="announce-head w-100 d-flex flex-row pl-4 mb-3" style="height: 20%">
-                                                <div class=" d-flex justify-content-center" style="width: 13%; height: 100%">
-                                                    <?php
-                                                        if(!empty($row['emp_img_url'])) {
-                                                            $image_url = $row['emp_img_url'];
-                                                        } else {
-                                                            $Supervisor_Profile = "SELECT * FROM employee_tb WHERE `empid` = '$empid'";
-                                                            $profileRun = mysqli_query($conn, $Supervisor_Profile);
- 
-                                                            $SuperProfile = mysqli_fetch_assoc($profileRun);
-                                                            $visor_Profile = $SuperProfile['user_profile'];
-
-                                                            $image_data = "";
-                                                                            
-                                                            if (!empty($visor_Profile)) {
-                                                                $image_data = base64_encode($visor_Profile); // Convert blob to base64
-                                                            } else {
-                                                                // Set default image path when user_profile is empty
-                                                                $image_data = base64_encode(file_get_contents("img/user.jpg"));
-                                                            }
-                                                            
-                                                            $image_type = 'image/jpeg'; // Default image type
-                                                            
-                                                            // Determine the image type based on the blob data
-                                                            if (substr($image_data, 0, 4) === "\x89PNG") {
-                                                                $image_type = 'image/png';
-                                                            } elseif (substr($image_data, 0, 2) === "\xFF\xD8") {
-                                                                $image_type = 'image/jpeg';
-                                                            } elseif (substr($image_data, 0, 4) === "RIFF" && substr($image_data, 8, 4) === "WEBP") {
-                                                                $image_type = 'image/webp';
-                                                            }
-                                    
+                                                    echo "<div class='swiper-slide bg-white p-3' style='border-radius: 0.8em; overflow-y:scroll; '>";
+                                            }
+                                ?>
+                                <h4 class="mt-2 ml-2"><?php echo $row['announce_title'] ?></h4>
+                                <p class="ml-2">
+                                <span style="color: #7F7FDD; font-style: Italic;">
+                                    <?php 
+                                        if($row['empid'] === '0909090909')
+                                            {
+                                                echo 'SuperAdmin';
+                                            }
+                                        else {
+                                            echo $row['full_name'];
+                                            }
+                                    ?>
+                                </span> - <?php echo $row['announce_date']?></p>
+                                <p class="ml-2 pl-4 pr-4" ><?php echo $row['description']?></p>   
+                                <?php
+                                                            if (($slideIndex + 1) % 1 === 0) {
+                                                            echo "</div>";
                                                         }
-                                                        if (!empty($image_url)) {
-                                                            $file_ext = pathinfo($image_url, PATHINFO_EXTENSION);
-                                                        } else {
-                                                            $file_ext = ''; // Set a default value or handle the case when $image_url is empty.
-                                                        }
-                                                    ?>
-                                                    <img <?php if(!empty($image_url)){ echo "src='uploads/".$image_url."' "; } else{ echo "src='data:".$image_type.";base64,".$image_data."'";} ?> alt="" srcset="" accept=".jpg, .jpeg, .png" title="<?php echo $image_url; ?>"  class="announce-img rounded-circle" style="width: 100% height: 100%">
-                                                </div>
-                                                <div class="h-100 w-50 d-flex flex-column">
-                                                    <div class="w-100 h-50 pl-2 pt-1">
-                                                        <h5 style="font-size: 1.2em; color: blue"><?php echo $row['full_name'] ?></h5>
-                                                    </div>
-                                                    <div class="w-100 h-50 pl-2 ">
-                                                        <?php
-                                                      // Current date
-                                                            $datefile = $row['date_file'];
-                                                            $currentDate = new DateTime();
-
-                                                            // Your specific date
-                                                            $specificDate = new DateTime($datefile);
-
-                                                            // Calculate the difference
-                                                            $interval = $currentDate->diff($specificDate);
-
-                                                            // Get the number of days
-                                                            $daysDifference = $interval->days;
-
-                                                            // echo $daysDifference;
-                                                    
-                                                        ?>
-                                                        <p style="font-size: 1em; color: #959595; font-weight: 500"><?php echo $daysDifference; ?> days(s) ago</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="scrollable-content w-100 pl-4 pr-4 " style="overflow-y: scroll; height: 60%; margin-top: 1em">
-                                                <h4 class="mt-1 ml-2"><?php echo $row['announce_title'] ?></h4>
-                                                <p class="pl-3 pr-3" ><?php echo $row['description']?></p>  
-                                            </div>
-                                            <?php
-                                                    if (($slideIndex + 1) % 1 === 0) {
-                                                    echo "</div>";
-                                                }
-                                                    $slideIndex++;
-                                                }
+                                                            $slideIndex++;
+                                                            }
                                                     if ($slideIndex % 1 !== 0) {
-                                                    echo "</div>";
-                                                    }
-                                                } else {
-                                                 echo "<div class='announcement-slide d-flex align-items-center m-auto' style=''>";
-                                                    echo "<h4 style=''>No items on whiteboard</h4>";
-                                                echo "</div>";
-                                             }
-                                            ?>
-                                    </div>
-                                     <div class="swiper-pagination"></div>
+                                                            echo "</div>";
+                                                        }
+                                                        } else {
+                                                            echo "<div class='announcement-slide d-flex align-items-center m-auto' style=''>";
+                                                                echo "<h4 style=''>No items on whiteboard</h4>";
+                                                            echo "</div>";
+                                                        }
+                                                        ?>
 
-                                    <!-- If we need navigation buttons -->
-                                    <div class="swiper-button-prev"></div>
-                                    <div class="swiper-button-next"></div>
 
-                                </div>
                             </div>
-                        </div>
-                        <div class="w-100" style="height: 1.5%;"></div>
-                        <div class="w-100 bg-white rounded" style="height: 46%; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
-                            <div class="w-100 h-100 p-2">
-                                <div class="announce-title w-100 d-flex flex-row justify-content-between align-items-center pl-2 pr-2" style="height: 17%;">
-                                    <h4 style="font-size: 1.4em; font-weight: 400; margin-top: 0.5em">Events</h4>
-                                    <div class="w-25 d-flex flex-row justify-content-between">
-                                        <div class="" >
-                                            <div class="position-absolute border" id="event-modal" style="display:none; border-radius: 0.4em;height: 7.5em; width: 12em; z-index: 100; right: 5.3em; box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.1); background-color: white;">
-                                                <a class="dropdown-item mt-1" data-bs-toggle="modal" data-bs-target="#add_event" style="cursor: pointer;">Add Event</a>
-                                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#add_holiday" style="cursor: pointer;">Add Holiday</a>
-                                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view_holiday" style="cursor: pointer;">View Holidays</a>
-                                                <!-- <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view_event" style="cursor: pointer;">View Event</a> -->
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <i class="fa-solid fa-ellipsis-vertical fs-5" id="event-btn" style="color: #959595; cursor: pointer;"></i>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <div class="w-100" style="height: 83%">
-                                    <div class="event-body pl-3 pr-3 pb-3 pt-1" style="width: 100%; height: 100%">
-                                        <div class="event-week w-100 pl-3 pr-3 " style="height: 15%">
-                                            <h5 style="font-weight: 400; font-size: 1.2em; color: blue" class="d-flex align-items-end mt-1">Week</h5>
-                                        </div>
-                                        <div class="event-contents w-100 pl-3 pr-3 scrollable-content" style="height: 80%; overflow-y: scroll">
-                                             <div class="event_display w-100 ">
-                                                <div class="first_content">
-                                                    <?php
-                                                        date_default_timezone_set('Asia/Manila');
+                            <!-- If we need pagination -->
+                            <div class="swiper-pagination"></div>
 
-                                                        // Get the current month's start and end dates
-                                                        $startDate = date('Y-m-d');
-                                                        $endDate = date('Y-m-t');
+                            <!-- If we need navigation buttons -->
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
 
-                                                        $currentDate = date('Y-m-d');
-
-                                                        $query = "SELECT * FROM event_tb
-                                                                WHERE ('$currentDate' BETWEEN `start_date` AND `end_date`)
-                                                                OR (`start_date` BETWEEN '$startDate' AND '$endDate'
-                                                                AND `end_date` >= '$currentDate')
-                                                                ORDER BY `start_date` ASC";
-
-                                                        $result = mysqli_query($conn, $query);
-
-                                                        while ($row = mysqli_fetch_assoc($result)) {
-                                                            $event_title = $row['event_title'];
-                                                            $event_type = $row['event_type'];
-                                                            $start_date = date('Y-m-d', strtotime($row['start_date']));
-                                                            $end_date = date('Y-m-d', strtotime($row['end_date']));
-                                                            $eventDay = date('l', strtotime($row['start_date']));
-
-                                                            $start_day = date('d', strtotime($start_date));
-                                                            $start_month = date('F', strtotime($start_date));
-
-                                                            // Extract day and month for the end date
-                                                            $end_day = date('d', strtotime($end_date));
-                                                            $end_month = date('F', strtotime($end_date));
-
-                                                    ?>
-                                                        <div class="w-100 d-flex flex-row justify-content-between align-items-center mb-2 rounded" style="height: 4em">
-                                                            <div class="h-100 d-flex flex-column align-items-center justify-content-center" style="background-color: #cececece; width: 15%;  ">
-                                                                <span style="font-size: 1.1em;" class="pt-2"><?php echo $start_day ?> </span>
-                                                                <span style="font-size: 1em;"><?php echo $start_month ?> </span>
-                                                                <span style="color: blue; font-weight: 500; font-size: 0.7em; margin-bottom: 1em" >Event</span>
-                                                            </div>
-                                                            <div class=" h-100 border" style="width: 85%">
-                                                                <div class="w-100 h-100 pt-2 pb-2 pl-3 pr-3">
-                                                                    <span class="mb-1" style="font-size: 1.2em"><?php echo $event_title ?></span><br>
-                                                                    <span style="color: gray; font-weight: 500; font-size: 0.9em"><?php echo $event_type ?></span>
-                                                                    <!-- <p style=" font-size: 1.2em" class="border mt-2"><?php echo $event_title ?></p> -->
-                                                                    <!-- <p style="color: gray; font-weight: 500; font-size: 1em" class="border"><?php echo $event_type ?></p> -->
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    <?php
-                                                        }
-                                                    ?>
-                                                </div>
-                                             </div>
-                                             <div class="holiday_display">
-                                                <div class="first_holiday_content">
-                                                    <?php                                                
-                                                        // // Display the start and end dates
-                                                        // echo "Start date: " . $startDate . "<br>";
-                                                        // echo "End date: " . $endDate;
-
-                                                        $query = "SELECT * FROM holiday_tb WHERE holiday_type != 'Regular Working Day' AND `date_holiday` BETWEEN '$startDate' AND '$endDate' ORDER BY `date_holiday` ASC";
-                                                        $result = mysqli_query($conn, $query);
-                                                        while ($row = mysqli_fetch_assoc($result)) {
-                                                            $holidayDate = date('Y-m-d', strtotime($row['date_holiday']));
-                                                            $holidayDay = date('l', strtotime($row['date_holiday']));
-
-                                                            $start_day = date('d', strtotime($row['date_holiday']));
-                                                            $start_month = date('F', strtotime($row['date_holiday']));
-
-                                                            $holiday_title = $row['holiday_title'];
-                                                            $holiday_type = $row['holiday_type'];
-
-                                                    ?>
-                                                         <div class="w-100 d-flex flex-row justify-content-between align-items-center mb-2 rounded" style="height: 4em">
-                                                            <div class="h-100 d-flex flex-column align-items-center justify-content-center" style="background-color: #cececece; width: 15%;  ">
-                                                                <span style="font-size: 1.1em;" class="pt-2"><?php echo $start_day ?> </span>
-                                                                <span style="font-size: 1em;"><?php echo $start_month ?> </span>
-                                                                <span style="color: blue; font-weight: 500; font-size: 0.7em; margin-bottom: 1em" >Holiday</span>
-                                                            </div>
-                                                            <div class=" h-100 border" style="width: 85%">
-                                                                <div class="w-100 h-100 pt-2 pb-2 pl-3 pr-3">
-                                                                    <span class="mb-1" style="font-size: 1.2em"><?php echo $holiday_title ?></span><br>
-                                                                    <span style="color: gray; font-weight: 500; font-size: 0.9em"><?php echo $holiday_type ?></span>
-                                                                    <!-- <p style=" font-size: 1.2em" class="border mt-2"><?php echo $holiday_type ?></p> -->
-                                                                    <!-- <p style="color: gray; font-weight: 500; font-size: 1em" class="border"><?php echo $event_type ?></p> -->
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    <?php
-                                                        }
-                                                    ?>
-                                                </div>
-                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <!-- If we need scrollbar -->
+                            <!-- <div class="swiper-scrollbar"></div> -->
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <div class="event-container mt-2" id="event-box" style="width: 670px; margin-left: 5px;">
+                        <div class="event-title">
+                            <div>
+                                <p><span class="mdi mdi-calendar-check" style="margin-right:10px;"></span> Events</p>
+                            </div>
+                            <div>
+                                <i class="mdi mdi-arrow-down-drop-circle float-right mt-2 mr-2"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: black"></i>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#add_event" style="cursor: pointer;">Add Event</a>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#add_holiday" style="cursor: pointer;">Add Holiday</a>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view_holiday" style="cursor: pointer;">View Holidays</a>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#view_event" style="cursor: pointer;">View Event</a>
+                        </div>
+                        </div>
+                            </div>
+                        </div>
+                        <div class="event-content">
+                        <div class="first_content">
+                                <?php
+                                date_default_timezone_set('Asia/Manila');
+
+                                // Get the current month's start and end dates
+                                $startDate = date('Y-m-d');
+                                $endDate = date('Y-m-t');
+
+                                $currentDate = date('Y-m-d');
+
+                                $query = "SELECT * FROM event_tb
+                                        WHERE ('$currentDate' BETWEEN `start_date` AND `end_date`)
+                                        OR (`start_date` BETWEEN '$startDate' AND '$endDate'
+                                        AND `end_date` >= '$currentDate')
+                                        ORDER BY `start_date` ASC";
+
+                                $result = mysqli_query($conn, $query);
+
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $start_date = date('Y-m-d', strtotime($row['start_date']));
+                                    $end_date = date('Y-m-d', strtotime($row['end_date']));
+                                    $eventDay = date('l', strtotime($row['start_date']));
+
+                                    ?>
+                                    <div class="son_first" style="background-color: #ECECEC;">
+                                        <p><?php echo '<strong style="font-size: 20px; margin-left: 10px;">' . $row['event_title'] . '</strong> ' . '<span style="float: right; margin-right: 10px;">' . $start_date . ' - '. $end_date. '</span>' ; ?></p>
+                                        <p><?php echo '<span style="margin-left: 10px;">' . $row['event_type'] . '</span> ' . '<span style="float: right; margin-right: 10px;">' . $eventDay . '</span>'; ?></p>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+
+
+                            
+                            <div class="holiday-content">
+                            <div class="first_holiday_content">
+                                <?php
+
+                              
+
+                                // // Display the start and end dates
+                                // echo "Start date: " . $startDate . "<br>";
+                                // echo "End date: " . $endDate;
+
+                                $query = "SELECT * FROM holiday_tb WHERE holiday_type != 'Regular Working Day' AND `date_holiday` BETWEEN '$startDate' AND '$endDate' ORDER BY `date_holiday` ASC";
+                                $result = mysqli_query($conn, $query);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $holidayDate = date('Y-m-d', strtotime($row['date_holiday']));
+                                    $holidayDay = date('l', strtotime($row['date_holiday']));
+                                ?>
+                                <div class="son_holiday" style="background-color: #ECECEC;">
+                                    <p><?php echo '<strong style="font-size: 20px; margin-left: 10px;">' . $row['holiday_title'] . '</strong> ' . '<span style="float: right; margin-right: 10px;">' . $holidayDate . '</span>'; ?></p>
+                                    <p><?php echo '<span style="margin-left: 10px;">' . $row['holiday_type'] . '</span> ' . '<span style="float: right; margin-right: 10px;">' . $holidayDay . '</span>'; ?></p>
+                                </div>
+                                <?php
+                                    }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+
+
+                        
+                    </div>
+                </div>    
+
             </div>
         </div>
     </div>
 
+    
+    <!-- Validations -->
+
+   <!-- Modal HTML for Duplicate Group Name -->
+   <div id="duplicateModal" class="modals">
+    <span class="close">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+      <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+            <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+          </div>
+          <h4 class="mt-3">Successfully Updated!</h4>
+        
+      </div>
+      <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes">OK</button>
+    </div>
+</div>
+
+   <!-- Overlay div -->
+<div class="overlay"></div>
+
+<!-- Modal HTML for Successfully Inserted -->
+<div id="insertedModal" class="modals">
+    <span class="close">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+        <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+          <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+        </div>
+        <h4 class="mt-3">Successfully Inserted!</h4>
+       
+    </div>
+    <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes">OK</button>
+    </div>
+</div>
+
+<!-- deleted -->
+<div id="deleteModal" class="modals">
+    <span class="close" id="removeParamButton">&times;</span>
+    <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+      <div class="d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+            <i class="fa-solid fa-trash bouncing-icon" style="font-size: 6em; color: red"></i>
+          </div>
+          <h4 class="mt-3">Successfully Deleted!</h4>
+        
+      </div>
+      <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+        <button class="btn border border-black btn-closes" id="removeParamButton">OK</button>
+    </div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- <script>
-        const buttons = document.querySelectorAll(".req-btn");
-
-         buttons.forEach(button => {
-            button.addEventListener("click", () => {
-                // Remove the "highlight" class from all buttons
-                buttons.forEach(btn => btn.classList.remove("highlight"));
-                                    
-                // Add the "highlight" class to the clicked button
-                button.classList.add("highlight");
-            });
-        });
-    </script> -->
-   
-
-    <!-- <script>
-       const request = document.getElementById("request");
-        const loan = document.getElementById("loan");
-        const table_request = document.getElementById("table_request");
-        const table_loan = document.getElementById("table_loan");
-
-        request.addEventListener('click', () => {
-            table_request.style.display = 'table';
-            table_loan.style.display = 'none';
-        });
-
-        loan.addEventListener('click', () => {
-            table_request.style.display = 'none';
-            table_loan.style.display = 'table';
-        });
-
-    </script> -->
-
-    <!-- //buttons
-    const request = document.getElementById("request");
-    const loan = document.getElementById("loan");
-
-    //tables
-    const table_request = document.getElementById("table_request");
-    const table_loan = document.getElementById("table_loan"); -->
-
-
-
-
-
-<script>
-        const request = document.getElementById("request");
-        const leave = document.getElementById("leave");
-        const loan = document.getElementById("loan");
-        const under = document.getElementById("under");
-        const over = document.getElementById("over");
-        const table_request = document.getElementById("table_request");
-        const tbody_leave = document.getElementById("tbody_leave");
-        const table_loan = document.getElementById("table_loan");
-        const table_under = document.getElementById("table_under");
-        const table_over = document.getElementById("table_over");
-
-        request.addEventListener('click', () => {
-            table_request.style.display = 'table';
-            table_loan.style.display = 'none';
-            table_leave.style.display = 'none';
-            table_under.style.display= 'none';
-            table_over.style.display= 'none';
-            
-            loan.classList.remove("highlight");
-            request.classList.add("highlight");
-            leave.classList.remove("highlight");
-            under.classList.remove("highlight");
-            over.classList.remove("highlight");
-         
-            console.log("clicked");
-        });
-
-         leave.addEventListener('click', () => {
-            table_request.style.display = 'none';
-            table_loan.style.display = 'none';
-            table_leave.style.display = 'table';
-            table_under.style.display= 'none';
-            table_over.style.display= 'none';
-            
-            loan.classList.remove("highlight");
-            request.classList.remove("highlight");
-            leave.classList.add("highlight");
-            under.classList.remove("highlight");
-            over.classList.remove("highlight");
-         
-            console.log("clicked");
-        });
-
-        loan.addEventListener('click', () => {
-            table_request.style.display = 'none';
-            table_loan.style.display = 'table';
-            table_leave.style.display = 'none';
-            table_under.style.display= 'none';
-            table_over.style.display= 'none';
-
-            loan.classList.add("highlight");
-            request.classList.remove("highlight");
-            leave.classList.remove("highlight");
-            under.classList.remove("highlight");
-            over.classList.remove("highlight");
-
-            console.log("clicked");
-        });
-
-        under.addEventListener('click', () => {
-            table_request.style.display = 'none';
-            table_loan.style.display = 'none';
-            table_leave.style.display = 'none';
-            table_under.style.display= 'table';
-            table_over.style.display= 'none';
-
-            loan.classList.remove("highlight");
-            request.classList.remove("highlight");
-            leave.classList.remove("highlight");
-            under.classList.add("highlight");
-            over.classList.remove("highlight");
-
-            console.log("clicked");
-        });
-
-         over.addEventListener('click', () => {
-            table_request.style.display = 'none';
-            table_loan.style.display = 'none';
-            table_leave.style.display = 'none';
-            table_under.style.display= 'none';
-            table_over.style.display= 'table';
-
-            loan.classList.remove("highlight");
-            request.classList.remove("highlight");
-            leave.classList.remove("highlight");
-            under.classList.remove("highlight");
-            over.classList.add("highlight");
-
-            console.log("clicked");
-        });
-        
-    </script>
-
-<script>
-        let btn = document.getElementById("announcement-btn");
-        let modal = document.getElementById("announce-modal");
-
-        btn.addEventListener('click', function(){
-            if (modal.style.display === "none" || modal.style.display === "") {
-                modal.style.display = "block";
-            } else {
-                modal.style.display = "none";
-            }
-        });
-    </script>
-
-<script>
-        let btns = document.getElementById("event-btn");
-        let modals = document.getElementById("event-modal");
-
-        btns.addEventListener('click', function(){
-            if (modals.style.display === "none" || modals.style.display === "") {
-                modals.style.display = "block";
-            } else {
-                modals.style.display = "none";
-            }
-        });
-    </script>
-
-    <script>
-        // JavaScript to count and display the number of <tr> tags in the tbody
-        const tbody = document.getElementById('wfh_table_body');
-        const countSpan = document.getElementById('wfh_count');
-
-        if (tbody && countSpan) {
-            const trCount = tbody.getElementsByTagName('tr').length;
-            countSpan.textContent = trCount;
-        }
-    </script>
 
 
 
@@ -2990,7 +2869,7 @@ $(document).ready(function() {
 <script src="skydash/template.js"></script>
 <script src="skydash/settings.js"></script>
 <script src="skydash/todolist.js"></script>
-<!-- <script src="main.js"></script> -->
+<script src="main.js"></script>
 <script src="bootstrap js/data-table.js"></script>   
 
 <script src="vendors/datatables.net/jquery.dataTables.js"></script>

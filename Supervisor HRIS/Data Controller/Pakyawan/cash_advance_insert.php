@@ -39,21 +39,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         @$dates = $weekValidationRow['date'];
         @$empids = $weekValidationRow['empid'];
 
-        // echo $dates;
+        // echo $dates , "<br>", $endDate;
         // echo "<br>";
         // echo $empids;
 
 
-        if($dates >= $startDate && $dates <= $endDate){
-            header("Location: ../../cash_advance?error");
-            // echo "may mali";
-            exit;
-        } else{
+        // if($dates >= $startDate && $dates <= $endDate){
+        //     // header("Location: ../../cash_advance?errora");
+        //     // echo "may mali";
+        //     exit;
+        // } else{
 
 
         
         if($empid == $validEmpid && $date == $validDate){
-            header("Location: ../../cash_advance?error");
+            // header("Location: ../../cash_advance?errora");
+            echo "<br>";
+            echo $date; 
+            echo "<br>";
+            echo $validDate;
             exit;
         }else{
 
@@ -83,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo $cash_total;
 
             if($cash_advance > $cash_total){
-                header("Location: ../../cash_advance?error");
+                header("Location: ../../cash_advance?errorb");
                 exit;
             }else{
 
@@ -114,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
     }
-}
+// }
 mysqli_close($conn);
 ?>
 

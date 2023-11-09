@@ -30,13 +30,24 @@ if(count($_POST) > 0){
         $emp_img_url = ", emp_img_url='".$_POST['emp_img_url']."'";
     }
 
+    $classification = $_POST['classificaation'];
+
+    if($classification == '3'){
+        $username = NULL; 
+    }else{
+        $username = $_POST['username'];
+    }
+
+
+
+
     $dailyRate_update = intval($_POST['empbsalary']) / 22;
     $dailyRate_update = number_format($dailyRate_update, 2);
     $dailyRate_update = str_replace(',', '', $dailyRate_update); // Remove comma
 
     $SuperProfile = $_FILES['profile_super']['tmp_name'] ? addslashes(file_get_contents($_FILES['profile_super']['tmp_name'])) : '';
 
-    mysqli_query($conn, "UPDATE employee_tb SET fname='".$_POST['fname']."',mname='".$_POST['mname']."', lname='".$_POST['lname']."',payrules='".$_POST['payrules']."',contact='".$_POST['contact']."',cstatus='".$_POST['cstatus']."',gender='".$_POST['gender']."',empdob='".$_POST['empdob']."',empsss='".$_POST['empsss']."',emptin='".$_POST['emptin']."',emppagibig='".$_POST['emppagibig']."',empphilhealth='".$_POST['empphilhealth']."',empbranch='".$_POST['empbranch']."',department_name='".$_POST['department_name']."',empbsalary='".$_POST['empbsalary']."', drate='". $dailyRate_update ."', otrate='".$_POST['otrate']."', empdate_hired='".$_POST['empdate_hired']."',emptranspo='".$_POST['emptranspo']."',empmeal='".$_POST['empmeal']."',empinternet='".$_POST['empinternet']."',empposition='".$_POST['empposition']."', role='".$_POST['role']."',email='".$_POST['email']."', company_email='".$_POST['comp_email']."',sss_amount='".$_POST['sss_amount']."', tin_amount='".$_POST['tin_amount']."', pagibig_amount='".$_POST['pagibig_amount']."', philhealth_amount='".$_POST['philhealth_amount']."', classification='".$_POST['classification']."', bank_name='".$_POST['bank_name']."', bank_number='".$_POST['bank_number']."'".$emp_img_url.", company_code='".$_POST['company_code']."', user_profile = '".$SuperProfile."'
+    mysqli_query($conn, "UPDATE employee_tb SET fname='".$_POST['fname']."',mname='".$_POST['mname']."', lname='".$_POST['lname']."',payrules='".$_POST['payrules']."',contact='".$_POST['contact']."',cstatus='".$_POST['cstatus']."',gender='".$_POST['gender']."',empdob='".$_POST['empdob']."',empsss='".$_POST['empsss']."',emptin='".$_POST['emptin']."',emppagibig='".$_POST['emppagibig']."',empphilhealth='".$_POST['empphilhealth']."',empbranch='".$_POST['empbranch']."',department_name='".$_POST['department_name']."',empbsalary='".$_POST['empbsalary']."', drate='". $dailyRate_update ."', otrate='".$_POST['otrate']."', empdate_hired='".$_POST['empdate_hired']."',emptranspo='".$_POST['emptranspo']."',empmeal='".$_POST['empmeal']."',empinternet='".$_POST['empinternet']."',empposition='".$_POST['empposition']."', role='".$_POST['role']."',email='".$_POST['email']."', company_email='".$_POST['comp_email']."',sss_amount='".$_POST['sss_amount']."', tin_amount='".$_POST['tin_amount']."', pagibig_amount='".$_POST['pagibig_amount']."', philhealth_amount='".$_POST['philhealth_amount']."', classification='".$_POST['classification']."', bank_name='".$_POST['bank_name']."', bank_number='".$_POST['bank_number']."'".$emp_img_url.", company_code='".$_POST['company_code']."', user_profile = '".$SuperProfile."', username = '".$username."'
     WHERE id ='".$_POST['id']."'");
 
     mysqli_query($conn, "UPDATE assigned_company_code_tb SET company_code_id='".$_POST['company_code']."' WHERE empid = '".$_POST['empid']."' ");
@@ -284,6 +295,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                             <div class="emp-list-main">
                                 <div class="emp-info-first-container" style="height: 400px">
                                     <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                                    <input type="hidden" name="" value="<?php echo $row['username']; ?>" id="">
                                     
                                     <div class="emp-fname">
                                         <label for="fname">First Name</label><br>

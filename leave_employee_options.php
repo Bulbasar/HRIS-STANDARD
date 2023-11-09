@@ -36,7 +36,22 @@ if (isset($_POST['department'])) {
 
             $EmployeeId = $rowa['empid'];
 
-            $optionsa .= '<option value="' . $rowa['empid'] . '">' . $rowa['empid'] . " - " . $rowa['fname'] . " " . $rowa['lname'] . '</option>';
+            $getCredits = mysqli_query($conn, "SELECT * FROM leaveinfo_tb WHERE `col_empID` = '$EmployeeId'");
+                    if (mysqli_num_rows($getCredits) > 0) {
+                        $rowcredits = $getCredits->fetch_assoc();
+
+                        $creditsForLeaveType = 0;
+                        if ($selectedLeaveType === 'Vacation Leave') {
+                            $creditsForLeaveType = $rowcredits['col_vctionCrdt'];
+                        } elseif ($selectedLeaveType === 'Sick Leave') {
+                            $creditsForLeaveType = $rowcredits['col_sickCrdt'];
+                        } elseif ($selectedLeaveType === 'Bereavement Leave') {
+                            $creditsForLeaveType = $rowcredits['col_brvmntCrdt'];
+                        }
+                        $optionsa .= '<option value="' . $rowa['empid'] . '">' . $rowa['empid'] . " - " . $rowa['fname'] . " " . $rowa['lname'] . " -  Credits (" . $creditsForLeaveType . ")" . '</option>'; 
+                    }else{
+                        $optionsa .= '<option>' . $rowa['empid'] . " - " . $rowa['fname'] . " " . $rowa['lname'] . ' - No Credits</option>';   
+                    }
         }
         
         echo '<select class="approver-dd" name="empid[]" id="multi_option" multiple placeholder="Select Employee" data-silent-initial-value-set="false" style="display:flex; width: 380px;"> ' . $optionsa . ' </select>';

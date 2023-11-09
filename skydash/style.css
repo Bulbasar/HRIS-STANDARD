@@ -19946,7 +19946,7 @@
     outline: none;
   }
   
-  @font-face {
+  /* @font-face {
     font-family: 'Nunito';
     src: url("../../fonts/Nunito/Nunito-Light.eot");
     src: url("../../fonts/Nunito/Nunito-Light.eot?#iefix") format("embedded-opentype"), url("../../fonts/Nunito/Nunito-Light.woff2") format("woff2"), url("../../fonts/Nunito/Nunito-Light.woff") format("woff"), url("../../fonts/Nunito/Nunito-Light.ttf") format("truetype");
@@ -19977,7 +19977,7 @@
     font-weight: normal;
     font-style: normal;
   }
-  
+   */
   .bg-twitter {
     background: #4747A1;
   }
@@ -20053,7 +20053,7 @@
   /* Typography */
   body {
     font-size: 1rem;
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
     font-weight: initial;
     line-height: normal;
     -webkit-font-smoothing: antialiased;
@@ -20323,7 +20323,7 @@
   code {
     padding: 5px;
     color: #FF4747;
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
     font-weight: 300;
     font-size: 0.875rem;
     border-radius: 4px;
@@ -20343,7 +20343,7 @@
     -webkit-transition: all 0.25s ease;
     -ms-transition: all 0.25s ease;
     font-size: calc(0.875rem - 0.05rem);
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
     font-weight: 400;
     border-top: 1px solid rgba(0, 0, 0, 0.06);
   }
@@ -24261,7 +24261,7 @@
     padding-left: 0;
     position: relative;
     margin-bottom: 0;
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
   }
   
   .icon-data-list li {
@@ -26930,7 +26930,7 @@
   
   .datepicker.datepicker-dropdown .datepicker-days table.table-condensed thead tr th.dow,
   .datepicker.datepicker-inline .datepicker-days table.table-condensed thead tr th.dow {
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
     color: #1F1F1F;
     font-size: 0.875rem;
     font-weight: initial;
@@ -28996,7 +28996,7 @@
   .sidebar {
     min-height: calc(100vh - 60px);
     background: #fff;
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
     font-weight: 500;
     padding: 0;
     width: 235px;
@@ -30838,7 +30838,7 @@
   .settings-panel .settings-heading {
     padding: 16px 0 13px 35px;
     font-size: 0.875rem;
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
     font-weight: 500;
     line-height: 1;
     color: rgba(0, 0, 0, 0.9);
@@ -31033,7 +31033,7 @@
   }
   
   .settings-panel .events p {
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
     font-weight: 400;
   }
   
@@ -51080,7 +51080,7 @@ input:focus {
   outline: none;
 }
 
-@font-face {
+/* @font-face {
   font-family: 'Nunito';
   src: url("../../fonts/Nunito/Nunito-Light.eot");
   src: url("../../fonts/Nunito/Nunito-Light.eot?#iefix") format("embedded-opentype"), url("../../fonts/Nunito/Nunito-Light.woff2") format("woff2"), url("../../fonts/Nunito/Nunito-Light.woff") format("woff"), url("../../fonts/Nunito/Nunito-Light.ttf") format("truetype");
@@ -51110,7 +51110,7 @@ input:focus {
   src: url("../../fonts/Nunito/Nunito-Regular.eot?#iefix") format("embedded-opentype"), url("../../fonts/Nunito/Nunito-Regular.woff2") format("woff2"), url("../../fonts/Nunito/Nunito-Regular.woff") format("woff"), url("../../fonts/Nunito/Nunito-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
-}
+} */
 
 .bg-twitter {
   background: #4747A1;
@@ -51187,7 +51187,7 @@ input:focus {
 /* Typography */
 body {
   font-size: 1rem;
-  font-family: "Nunito", sans-serif;
+  /* font-family: "Nunito", sans-serif; */
   font-weight: initial;
   line-height: normal;
   -webkit-font-smoothing: antialiased;
@@ -51457,7 +51457,7 @@ pre {
 code {
   padding: 5px;
   color: #FF4747;
-  font-family: "Nunito", sans-serif;
+  /* font-family: "Nunito", sans-serif; */
   font-weight: 300;
   font-size: 0.875rem;
   border-radius: 4px;
@@ -51477,7 +51477,7 @@ code {
   -webkit-transition: all 0.25s ease;
   -ms-transition: all 0.25s ease;
   font-size: calc(0.875rem - 0.05rem);
-  font-family: "Nunito", sans-serif;
+  /* font-family: "Nunito", sans-serif; */
   font-weight: 400;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
@@ -55395,7 +55395,7 @@ dl li {
   padding-left: 0;
   position: relative;
   margin-bottom: 0;
-  font-family: "Nunito", sans-serif;
+  /* font-family: "Nunito", sans-serif; */
 }
 
 .icon-data-list li {
@@ -58064,7 +58064,7 @@ table.dataTable tbody td.select-checkbox:after {
 
 .datepicker.datepicker-dropdown .datepicker-days table.table-condensed thead tr th.dow,
 .datepicker.datepicker-inline .datepicker-days table.table-condensed thead tr th.dow {
-  font-family: "Nunito", sans-serif;
+  /* font-family: "Nunito", sans-serif; */
   color: #1F1F1F;
   font-size: 0.875rem;
   font-weight: initial;
@@ -60130,7 +60130,7 @@ div.tagsinput span.tag a {
 .sidebar {
   min-height: calc(100vh - 60px);
   background: #fff;
-  font-family: "Nunito", sans-serif;
+  /* font-family: "Nunito", sans-serif; */
   font-weight: 500;
   padding: 0;
   width: 235px;
@@ -61972,7 +61972,7 @@ div.tagsinput span.tag a {
 .settings-panel .settings-heading {
   padding: 16px 0 13px 35px;
   font-size: 0.875rem;
-  font-family: "Nunito", sans-serif;
+  /* font-family: "Nunito", sans-serif; */
   font-weight: 500;
   line-height: 1;
   color: rgba(0, 0, 0, 0.9);
@@ -62167,7 +62167,7 @@ div.tagsinput span.tag a {
 }
 
 .settings-panel .events p {
-  font-family: "Nunito", sans-serif;
+  /* font-family: "Nunito", sans-serif; */
   font-weight: 400;
 }
 
