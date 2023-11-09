@@ -1135,6 +1135,7 @@ header{
     border-radius: 50%;
     margin-top: 30px;
     border: black 1px solid;
+    background-color: red;
 }
 
 .emp-info{
@@ -1624,9 +1625,9 @@ header{
 }
 
 
-.table td{
+/* .table td{
     font-weight: 700;
-}
+} */
 
 .table td input{
     margin-right: 10px;
@@ -1720,9 +1721,9 @@ header{
 
 /* edit schedule */
 
-.table td{
+/* .table td{
     font-weight: 700;
-}
+} */
 
 .table td input{
     margin-right: 10px;
@@ -2594,13 +2595,13 @@ header{
     padding: 10px;
 }
 
-table th:first-child{
+/* table th:first-child{
     border-radius:10px 0 0 10px;
   }
   
   table th:last-child{
     border-radius:0 10px 10px 0;
-  }
+  } */
 
 
   /* Loan request form */

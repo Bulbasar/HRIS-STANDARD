@@ -39,7 +39,7 @@ if(isset($_POST['yesCorrect'])){
                     $day_of_week = date('l', strtotime($DateDTR));
 
                     if($day_of_week === 'Monday'){
-                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `time_in` = '00:00:00' AND `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                         if($checkAtt && mysqli_num_rows($checkAtt) > 0){
                             $attendrow = mysqli_fetch_assoc($checkAtt);
                             $fetch_timeout = $attendrow['time_out'];
@@ -105,7 +105,7 @@ if(isset($_POST['yesCorrect'])){
                                 $total_work = $total_work_datetime->format('H:i:s');
                             }
 
-                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_in` = '00:00:00' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                             header("Location: ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                         }else{
                             header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -114,7 +114,7 @@ if(isset($_POST['yesCorrect'])){
 
 
                     else if($day_of_week === 'Tuesday'){
-                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `time_in` = '00:00:00' AND `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                         if($checkAtt && mysqli_num_rows($checkAtt) > 0){
                             $attendrow = mysqli_fetch_assoc($checkAtt);
                             $fetch_timeout = $attendrow['time_out'];
@@ -179,7 +179,8 @@ if(isset($_POST['yesCorrect'])){
                                 $total_work_datetime = new DateTime($total_works);
                                 $total_work = $total_work_datetime->format('H:i:s');
                             }
-                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_in` = '00:00:00' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                            
+                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                             header("Location: ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                         }else{
                             header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -187,7 +188,7 @@ if(isset($_POST['yesCorrect'])){
                     } //Close bracket tuesday
 
                     else if($day_of_week === 'Wednesday'){
-                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `time_in` = '00:00:00' AND `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                         if($checkAtt && mysqli_num_rows($checkAtt) > 0){
                             $attendrow = mysqli_fetch_assoc($checkAtt);
                             $fetch_timeout = $attendrow['time_out'];
@@ -253,7 +254,7 @@ if(isset($_POST['yesCorrect'])){
                                 $total_work = $total_work_datetime->format('H:i:s');
                             }
 
-                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_in` = '00:00:00' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                             header("Location: ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                         }else{
                             header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -261,7 +262,7 @@ if(isset($_POST['yesCorrect'])){
                     } //Close bracket Wednesday
 
                     else if($day_of_week === 'Thursday'){
-                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `time_in` = '00:00:00' AND `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                         if($checkAtt && mysqli_num_rows($checkAtt) > 0){
                             $attendrow = mysqli_fetch_assoc($checkAtt);
                             $fetch_timeout = $attendrow['time_out'];
@@ -327,7 +328,7 @@ if(isset($_POST['yesCorrect'])){
                                 $total_work = $total_work_datetime->format('H:i:s');
                             }
 
-                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_in` = '00:00:00' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                             header("Location: ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                         }else{
                             header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -336,7 +337,7 @@ if(isset($_POST['yesCorrect'])){
 
 
                     else if($day_of_week === 'Friday'){
-                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `time_in` = '00:00:00' AND `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                         if($checkAtt && mysqli_num_rows($checkAtt) > 0){
                             $attendrow = mysqli_fetch_assoc($checkAtt);
                             $fetch_timeout = $attendrow['time_out'];
@@ -402,7 +403,7 @@ if(isset($_POST['yesCorrect'])){
                                 $total_work = $total_work_datetime->format('H:i:s');
                             }
 
-                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_in` = '00:00:00' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                             header("Location: ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                         }else{
                             header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -411,7 +412,7 @@ if(isset($_POST['yesCorrect'])){
 
 
                     else if($day_of_week === 'Saturday'){
-                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `time_in` = '00:00:00' AND `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                         if($checkAtt && mysqli_num_rows($checkAtt) > 0){
                             $attendrow = mysqli_fetch_assoc($checkAtt);
                             $fetch_timeout = $attendrow['time_out'];
@@ -477,7 +478,7 @@ if(isset($_POST['yesCorrect'])){
                                 $total_work = $total_work_datetime->format('H:i:s');
                             }
 
-                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_in` = '00:00:00' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                             header("Location: ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                         }else{
                             header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -486,7 +487,7 @@ if(isset($_POST['yesCorrect'])){
 
 
                     else if($day_of_week === 'Sunday'){
-                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `time_in` = '00:00:00' AND `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                        $checkAtt = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                         if($checkAtt && mysqli_num_rows($checkAtt) > 0){
                             $attendrow = mysqli_fetch_assoc($checkAtt);
                             $fetch_timeout = $attendrow['time_out'];
@@ -552,7 +553,7 @@ if(isset($_POST['yesCorrect'])){
                                 $total_work = $total_work_datetime->format('H:i:s');
                             }
 
-                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_in` = '00:00:00' AND `date` = '$DateDTR' AND `time_out` != '00:00:00'");
+                            $updateAtt = mysqli_query($conn,"UPDATE attendances SET `status` = 'Present', `time_in` = '$TimeDTR', `late` = '$late', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                             header("Location: ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                         }else{
                             header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -592,7 +593,7 @@ if(isset($_POST['yesCorrect'])){
                                         $day_of_week = date('l', strtotime($DateDTR));
 
                                         if($day_of_week === 'Monday'){
-                                           $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                           $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                            
                                            if($attquery && mysqli_num_rows($attquery) > 0){
                                               $attrow = $attquery->fetch_assoc();
@@ -670,7 +671,7 @@ if(isset($_POST['yesCorrect'])){
                                                 $total_work = $total_work_datetime->format('H:i:s');
                                             }
 
-                                            $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                            $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                             header("Location ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                                            }else{
                                             header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -678,7 +679,7 @@ if(isset($_POST['yesCorrect'])){
                                         }//Close bracket monday
 
                                         else if($day_of_week === 'Tuesday'){
-                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                             
                                             if($attquery && mysqli_num_rows($attquery) > 0){
                                                $attrow = $attquery->fetch_assoc();
@@ -756,7 +757,7 @@ if(isset($_POST['yesCorrect'])){
                                                  $total_work = $total_work_datetime->format('H:i:s');
                                              }
  
-                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                              header("Location ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                                             }else{
                                              header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -764,7 +765,7 @@ if(isset($_POST['yesCorrect'])){
                                          }//Close bracket Tuesday
 
                                          else if($day_of_week === 'Wednesday'){
-                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                             
                                             if($attquery && mysqli_num_rows($attquery) > 0){
                                                $attrow = $attquery->fetch_assoc();
@@ -842,7 +843,7 @@ if(isset($_POST['yesCorrect'])){
                                                  $total_work = $total_work_datetime->format('H:i:s');
                                              }
  
-                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                              header("Location ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                                             }else{
                                              header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -850,7 +851,7 @@ if(isset($_POST['yesCorrect'])){
                                          }//Close bracket Wednesday
 
                                          else if($day_of_week === 'Thursday'){
-                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                             
                                             if($attquery && mysqli_num_rows($attquery) > 0){
                                                $attrow = $attquery->fetch_assoc();
@@ -928,7 +929,7 @@ if(isset($_POST['yesCorrect'])){
                                                  $total_work = $total_work_datetime->format('H:i:s');
                                              }
  
-                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                              header("Location ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                                             }else{
                                              header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -936,7 +937,7 @@ if(isset($_POST['yesCorrect'])){
                                          }//Close bracket Thursday
 
                                          else if($day_of_week === 'Friday'){
-                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                             
                                             if($attquery && mysqli_num_rows($attquery) > 0){
                                                $attrow = $attquery->fetch_assoc();
@@ -1014,7 +1015,7 @@ if(isset($_POST['yesCorrect'])){
                                                  $total_work = $total_work_datetime->format('H:i:s');
                                              }
  
-                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                              header("Location ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                                             }else{
                                              header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -1022,7 +1023,7 @@ if(isset($_POST['yesCorrect'])){
                                          }//Close bracket Friday
 
                                          else if($day_of_week === 'Saturday'){
-                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                             
                                             if($attquery && mysqli_num_rows($attquery) > 0){
                                                $attrow = $attquery->fetch_assoc();
@@ -1100,7 +1101,7 @@ if(isset($_POST['yesCorrect'])){
                                                  $total_work = $total_work_datetime->format('H:i:s');
                                              }
  
-                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                              header("Location ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                                             }else{
                                              header("Location: ../../dtr_admin.php?error=No attendance found!");
@@ -1109,7 +1110,7 @@ if(isset($_POST['yesCorrect'])){
 
 
                                          else if($day_of_week === 'Sunday'){
-                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                            $attquery = mysqli_query($conn, "SELECT * FROM attendances WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                             
                                             if($attquery && mysqli_num_rows($attquery) > 0){
                                                $attrow = $attquery->fetch_assoc();
@@ -1187,7 +1188,7 @@ if(isset($_POST['yesCorrect'])){
                                                  $total_work = $total_work_datetime->format('H:i:s');
                                              }
  
-                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `time_out` = '00:00:00' AND `date` = '$DateDTR' AND `time_in` != '00:00:00'");
+                                             $upAtt = mysqli_query($conn, "UPDATE attendances SET `time_out` = '$TimeDTR', `early_out` = '$undertime', `overtime` = '$overtimes', `total_work` = '$total_work' WHERE `empid` = '$EmployeeId' AND `date` = '$DateDTR' AND `status` = 'Present'");
                                              header("Location ../../dtr_admin.php?msg=Correction for $DateDTR success!");
                                             }else{
                                              header("Location: ../../dtr_admin.php?error=No attendance found!");

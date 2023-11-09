@@ -1,4 +1,5 @@
 <?php
+
 if($EmpPayRule === 'Fixed Salary'){
     if($Frequency === 'Monthly'){
         $allowance = $TotalAllowanceStandard + $TotaladdAllowance;
@@ -116,5 +117,6 @@ if($EmpPayRule === 'Fixed Salary'){
                 $addTotalGovern = (isset($addallowRow['TotaladdGovern']) && !empty($addallowRow['TotaladdGovern'])) ? ($addallowRow['TotaladdGovern'] / 4) : 0;
 
             }   
-        }  
+        }
+          
 ?>

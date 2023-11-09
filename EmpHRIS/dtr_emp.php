@@ -52,82 +52,6 @@ include 'config.php';
             include 'header.php'
         ?>
 </header>
-
-<style>
-  html{
-    overflow: hidden;
-  }
-  
-  #order-listing_next{
-        margin-top: 20px;
-        margin-right: -1px !important;
-        margin-bottom: -15.5px !important;
-        
-    }
-    
-    #order-listing_wrapper{
-      margin-top: 16px;
-    }
-
-   #order-listing_length{
-    margin-top: 16px;
-   }
-
-    #order-listing_previous{
-        margin-top: 20px;
-        margin-left: 12px !important;
-    }
-    
-    /* Search Bar */
-
-    #order-listing_filter label input{
-        margin-top: 15px;
-        width: 278px;
-        font-size: 17px;
-        
-    }
-
-    /* Sorting Button Color */
-    .dataTables_wrapper .dataTable thead .sorting:before, .dataTables_wrapper .dataTable thead .sorting_asc:before, .dataTables_wrapper .dataTable thead .sorting_desc:before, .dataTables_wrapper .dataTable thead .sorting_asc_disabled:before, .dataTables_wrapper .dataTable thead .sorting_desc_disabled:before {
-        
-        right: 1.2em;
-        bottom: 0;
-        color: #c0c1c2 !important;
-        opacity: 1;
-    } 
-
-    .dataTables_wrapper .dataTable thead .sorting:after, .dataTables_wrapper .dataTable thead .sorting_asc:after, .dataTables_wrapper .dataTable thead .sorting_desc:after, .dataTables_wrapper .dataTable thead .sorting_asc_disabled:after, .dataTables_wrapper .dataTable thead .sorting_desc_disabled:after {
-   
-        right: 1.2em;
-        top: 0;
-        color: #c0c1c2 !important;
-        opacity: 1;
-    }
-    
-    .card-body{
-      width: 98%;
-      box-shadow: 10px 10px 10px 8px #888888;
-    }
-
-    table {
-                display: block;
-                overflow-x: hidden;
-                white-space: nowrap;
-                max-height: 100%;
-                height: 320px;
-                /* border: black 1px solid; */
-                
-            }
-            tbody {
-                display: table;
-                width: 100%;
-            }
-            tr {
-                width: 100% !important;
-                display: table !important;
-                table-layout: fixed !important;
-            }
-</style>
 <!----------------------------------------------Modal Start Here-------------------------------------------------------------->
 
 <div class="modal fade" id="file_dtr_btn" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -144,14 +68,6 @@ include 'config.php';
             <input type="hidden" name="dtr_input_name" id="dtr_input_id">
             <div class="mb-3" style="display: none;">
                 <label for="Select_emp" class="form-label">Employee Name</label>
-                  <?php
-                      include 'config.php'; 
-                      // if(isset($_SESSION['empid'])){ // check if the empid key is set in the session array
-                      //     $empid = $_SESSION['empid'];
-                      // }else{
-                      //     $empid = 'Error'; // set default value to empty string if empid key is not set
-                      // }
-                      ?>
                       <input type="text" class="form-control" name="name_emp" value="<?php echo $_SESSION['empid'];?>" id="empid" readonly>
               </div> <!--mb-3 end--->
 
@@ -162,17 +78,17 @@ include 'config.php';
 
               <div class="mb-3">
                   <label for="exampleInputTime" class="form-label">Time</label>
-                  <input name="time_dtr" type="text" class="form-control" id="time_input" required>
+                  <input name="time_dtr" type="time" class="form-control" id="time_input" required>
               </div>
 
               <div class="mb-3">
                   <label for="disabledSelect" class="form-label">Type</label>
                   <input type="text" name="select_type" id="type_select" class="form-control" required>
-                  <!-- <select name="select_type" id="disabledSelect" class="form-select" required>
+                  <select name="select_type" id="disabledSelect" class="form-select" required>
                       <option value="" disabled="" selected="">Type</option>
                       <option value="IN">IN</option>
                       <option value="OUT">OUT</option>
-                  </select> -->
+                  </select>
               </div>
 
               <div class="mb-3">
@@ -211,9 +127,6 @@ include 'config.php';
             <input type="hidden" name="dtr_view_name" id="dtr_view_id">
             <div class="mb-3" style="display: none;">
                 <label for="Select_emp" class="form-label">Employee Name</label>
-                  <?php
-                      include 'config.php'; 
-                      ?>
                       <input type="text" class="form-control" name="view_name_emp" value="<?php echo $_SESSION['empid'];?>" id="view_empid" readonly>
               </div>
 
@@ -349,130 +262,96 @@ include 'config.php';
 
 
 
-<!-------------------------------------------Style sa card at table--------------------------------------------------------------->
-<style>
 
-</style>
-<!----------------------------------------End Style sa card at table-------------------------------------------------------------->
 
-                        <div class="row">
-                            <div class="col-12 mt-3">
-                             
-                            <div class="table-responsive" id="table-responsiveness" style="width: 98%; margin:auto; margin-top: 30px; overflow-x:hidden">
-                    <table id="order-listing" class="table" style="width: 100%">
-                                      <thead>
-                                            <tr>
-                                                <th style="display: none;">ID</th>
-                                                <th style="display: none;">Employee ID</th>
-                                                <th style="display: none;">Name</th>
-                                                <th style="display: none;">Status</th>
-                                                <th>Date</th>
-                                                <th>Time in</th>
-                                                <th>Time out</th>
-                                                <th>Remarks</th>
-                                                <th>Correction</th>
-                                                <th>Action</th> 
-                                            </tr>
-                                        </thead>
-                                                <?php 
-                                                    $conn = mysqli_connect("localhost","root","","hris_db");
-                                                    $employeeid = $_SESSION['empid'];
+                      <div class="table-responsive mt-5" id="table-responsiveness">
+                        <table id="order-listing" class="table">
+                          <thead>
+                            <tr>
+                                <th style="display: none;">ID</th>
+                                <th style="display: none;">Employee ID</th>
+                                <th>Date</th>
+                                <th>Time in</th>
+                                <th>Time out</th>
+                                <th>Remarks</th>
+                                <th>Correction</th>
+                                <th>Action</th> 
+                            </tr>
+                          </thead>
+                              <?php 
+                                    $employeeid = $_SESSION['empid'];
 
-                                                    date_default_timezone_set('Asia/Manila');
-                                                    $month = date('m');
-                                                    $year = date('Y');
+                                    date_default_timezone_set('Asia/Manila');
 
-                                                    $query = "SELECT attendances.id,
-                                                    attendances.status,
-                                                    attendances.empid,
-                                                    attendances.date,
-                                                    attendances.time_in,
-                                                    attendances.time_out,
-                                                    attendances.late,
-                                                    attendances.early_out,
-                                                    attendances.overtime,
-                                                    attendances.total_work,
-                                                    attendances.total_rest,
-                                                    CONCAT(employee_tb.`fname`, ' ', employee_tb.`lname`) AS `full_name`
-                                                FROM attendances
-                                                INNER JOIN employee_tb ON employee_tb.empid = attendances.empid
-                                                WHERE attendances.empid = '$employeeid'
-                                                    AND MONTH(attendances.date) = '$month'
-                                                    AND YEAR(attendances.date) = '$year'
-                                                    AND (
-                                                        (attendances.time_in = '00:00:00' AND attendances.time_out <> '00:00:00')
-                                                        OR (attendances.time_in <> '00:00:00' AND attendances.time_out = '00:00:00')
-                                                    )";
+                                    $currentMonthYear = date('Y-m');
 
-                                                  $result = mysqli_query($conn, $query);
-                                                  while ($row = mysqli_fetch_assoc($result)) {              
-                                                    $dtrStatus = '';
+                                    $query = "SELECT attendances.id,
+                                    attendances.empid,
+                                    attendances.date,
+                                    attendances.time_in,
+                                    attendances.time_out,
+                                    CONCAT(employee_tb.`fname`, ' ', employee_tb.`lname`) AS `full_name`
+                                    FROM attendances
+                                    INNER JOIN employee_tb ON employee_tb.empid = attendances.empid
+                                    WHERE attendances.empid = '$employeeid'
+                                    AND DATE_FORMAT(attendances.date, '%Y-%m') = '$currentMonthYear'
+                                    AND (attendances.time_in = '00:00:00' OR attendances.time_out = '00:00:00')";
 
-                                                    $dtrQuery = "SELECT * FROM emp_dtr_tb WHERE `empid` = '$employeeid' AND `date` = '".$row['date']."'";
-                                                    $DtrRun = mysqli_query($conn, $dtrQuery);
-                                            
-                                                    if(mysqli_num_rows($DtrRun) > 0){
-                                                        $dtrRow = mysqli_fetch_assoc($DtrRun);
-                                                        $dtrID = $dtrRow['id'];
-                                                        $dtrEmpid = $dtrRow['empid'];
-                                                        $dtrDate = $dtrRow['date'];
-                                                        $dtrTime = $dtrRow['time'];
-                                                        $dtrType = $dtrRow['type'];
-                                                        $dtrReason = $dtrRow['reason'];
-                                                        $dtrFile = $dtrRow['file_attach'];
-                                                        $dtrStatus = $dtrRow['status'];
-                                                    }  
+                                    $result = mysqli_query($conn, $query);
+                                    while ($row = mysqli_fetch_assoc($result)) {    
 
-                                                  ?>
-                                                <tr>
-                                                    <td style="display: none;"><?php echo $row['id']?></td>
-                                                    <td style="display: none;"><?php $cmpny_code = $cmpny_row['company_code_name'] ?? null;
-                                                    $empid = $row['empid'];
-                                                    if (!empty($cmpny_code)) {
-                                                        echo $cmpny_code . " - " . $empid;
-                                                    } else {
-                                                        echo $empid;
-                                                    } ?></td>
-                                                    <td style="display: none;"><?php echo $row['full_name']?></td>
-                                                    <td style="display: none;"><?php echo $row['status']?></td>
-                                                    <td><?php echo $row['date']?></td>
-                                                    <td <?php if ($row['time_in'] == '00:00:00') {echo 'style="color:red;"';}?>><?php echo $row['time_in']?></td>
-                                                    <td <?php if ($row['time_out'] == '00:00:00') {echo 'style="color:red;"';}?>><?php echo $row['time_out']?></td>
-                                                    <td <?php if($row['time_in'] == '00:00:00' || $row['time_out'] == '00:00:00' || $row['late'] != '00:00:00') {echo ' style="color:red;"';} ?>>
-                                                        <?php if($row['time_in'] == '00:00:00') {echo 'NO TIME IN ';} ?>
-                                                        <?php if($row['time_out'] == '00:00:00') {echo 'NO TIME OUT';} ?>
-                                                    </td>
-                                                    <td>
-                                                      <?php if (!empty($dtrStatus)): ?>
-                                                          <button class="btn btn-outline-success viewfiledtr" data-bs-toggle="modal" data-bs-target="#view_file_dtr" title="View Details">View DTR</button>
-                                                      <?php else: ?>
-                                                          <button class="btn btn-outline-primary viewdtr" data-bs-toggle="modal" data-bs-target="#file_dtr_btn" title="Edit">File DTR</button>
-                                                      <?php endif; ?>
-                                                    </td>
+                                    $remarks_time_in = ($row['time_in'] === '00:00:00') ? '<span style="color:red;">NO TIME IN</span>' : 'N/A';
+                                    $remarks_time_out = ($row['time_out'] === '00:00:00') ? '<span style="color:red;">NO TIME OUT</span>' : 'N/A';
+                                    $remarks = ($row['time_in'] === '00:00:00') ? $remarks_time_in : $remarks_time_out;          
 
-                                                    <td>
-                                                    <?php if ($dtrStatus === 'Approved' || $dtrStatus === 'Rejected' || $dtrStatus === 'Cancelled' || empty($dtrStatus)): ?>
-                                                      <button class="btn btn-outline-danger cancelbtn" data-bs-toggle="modal" data-bs-target="#cancelmodal" type="button" class="btn btn-outline-danger" style="display: none;" disabled>Cancel</button>
-                                                      <?php else: ?>
-                                                      <button class="btn btn-outline-danger cancelbtn" data-bs-toggle="modal" data-bs-target="#cancelmodal" type="button" class="btn btn-outline-danger">Cancel</button>
-                                                      <?php endif; ?>
-                                                    </td>
-                                                </tr>
-                                                <?php
-                                                    } 
-                                                ?>
-                                    </table>
-                                </div>
-                            </div>
-                        </div><!----Close tag of row in table----->
+                                    $dtrQuery = "SELECT * FROM emp_dtr_tb WHERE `empid` = '$employeeid' AND `date` = '".$row['date']."'";
+                                    $DtrRun = mysqli_query($conn, $dtrQuery);
 
+                                    if(mysqli_num_rows($DtrRun) > 0){
+                                      $dtrRow = mysqli_fetch_assoc($DtrRun);
+                                      $dtrID = $dtrRow['id'];
+                                      $dtrEmpid = $dtrRow['empid'];
+                                      $dtrDate = $dtrRow['date'];
+                                      $dtrTime = $dtrRow['time'];
+                                      $dtrType = $dtrRow['type'];
+                                      $dtrReason = $dtrRow['reason'];
+                                      $dtrFile = $dtrRow['file_attach'];
+                                      $dtrStatus = $dtrRow['status'];
+                                   }  
+                                    
+                                  ?>
+                                  <tr>
+                                      <td style="display: none; font-weight: 400;"><?php echo $row['id']?></td>
+                                      <td style="display: none; font-weight: 400;"><?php echo $employeeid?></td>
+                                      <td style="font-weight: 400;"><?php echo $row['date']?></td>
+                                      <td style="font-weight: 400; <?php if($row['time_in'] === '00:00:00') echo 'color:red;' ?>"><?php echo $row['time_in']?></td>
+                                      <td style="font-weight: 400; <?php if($row['time_out'] === '00:00:00') echo 'color:red;' ?>"><?php echo $row['time_out']?></td>
+                                      <td style="font-weight: 400; <?php if($remarks === '<span style="color:red;">NO TIME IN</span>' || $remarks === '<span style="color:red;">NO TIME OUT</span>') echo 'color:red;' ?>"><?php echo $remarks?></td>
+                                      <td style="font-weight: 400;">
+                                            <?php if (!empty($dtrStatus)): ?>
+                                              <button class="btn btn-outline-success viewfiledtr" data-bs-toggle="modal" data-bs-target="#view_file_dtr" title="View Details">View DTR</button>
+                                            <?php else: ?>
+                                                <button class="btn btn-outline-primary viewdtr" data-bs-toggle="modal" data-bs-target="#file_dtr_btn" title="Edit">File DTR</button>
+                                            <?php endif; ?>
+                                      </td>
+                                      <td style="font-weight: 400;"></td>
+                                  </tr>
+                              <?php
+                                    }
+                                ?>
+                        </table>
+                      </div>
+
+
+
+                        
                 </div><!----Close tag of Main Panel----->
             </div>
         </div>
     </div>
 
 <!-------------------------------Script bawat pagclick ng file dtr---------------------------------------->        
-<script> 
+<script>
     $(document).ready(function(){
         $('.viewdtr').on('click', function(){
             $tr = $(this).closest('tr');
@@ -481,28 +360,28 @@ include 'config.php';
             }).get();
             console.log(data);
             $('#dtr_input_id').val(data[0]);
-            $('#date_input').val(data[4]);
+            $('#date_input').val(data[2]);
 
-            //auto fetch ng value sa time input kung time in ba ang need ng correction or time out
-            if (data[5] === '00:00:00' && data[6] !== '00:00:00') {
-                $('#time_input').val(data[5]);
-            } else if (data[5] !== '00:00:00' && data[6] === '00:00:00') {
-                $('#time_input').val(data[6]);
-            } else if(data[7] !== '00:00:00' && data[5] !== '00:00:00' && data[6] !== '00:00:00') {
-                $('#time_input').val(data[5]);
+            // Check for the value 00:00:00 and handle it accordingly
+            if (data[3] === '00:00:00' && data[4] !== '00:00:00') {
+                $('#time_input').val('00:00:00');
+            } else if (data[3] !== '00:00:00' && data[4] === '00:00:00') {
+                $('#time_input').val('00:00:00');
+            } else if(data[3] !== '00:00:00' && data[4] !== '00:00:00') {
+                $('#time_input').val(data[3]);
             }
             
-            //auto fetch ng value sa type dtr kung IN or OUT
-            if (data[5] === '00:00:00' && data[6] !== '00:00:00') {
+            if (data[3] === '00:00:00' && data[4] !== '00:00:00') {
                 $('#type_select').val('IN');
-            } else if (data[5] !== '00:00:00' && data[6] === '00:00:00') {
+            } else if (data[3] !== '00:00:00' && data[4] === '00:00:00') {
                 $('#type_select').val('OUT');
-            } else if(data[7] !== '00:00:00' && data[5] !== '00:00:00' && data[6] !== '00:00:00') {
+            } else if(data[3] !== '00:00:00' && data[4] !== '00:00:00') {
                 $('#type_select').val('IN');
             }
         });
     });
 </script>
+
 <!-----------------------------Script bawat pagclick ng file dtr------------------------------------->    
 
 <!------------------------------------Script para sa whole view data ng request sa modal------------------------------------------------->

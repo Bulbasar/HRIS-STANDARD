@@ -12,13 +12,6 @@ if($employeeQuery->num_rows > 0){
     $EmpStatus = $row_emp['status'];
     $EmpPayRule = $row_emp['payrules'];
     $Classification = $row_emp['classification'];
-    $Transport = isset($row_emp['emptranspo']) && !empty($row_emp['emptranspo']) ? $row_emp['emptranspo'] : 0;
-    $Meal = isset($row_emp['empmeal']) && !empty($row_emp['empmeal']) ? $row_emp['empmeal'] : 0;
-    $Internet = isset($row_emp['empinternet']) && !empty($row_emp['empinternet']) ? $row_emp['empinternet'] : 0;
-    $Sss = isset($row_emp['sss_amount']) && !empty($row_emp['sss_amount']) ? $row_emp['sss_amount'] : 0;
-    $Tin = isset($row_emp['tin_amount']) && !empty($row_emp['tin_amount']) ? $row_emp['tin_amount'] : 0;
-    $PagIbig = isset($row_emp['pagibig_amount']) && !empty($row_emp['pagibig_amount']) ? $row_emp['pagibig_amount'] : 0;
-    $Philhealth = isset($row_emp['philhealth_amount']) && !empty($row_emp['philhealth_amount']) ? $row_emp['philhealth_amount'] : 0;
 
     $LateTotalDeduction = 0;
     @$MONDAY_TO_DEDUCT_LATE_hours = 0;

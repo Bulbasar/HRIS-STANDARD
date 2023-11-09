@@ -1,0 +1,536 @@
+.multiselect-dropdown{
+    width: 400px !important;
+    margin-left: 20px !important;
+    padding: 10px !important;
+}
+
+.multiselect-dropdown-all-selector label{
+background-color: white;
+}
+
+.multiselect-dropdown-all-selector{
+    
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.multiselect-dropdown-list div{
+
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.multiselect-dropdown-list div label{
+    background-color: white;
+}
+.placeholder{
+    display: none !important;
+    cursor: default !important;
+    background-color: #fff !important;
+    color: #fff !important;
+    display:none !important;
+    
+}
+
+.multiselect-dropdown-list-wrapper span.placeholder{
+    display: none !important;
+    cursor: default !important;
+    background-color: #fff !important;
+    color: #fff !important;
+    display:none !important; 
+}
+.multiselect-dropdown{
+    height: 40px !important; 
+    width: 100% !important;
+    margin-left: 0 !important;
+    border: #CED4DA 1px solid !important;
+
+}
+
+#multi_option{
+        max-width: 100%;
+        width: 100%;
+}
+#multi_options{
+    max-width: 100%;
+    width: 100%;
+}
+
+.dropdown{
+    background-color: inherit !important;
+    border: none !important;
+}
+#notificationDropdown:hover{
+    background-color: inherit !important;
+}
+
+/* Style for the overlay */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    z-index: 999; /* Ensure overlay is on top */
+}
+
+.modals {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    z-index: 9999; /* Ensure modal is on top of the overlay */
+    height: 33%;
+    width: 25%;
+    border-radius: 0.5em;
+    animation: delayAndFadeIn 0.8s ease-in-out forwards; /* Delay and then fade in */
+}
+
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border-top: none;
+  }
+  
+.pagination{
+    margin-right: 74px !important;
+        
+}
+
+.sorting_asc{
+    color: black !important;
+}
+
+.pagination li a{
+    color: #c37700;
+}
+
+.page-item.active .page-link, .jsgrid .jsgrid-pager .active.jsgrid-pager-nav-button .page-link, .jsgrid .jsgrid-pager .active.jsgrid-pager-page .page-link, .page-item.active .jsgrid .jsgrid-pager .jsgrid-pager-nav-button a, .jsgrid .jsgrid-pager .jsgrid-pager-nav-button .page-item.active a, .jsgrid .jsgrid-pager .active.jsgrid-pager-nav-button a, .page-item.active .jsgrid .jsgrid-pager .jsgrid-pager-page a, .jsgrid .jsgrid-pager .jsgrid-pager-page .page-item.active a, .jsgrid .jsgrid-pager .active.jsgrid-pager-page a {
+    z-index: 3;
+    color: #fff;
+    background-color: #000;
+    border-color: #000;
+}
+
+#order-listing_next{
+    margin-right: 28px !important;
+    margin-bottom: -16px !important;
+}    
+
+    
+/* Style for the close button */
+.modals .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+@keyframes delayAndFadeIn {
+0% {
+    opacity: 0;
+}
+100% {
+    opacity: 1;
+}
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-20px);
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Apply the bouncing animation to the icon */
+.bouncing-icon {
+    animation: bounce 2s infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    /* 15% {
+        transform: rotate(180deg);
+    }
+    30%{
+        transform: rotate(280deg);
+    } */
+    70%{
+        transform: rotate(359deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#insertedModal .rotating-icon {
+    animation: rotate 2.5s infinite; /* 0.5 seconds rotation + 3 seconds pause */
+}
+
+.btn-cutoff{
+    padding: 15px;
+    background-color: #C37700;
+    border-radius: 4px;
+    border: none;
+    color: white;
+    font-family: Poppins, 'Source Sans Pro';
+}
+
+.main-box-containers{
+    height: calc(100% - 50px);
+    padding: 10px;   
+}
+
+.box-contents{
+    border: 1px solid #DDDDDD;
+    border-radius: 6px;
+    height: 100%;
+    width: 100%; 
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.cutoff-box-contents {
+    width: 40%;
+    height: 250px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: #F6F7F7;
+    border: 1px solid #DAE2E2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.month-and-button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* idagdag ito upang magkaroon ng puwang sa kaliwa at kanan */
+    padding: 10px;
+    font-family: Poppins, 'Source Sans Pro';
+    font-size: 1.5rem;
+}
+
+.box-for-dateperiod {
+    height: 70%;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+.rectangle-dateperiod{
+    border: 1px solid #DAE2E2;
+    height: 90%;
+    width: 100%;
+    background-color: #FFFFFF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center; 
+}
+
+.rectangle-dateperiod .calendar-dateperiod{
+    font-family: Poppins, 'Source Sans Pro';
+    font-size: 1.3rem;
+    color: #858585;
+}
+
+.threedots{
+    cursor: pointer;
+}
+
+.rectangle-dateperiod .startdate-enddate{
+    font-family: Poppins, 'Source Sans Pro';
+    font-size: 1.3rem;
+}
+
+.body-clone {
+    height: 550px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.header-bodyof-modal {
+    height: 20%;
+    display: flex;
+}
+
+.slash-id-empname, .paydates-container, .employeestatus-container {
+    flex: 1;
+}
+
+.slash-id-empname {
+    /* display: flex;
+    justify-content: space-between; */
+    margin-bottom: 10px;
+    margin-right: 15px;
+}
+
+.tabless{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tabless td {
+    border: 1px solid #DAE2E2;
+    font-family: Poppins, 'Source Sans Pro';
+    padding: 10px;
+    font-weight: normal;
+    width: 50%;
+}
+
+
+.tabless th {
+    border: 1px solid #DAE2E2;
+    font-family: Poppins, 'Source Sans Pro';
+    padding: 10px;
+    font-weight: lighter;
+    background-color: #F6F6F6;
+    width: 50%;
+}
+
+
+.paydates-container{
+    /* display: flex;
+    justify-content: space-between; */
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+
+.tablesss{
+    border-collapse: collapse;
+    width: 100%;    
+}
+
+.tablesss td {
+    border: 1px solid #DAE2E2;
+    font-family: Poppins, 'Source Sans Pro';
+    padding: 10px;
+    width: 70%;
+}
+
+.tablesss th {
+    border: 1px solid #DAE2E2;
+    font-family: Poppins, 'Source Sans Pro';
+    padding: 10px;
+    font-weight: lighter;
+    background-color: #F6F6F6;
+    width: 30%;
+}
+
+
+.employeestatus-container{
+    /* display: flex;
+    justify-content: space-between; */
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+
+.tablessss{
+    border-collapse: collapse;
+    width: 100%;    
+}
+
+.tablessss td {
+    border: 1px solid #DAE2E2;
+    font-family: Poppins, 'Source Sans Pro';
+    padding: 10px;
+    width: 50%;
+}
+
+.tablessss th {
+    border: 1px solid #DAE2E2;
+    font-family: Poppins, 'Source Sans Pro';
+    padding: 10px;
+    font-weight: lighter;
+    background-color: #F6F6F6;
+    width: 50%;
+}
+
+.table-side-contains {
+    height: 80%;
+    display: flex;
+}
+
+.left-maincontainers {
+    flex: 1;
+    margin-top: 20px;
+    border-right: 0.5px solid #8d8989;
+}
+
+.leftheads{
+    display: flex;
+    justify-content: space-between;
+    background-color: #F6F6F6;
+    padding: 10px;
+    font-family: Poppins, 'Source Sans Pro';
+    border-bottom: 1px solid black;
+}
+
+.lefttable-contents{
+    height: 80%;
+    display: flex;
+}
+
+.monthtagging{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    text-transform: uppercase;
+    font-family: Poppins, 'Source Sans Pro';
+}
+
+
+.basicpay-value{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-transform: uppercase;
+    font-family: Poppins, 'Source Sans Pro';
+    text-align: right;
+    padding-right: 50px;
+}
+
+.monthtagging, 
+.basicpay-value, p{
+    font-size: 0.8rem;
+}
+
+.lefttable-footer{
+    background-color: #F6F6F6;  
+    height: 8%;
+    display: flex;
+    justify-content: space-around;
+    text-transform: uppercase;
+    font-family: Poppins, 'Source Sans Pro';
+    padding: 8px;
+}
+
+.middle-maincontainers{
+    flex: 1;
+    margin-top: 20px;
+    border-right: 0.5px solid #8d8989;
+}
+
+.midheads{
+    display: flex;
+    justify-content: space-between;
+    background-color: #F6F6F6;
+    padding: 10px;
+    font-family: Poppins, 'Source Sans Pro';
+    border-bottom: 1px solid black;
+}
+
+.midtable-contents{
+    display: flex;
+    height: 80%;
+}
+
+.midmonth-tag,
+.latevalue,
+.absencevalue,
+.utvalue {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-transform: uppercase;
+    font-family: Poppins, 'Source Sans Pro';
+    text-align: center;
+}
+
+.midmonth-tag p{
+    font-size: 0.8rem;
+}
+
+.latevalue p{
+    font-size: 0.8rem;
+}
+
+.absencevalue p{
+    font-size: 0.8rem;
+}
+
+.utvalue p{
+    font-size: 0.8rem;
+}
+
+
+.midtable-footer{
+    background-color: #F6F6F6;  
+    height: 8%;
+    display: flex;
+    justify-content: space-around;
+    text-transform: uppercase;
+    font-family: Poppins, 'Source Sans Pro';
+    padding: 8px;
+}
+
+
+.right-maincontainers{
+    flex: 1;
+    margin-top: 20px;
+}
+
+.rightheads{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F6F6F6;
+    padding: 10px;
+    font-family: Poppins, 'Source Sans Pro';
+    border-bottom: 1px solid black;
+}
+
+.righttable-contents{
+    display: flex;
+    height: 80%;
+}
+
+.earn-deduct-tag {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    text-transform: uppercase;
+    font-family: Poppins, 'Source Sans Pro';
+}
+
+.earn-deduct-value{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-transform: uppercase;
+    font-family: Poppins, 'Source Sans Pro';
+    text-align: right;
+    padding-right: 50px;
+}
+
+.rightfooter{
+    background-color: #F6F6F6;  
+    height: 8%;
+    display: flex;
+    justify-content: space-around;
+    text-transform: uppercase;
+    font-family: Poppins, 'Source Sans Pro';
+    padding: 8px;
+}

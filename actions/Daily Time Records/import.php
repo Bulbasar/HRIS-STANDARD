@@ -63,6 +63,9 @@ if(isset($_POST['importSubmit'])){
                         $col_saturday_timeout =  $row_sched_tb['sat_timeout'];
                         $col_sunday_timeout =  $row_sched_tb['sun_timeout'];
                         $col_grace_period = $row_sched_tb['grace_period'];
+                        $Able_OT = $row_sched_tb['enable_sched_ot'];
+                        $OT_time = $row_sched_tb['sched_ot'];
+
 
                         $day_of_week = date('l', strtotime($date)); // get the day of the week using the "l" format specifier 
 
@@ -85,9 +88,18 @@ if(isset($_POST['importSubmit'])){
                             }
                             
                             if (empty($time_in) && !empty($time_out)) {
-                                continue; // Skip this record
+                                $time_in = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
+
                             } else if (!empty($time_in) && empty($time_out)) {
-                                continue; // Skip this record
+                                $time_out = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && !empty($time_out)) {
                                 if ($time_in_datetime < $lunchbreak_start_converted) {
                                     if ($time_in_datetime <= $grace_period_total) {
@@ -105,6 +117,7 @@ if(isset($_POST['importSubmit'])){
                                     $late = $late_datetime->format('H:i:s');
                                 }
 
+
                                 if ($time_out < $col_monday_timeout) {
                                     $time_out_datetime = new DateTime($time_out);
                                     $scheduled_time = new DateTime($col_monday_timeout);
@@ -114,36 +127,45 @@ if(isset($_POST['importSubmit'])){
                                     $undertime = "00:00:00";
                                 }
 
-                                if ($time_out > $col_monday_timeout) {
-                                    $time_out_datetime = new DateTime($time_out);
-                                    $scheduled_timeout = new DateTime( $col_monday_timeout);
-                                    $intervals = $time_out_datetime->diff($scheduled_timeout);
-                                    $overtime = $intervals->format('%h:%i:%s');
+                                if (!empty($OT_time) || $OT_time !== null) {
+                                    $ot_period_minutes = isset($row_sched_tb['sched_ot']) ? $row_sched_tb['sched_ot'] : 0; // Retrieve enable OT from $time array or set to 0 if not available
+                                    
+                                    if ($ot_period_minutes > 0) {
+                                        $ot_period_interval = new DateInterval('PT' . $ot_period_minutes . 'M');
+                                        $AddTimeOut_OTperiod = $time_out_datetime->add($ot_period_interval)->format('H:i:s');  
+                                    }
+
+                                    if($time_out_datetime > $lunchbreak_start_converted){
+                                        if ($timeout > $AddTimeOut_OTperiod) {
+                                            $time_out_datetime = new DateTime($time_out);
+                                            $Overtime_timeout = new DateTime($AddTimeOut_OTperiod);
+                                            $intervals = $time_out_datetime->diff($Overtime_timeout);
+                                            $overtime = $intervals->format('%h:%i:%s');
+                                            $addtime_out = $time_out_datetime;
+                                        } else {
+                                            $addtime_out = $scheduled_timeout;
+                                            $overtime = "00:00:00";
+                                        }
+                                    } else {
+                                        $addtime_out = $time_out_datetime;
+                                    }
                                 } else {
-                                    $overtime = '00:00:00';
+                                    $addtime_out = $scheduled_timeout;
+                                    $overtime = "00:00:00";
                                 }
 
-                                if($time_out_datetime > $lunchbreak_start_converted){
-                                    if($time_out != $col_monday_timeout){
-                                        $addtime_out = $time_out_datetime;
-                                    }else{
-                                        $addtime_out = $scheduled_timeout;
-                                    }
+                                if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
+                                    $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
+                                    // Subtract 1 hour from total work
+                                    $total_work_datetime = new DateTime($total_works);
+                                    $total_work_datetime->sub(new DateInterval('PT1H'));
+                                    $total_work = $total_work_datetime->format('H:i:s');
                                 }else{
-                                    $addtime_out = $time_out_datetime;
+                                    $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
+                                    //Remove Subtract 1 hour from total work
+                                    $total_work_datetime = new DateTime($total_works);
+                                    $total_work = $total_work_datetime->format('H:i:s');
                                 }
-                                    if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
-                                        $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
-                                        // Subtract 1 hour from total work
-                                        $total_work_datetime = new DateTime($total_works);
-                                        $total_work_datetime->sub(new DateInterval('PT1H'));
-                                        $total_work = $total_work_datetime->format('H:i:s');
-                                    }else{
-                                        $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
-                                        //Remove Subtract 1 hour from total work
-                                        $total_work_datetime = new DateTime($total_works);
-                                        $total_work = $total_work_datetime->format('H:i:s');
-                                    }
                             }
                         } //Close bracket Monday
 
@@ -166,9 +188,17 @@ if(isset($_POST['importSubmit'])){
                             }
                             
                             if (empty($time_in) && !empty($time_out)) {
-                                continue; // Skip this record
+                                $time_in = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && empty($time_out)) {
-                                continue; // Skip this record
+                                $time_out = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && !empty($time_out)) {
                                 if ($time_in_datetime < $lunchbreak_start_converted) {
                                     if ($time_in_datetime <= $grace_period_total) {
@@ -195,36 +225,45 @@ if(isset($_POST['importSubmit'])){
                                     $undertime = "00:00:00";
                                 }
 
-                                if ($time_out > $col_tuesday_timeout) {
-                                    $time_out_datetime = new DateTime($time_out);
-                                    $scheduled_timeout = new DateTime( $col_tuesday_timeout);
-                                    $intervals = $time_out_datetime->diff($scheduled_timeout);
-                                    $overtime = $intervals->format('%h:%i:%s');
+                                if (!empty($OT_time) || $OT_time !== null) {
+                                    $ot_period_minutes = isset($row_sched_tb['sched_ot']) ? $row_sched_tb['sched_ot'] : 0; // Retrieve enable OT from $time array or set to 0 if not available
+                                    
+                                    if ($ot_period_minutes > 0) {
+                                        $ot_period_interval = new DateInterval('PT' . $ot_period_minutes . 'M');
+                                        $AddTimeOut_OTperiod = $time_out_datetime->add($ot_period_interval)->format('H:i:s');  
+                                    }
+
+                                    if($time_out_datetime > $lunchbreak_start_converted){
+                                        if ($timeout > $AddTimeOut_OTperiod) {
+                                            $time_out_datetime = new DateTime($time_out);
+                                            $Overtime_timeout = new DateTime($AddTimeOut_OTperiod);
+                                            $intervals = $time_out_datetime->diff($Overtime_timeout);
+                                            $overtime = $intervals->format('%h:%i:%s');
+                                            $addtime_out = $time_out_datetime;
+                                        } else {
+                                            $addtime_out = $scheduled_timeout;
+                                            $overtime = "00:00:00";
+                                        }
+                                    } else {
+                                        $addtime_out = $time_out_datetime;
+                                    }
                                 } else {
-                                    $overtime = '00:00:00';
+                                    $addtime_out = $scheduled_timeout;
+                                    $overtime = "00:00:00";
                                 }
 
-                                if($time_out_datetime > $lunchbreak_start_converted){
-                                    if($time_out != $col_tuesday_timeout){
-                                        $addtime_out = $time_out_datetime;
-                                    }else{
-                                        $addtime_out = $scheduled_timeout;
-                                    }
+                                if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
+                                    $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
+                                    // Subtract 1 hour from total work
+                                    $total_work_datetime = new DateTime($total_works);
+                                    $total_work_datetime->sub(new DateInterval('PT1H'));
+                                    $total_work = $total_work_datetime->format('H:i:s');
                                 }else{
-                                    $addtime_out = $time_out_datetime;
+                                    $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
+                                    //Remove Subtract 1 hour from total work
+                                    $total_work_datetime = new DateTime($total_works);
+                                    $total_work = $total_work_datetime->format('H:i:s');
                                 }
-                                    if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
-                                        $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
-                                        // Subtract 1 hour from total work
-                                        $total_work_datetime = new DateTime($total_works);
-                                        $total_work_datetime->sub(new DateInterval('PT1H'));
-                                        $total_work = $total_work_datetime->format('H:i:s');
-                                    }else{
-                                        $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
-                                        //Remove Subtract 1 hour from total work
-                                        $total_work_datetime = new DateTime($total_works);
-                                        $total_work = $total_work_datetime->format('H:i:s');
-                                    }
                             }
                         } //Close bracket Tuesday
 
@@ -247,9 +286,17 @@ if(isset($_POST['importSubmit'])){
                             }
                             
                             if (empty($time_in) && !empty($time_out)) {
-                                continue; // Skip this record
+                                $time_in = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && empty($time_out)) {
-                                continue; // Skip this record
+                                $time_out = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && !empty($time_out)) {
                                 if ($time_in_datetime < $lunchbreak_start_converted) {
                                     if ($time_in_datetime <= $grace_period_total) {
@@ -276,36 +323,45 @@ if(isset($_POST['importSubmit'])){
                                     $undertime = "00:00:00";
                                 }
 
-                                if ($time_out > $col_wednesday_timeout) {
-                                    $time_out_datetime = new DateTime($time_out);
-                                    $scheduled_timeout = new DateTime( $col_wednesday_timeout);
-                                    $intervals = $time_out_datetime->diff($scheduled_timeout);
-                                    $overtime = $intervals->format('%h:%i:%s');
+                                if (!empty($OT_time) || $OT_time !== null) {
+                                    $ot_period_minutes = isset($row_sched_tb['sched_ot']) ? $row_sched_tb['sched_ot'] : 0; // Retrieve enable OT from $time array or set to 0 if not available
+                                    
+                                    if ($ot_period_minutes > 0) {
+                                        $ot_period_interval = new DateInterval('PT' . $ot_period_minutes . 'M');
+                                        $AddTimeOut_OTperiod = $time_out_datetime->add($ot_period_interval)->format('H:i:s');  
+                                    }
+
+                                    if($time_out_datetime > $lunchbreak_start_converted){
+                                        if ($timeout > $AddTimeOut_OTperiod) {
+                                            $time_out_datetime = new DateTime($time_out);
+                                            $Overtime_timeout = new DateTime($AddTimeOut_OTperiod);
+                                            $intervals = $time_out_datetime->diff($Overtime_timeout);
+                                            $overtime = $intervals->format('%h:%i:%s');
+                                            $addtime_out = $time_out_datetime;
+                                        } else {
+                                            $addtime_out = $scheduled_timeout;
+                                            $overtime = "00:00:00";
+                                        }
+                                    } else {
+                                        $addtime_out = $time_out_datetime;
+                                    }
                                 } else {
-                                    $overtime = '00:00:00';
+                                    $addtime_out = $scheduled_timeout;
+                                    $overtime = "00:00:00";
                                 }
 
-                                if($time_out_datetime > $lunchbreak_start_converted){
-                                    if($time_out != $col_wednesday_timeout){
-                                        $addtime_out = $time_out_datetime;
-                                    }else{
-                                        $addtime_out = $scheduled_timeout;
-                                    }
+                                if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
+                                    $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
+                                    // Subtract 1 hour from total work
+                                    $total_work_datetime = new DateTime($total_works);
+                                    $total_work_datetime->sub(new DateInterval('PT1H'));
+                                    $total_work = $total_work_datetime->format('H:i:s');
                                 }else{
-                                    $addtime_out = $time_out_datetime;
+                                    $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
+                                    //Remove Subtract 1 hour from total work
+                                    $total_work_datetime = new DateTime($total_works);
+                                    $total_work = $total_work_datetime->format('H:i:s');
                                 }
-                                    if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
-                                        $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
-                                        // Subtract 1 hour from total work
-                                        $total_work_datetime = new DateTime($total_works);
-                                        $total_work_datetime->sub(new DateInterval('PT1H'));
-                                        $total_work = $total_work_datetime->format('H:i:s');
-                                    }else{
-                                        $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
-                                        //Remove Subtract 1 hour from total work
-                                        $total_work_datetime = new DateTime($total_works);
-                                        $total_work = $total_work_datetime->format('H:i:s');
-                                    }
                             }
                         } //Close bracket Wednesday
 
@@ -329,9 +385,17 @@ if(isset($_POST['importSubmit'])){
                             }
                             
                             if (empty($time_in) && !empty($time_out)) {
-                                continue; // Skip this record
+                                $time_in = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && empty($time_out)) {
-                                continue; // Skip this record
+                                $time_out = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && !empty($time_out)) {
                                 if ($time_in_datetime < $lunchbreak_start_converted) {
                                     if ($time_in_datetime <= $grace_period_total) {
@@ -358,23 +422,31 @@ if(isset($_POST['importSubmit'])){
                                     $undertime = "00:00:00";
                                 }
 
-                                if ($time_out > $col_thursday_timeout) {
-                                    $time_out_datetime = new DateTime($time_out);
-                                    $scheduled_timeout = new DateTime( $col_thursday_timeout);
-                                    $intervals = $time_out_datetime->diff($scheduled_timeout);
-                                    $overtime = $intervals->format('%h:%i:%s');
-                                } else {
-                                    $overtime = '00:00:00';
-                                }
-
-                                if($time_out_datetime > $lunchbreak_start_converted){
-                                    if($time_out != $col_thursday_timeout){
-                                        $addtime_out = $time_out_datetime;
-                                    }else{
-                                        $addtime_out = $scheduled_timeout;
+                                if (!empty($OT_time) || $OT_time !== null) {
+                                    $ot_period_minutes = isset($row_sched_tb['sched_ot']) ? $row_sched_tb['sched_ot'] : 0; // Retrieve enable OT from $time array or set to 0 if not available
+                                    
+                                    if ($ot_period_minutes > 0) {
+                                        $ot_period_interval = new DateInterval('PT' . $ot_period_minutes . 'M');
+                                        $AddTimeOut_OTperiod = $time_out_datetime->add($ot_period_interval)->format('H:i:s');  
                                     }
-                                }else{
-                                    $addtime_out = $time_out_datetime;
+
+                                    if($time_out_datetime > $lunchbreak_start_converted){
+                                        if ($timeout > $AddTimeOut_OTperiod) {
+                                            $time_out_datetime = new DateTime($time_out);
+                                            $Overtime_timeout = new DateTime($AddTimeOut_OTperiod);
+                                            $intervals = $time_out_datetime->diff($Overtime_timeout);
+                                            $overtime = $intervals->format('%h:%i:%s');
+                                            $addtime_out = $time_out_datetime;
+                                        } else {
+                                            $addtime_out = $scheduled_timeout;
+                                            $overtime = "00:00:00";
+                                        }
+                                    } else {
+                                        $addtime_out = $time_out_datetime;
+                                    }
+                                } else {
+                                    $addtime_out = $scheduled_timeout;
+                                    $overtime = "00:00:00";
                                 }
                                     if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
                                         $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
@@ -410,9 +482,17 @@ if(isset($_POST['importSubmit'])){
                             }
                             
                             if (empty($time_in) && !empty($time_out)) {
-                                continue; // Skip this record
+                                $time_in = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && empty($time_out)) {
-                                continue; // Skip this record
+                                $time_out = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && !empty($time_out)) {
                                 if ($time_in_datetime < $lunchbreak_start_converted) {
                                     if ($time_in_datetime <= $grace_period_total) {
@@ -439,24 +519,33 @@ if(isset($_POST['importSubmit'])){
                                     $undertime = "00:00:00";
                                 }
 
-                                if ($time_out > $col_friday_timeout) {
-                                    $time_out_datetime = new DateTime($time_out);
-                                    $scheduled_timeout = new DateTime( $col_friday_timeout);
-                                    $intervals = $time_out_datetime->diff($scheduled_timeout);
-                                    $overtime = $intervals->format('%h:%i:%s');
+                                if (!empty($OT_time) || $OT_time !== null) {
+                                    $ot_period_minutes = isset($row_sched_tb['sched_ot']) ? $row_sched_tb['sched_ot'] : 0; // Retrieve enable OT from $time array or set to 0 if not available
+                                    
+                                    if ($ot_period_minutes > 0) {
+                                        $ot_period_interval = new DateInterval('PT' . $ot_period_minutes . 'M');
+                                        $AddTimeOut_OTperiod = $time_out_datetime->add($ot_period_interval)->format('H:i:s');  
+                                    }
+
+                                    if($time_out_datetime > $lunchbreak_start_converted){
+                                        if ($timeout > $AddTimeOut_OTperiod) {
+                                            $time_out_datetime = new DateTime($time_out);
+                                            $Overtime_timeout = new DateTime($AddTimeOut_OTperiod);
+                                            $intervals = $time_out_datetime->diff($Overtime_timeout);
+                                            $overtime = $intervals->format('%h:%i:%s');
+                                            $addtime_out = $time_out_datetime;
+                                        } else {
+                                            $addtime_out = $scheduled_timeout;
+                                            $overtime = "00:00:00";
+                                        }
+                                    } else {
+                                        $addtime_out = $time_out_datetime;
+                                    }
                                 } else {
-                                    $overtime = '00:00:00';
+                                    $addtime_out = $scheduled_timeout;
+                                    $overtime = "00:00:00";
                                 }
 
-                                if($time_out_datetime > $lunchbreak_start_converted){
-                                    if($time_out != $col_friday_timeout){
-                                        $addtime_out = $time_out_datetime;
-                                    }else{
-                                        $addtime_out = $scheduled_timeout;
-                                    }
-                                }else{
-                                    $addtime_out = $time_out_datetime;
-                                }
                                     if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
                                         $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
                                         // Subtract 1 hour from total work
@@ -492,9 +581,17 @@ if(isset($_POST['importSubmit'])){
                             }
                             
                             if (empty($time_in) && !empty($time_out)) {
-                                continue; // Skip this record
+                                $time_in = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && empty($time_out)) {
-                                continue; // Skip this record
+                                $time_out = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && !empty($time_out)) {
                                 if ($time_in_datetime < $lunchbreak_start_converted) {
                                     if ($time_in_datetime <= $grace_period_total) {
@@ -521,24 +618,33 @@ if(isset($_POST['importSubmit'])){
                                     $undertime = "00:00:00";
                                 }
 
-                                if ($time_out > $col_saturday_timeout) {
-                                    $time_out_datetime = new DateTime($time_out);
-                                    $scheduled_timeout = new DateTime( $col_saturday_timeout);
-                                    $intervals = $time_out_datetime->diff($scheduled_timeout);
-                                    $overtime = $intervals->format('%h:%i:%s');
+                                if (!empty($OT_time) || $OT_time !== null) {
+                                    $ot_period_minutes = isset($row_sched_tb['sched_ot']) ? $row_sched_tb['sched_ot'] : 0; // Retrieve enable OT from $time array or set to 0 if not available
+                                    
+                                    if ($ot_period_minutes > 0) {
+                                        $ot_period_interval = new DateInterval('PT' . $ot_period_minutes . 'M');
+                                        $AddTimeOut_OTperiod = $time_out_datetime->add($ot_period_interval)->format('H:i:s');  
+                                    }
+
+                                    if($time_out_datetime > $lunchbreak_start_converted){
+                                        if ($timeout > $AddTimeOut_OTperiod) {
+                                            $time_out_datetime = new DateTime($time_out);
+                                            $Overtime_timeout = new DateTime($AddTimeOut_OTperiod);
+                                            $intervals = $time_out_datetime->diff($Overtime_timeout);
+                                            $overtime = $intervals->format('%h:%i:%s');
+                                            $addtime_out = $time_out_datetime;
+                                        } else {
+                                            $addtime_out = $scheduled_timeout;
+                                            $overtime = "00:00:00";
+                                        }
+                                    } else {
+                                        $addtime_out = $time_out_datetime;
+                                    }
                                 } else {
-                                    $overtime = '00:00:00';
+                                    $addtime_out = $scheduled_timeout;
+                                    $overtime = "00:00:00";
                                 }
 
-                                if($time_out_datetime > $lunchbreak_start_converted){
-                                    if($time_out != $col_saturday_timeout){
-                                        $addtime_out = $time_out_datetime;
-                                    }else{
-                                        $addtime_out = $scheduled_timeout;
-                                    }
-                                }else{
-                                    $addtime_out = $time_out_datetime;
-                                }
                                     if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){
                                         $total_works = $addtime_out->diff($addtime_in)->format('%H:%I:%S');
                                         // Subtract 1 hour from total work
@@ -574,9 +680,17 @@ if(isset($_POST['importSubmit'])){
                             }
                             
                             if (empty($time_in) && !empty($time_out)) {
-                                continue; // Skip this record
+                                $time_in = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && empty($time_out)) {
-                                continue; // Skip this record
+                                $time_out = "00:00:00";
+                                $late = "00:00:00";
+                                $early_out = "00:00:00";
+                                $overtime = "00:00:00";
+                                $total_work = "00:00:00";
                             } else if (!empty($time_in) && !empty($time_out)) {
                                 if (empty($time_in)) {
                                     $time_in = "00:00:00";
@@ -599,34 +713,31 @@ if(isset($_POST['importSubmit'])){
                                         $late = $late_datetime->format('H:i:s');
                                     }
                                 }
-                                if (empty($time_out)) {
-                                    $time_out = "00:00:00";
-                                    $addtime_out = "00:00:00";
-                                    $undertime = '00:00:00'; // No undertime when time_out is empty
-                                    $overtime = '00:00:00'; // No overtime when time_out is empty
-                                } else {
-                                    // Calculate undertime and overtime as before
-                                    if ($time_out < $col_sunday_timeout) {
-                                        $time_out_datetime = new DateTime($time_out);
-                                        $scheduled_time = new DateTime($col_sunday_timeout);
-                                        $interval = $time_out_datetime->diff($scheduled_time);
-                                        $undertime = $interval->format('%h:%i:%s');
-                                    } else {
-                                        $time_out_datetime = new DateTime($time_out);
-                                        $scheduled_timeout = new DateTime( $col_sunday_timeout);
-                                        $intervals = $time_out_datetime->diff($scheduled_timeout);
-                                        $overtime = $intervals->format('%h:%i:%s');
+                                if (!empty($OT_time) || $OT_time !== null) {
+                                    $ot_period_minutes = isset($row_sched_tb['sched_ot']) ? $row_sched_tb['sched_ot'] : 0; // Retrieve enable OT from $time array or set to 0 if not available
+                                    
+                                    if ($ot_period_minutes > 0) {
+                                        $ot_period_interval = new DateInterval('PT' . $ot_period_minutes . 'M');
+                                        $AddTimeOut_OTperiod = $time_out_datetime->add($ot_period_interval)->format('H:i:s');  
                                     }
 
                                     if($time_out_datetime > $lunchbreak_start_converted){
-                                        if($time_out != $col_sunday_timeout){
+                                        if ($timeout > $AddTimeOut_OTperiod) {
+                                            $time_out_datetime = new DateTime($time_out);
+                                            $Overtime_timeout = new DateTime($AddTimeOut_OTperiod);
+                                            $intervals = $time_out_datetime->diff($Overtime_timeout);
+                                            $overtime = $intervals->format('%h:%i:%s');
                                             $addtime_out = $time_out_datetime;
-                                        }else{
+                                        } else {
                                             $addtime_out = $scheduled_timeout;
+                                            $overtime = "00:00:00";
                                         }
-                                    }else{
+                                    } else {
                                         $addtime_out = $time_out_datetime;
                                     }
+                                } else {
+                                    $addtime_out = $scheduled_timeout;
+                                    $overtime = "00:00:00";
                                 }
 
                                 if($time_in_datetime < $lunchbreak_start_converted && $time_out_datetime > $lunchbreak_start_converted){

@@ -18,6 +18,7 @@ if (isset($_POST['employeeId']) && isset($_POST['minDate']) && isset($_POST['max
                     <th>Undertime</th>
                     <th>Overtime</th>
                     <th>Total Working Hours</th>
+                    <th>Remarks</th>
                     </tr>
                 <thead>';
 
@@ -39,6 +40,13 @@ if (isset($_POST['employeeId']) && isset($_POST['minDate']) && isset($_POST['max
             echo '<td style="font-weight: 400; background-color: white;">' . $row['early_out'] . '</td>';
             echo '<td style="font-weight: 400; background-color: white;">' . $row['overtime'] . '</td>';
             echo '<td style="font-weight: 400; background-color: white;">' . $row['total_work'] . '</td>';
+            if ($row['time_in'] === '00:00:00') {
+                echo '<td style="font-weight: 400; background-color: white; color: red;">No time in</td>';
+            } else if ($row['time_out'] === '00:00:00') {
+                echo '<td style="font-weight: 400; background-color: white; color: red;">No time out</td>';
+            } else {
+                echo '<td style="font-weight: 400; background-color: white;">N/A</td>';
+            }    
             echo '</tr>';
         }
         echo '</table>';

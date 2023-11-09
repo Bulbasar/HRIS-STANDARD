@@ -572,18 +572,26 @@ if(isset($_POST['printAll'])){
             if($Frequency === 'Monthly'){
                 $Salarycutoff = $EmpSalary;
                 $PayslipSalary = $EmpSalary; //Para sa payslip
+
+                $ThirteenSalary = $EmpSalary; //Para sa thirteen month
             }else if($Frequency === 'Semi-Month'){
                 $Salarycutoff = $EmpSalary / 2;
                 $PayslipSalary = $EmpSalary / 2; //Para sa payslip
+
+                $ThirteenSalary = $EmpSalary / 2; //Para sa thirteen month
             }else if($Frequency === 'Weekly'){
                 $Salarycutoff = $EmpSalary / 4;
                 $PayslipSalary = $EmpSalary / 4; //Para sa payslip
+
+                $ThirteenSalary = $EmpSalary / 4; //Para sa thirteen month
             }
 
             $BasicTotalPay = $Salarycutoff + $time_OT_TOTAL + $LeavewithPay + $allowances; //ito yung total para sa modal na wala pang deduction
             } else if($EmpPayRule === 'Daily Paid'){
                 $Salarycutoff = $EmpDrate;
                 $PayslipSalary = $EmpDrate * $Totaldailyworks;//Basic pay para sa payslip modal
+
+                $ThirteenSalary = $EmpDrate * $Totaldailyworks;
 
                 $DailyrateTotalworks = $Salarycutoff * $Totaldailyworks;
                 $BasicTotalPay = $DailyrateTotalworks + $time_OT_TOTAL + $LeavewithPay + $allowances; //ito yung total para sa modal na wala pang deduction
@@ -593,6 +601,10 @@ if(isset($_POST['printAll'])){
         //----------------------------------Total ng Deduction para sa modal----------------------------------\\
         $TotalDeduction = $AbsentDeduction + $LateTotalDeduction + $UTtotaldeduction + $LWOPDeduction + $Governmentformat; //Total deduction ng modal
         //----------------------------------End ng total Deduction para sa modal----------------------------------\\
+
+        //----------------------------------Deduction para sa thirteen Month--------------------------------------\\
+        $DeductionThirteen = $AbsentDeduction + $LateTotalDeduction + $UTtotaldeduction + $LWOPDeduction;
+        //----------------------------------End Deduction para sa thirteen Month--------------------------------------\\
 
          //---------------------------------Check kung regular ba o hindi------------------------------\\
          $EmpClassification = mysqli_query($conn, "SELECT
@@ -672,8 +684,12 @@ if(isset($_POST['printAll'])){
          //------------------------------Net Payslip-------------------------------\\
          $NotformatNetpay = $BasicTotalPay - $TotalDeduction;
          $PayslipNetPay = "₱" . number_format($NotformatNetpay, 2);
-
          //------------------------------Net Payslip-------------------------------\\      
+
+        //-----------------------------for 13month basis---------------------------\\
+        $Notthirteenformat = $ThirteenSalary - $DeductionThirteen;
+        $ThirteenMonthPay = number_format($Notthirteenformat, 2);
+        //----------------------------End ng 13month basis-------------------------\\
 
 ?>
                 <div class="card" style="background-color: inherit;">
@@ -722,6 +738,7 @@ if(isset($_POST['printAll'])){
                                         <p style="display: none;"><?php echo $TotalAbsent ?></p>
                                         <p style="display: none;"><?php echo $Governmentformat?></p>
                                         <p style="display: none;"><?php echo $TotalLWOP?></p>
+                                        <p style="display: none;"><?php echo $ThirteenMonthPay?></p>
                                     </div>
 
                                     <div class="headbody">
@@ -862,7 +879,7 @@ if(isset($_POST['printAll'])){
                       
     <?php
         
-        $printAllslipArray[] = array('cutoffId' => $cutOffID, 'Payrules' => $EmpPayRule, 'EmployeeId' => $EmployeeID, 'Frequent' => $Frequency, 'Monthcutoff' => $cutoffMonth, 'Startcutoff' => $str_date, 'Endcutoff' => $end_date, 'Numbercutoff' => $cutoffNumber, 'Workingdays' => $Totaldailyworks, 'Workinghours' => $Totalwork, 'Basicpayslip' => number_format($PayslipSalary,2), 'HoursOT' => $OTtime, 'PayOT' => number_format($time_OT_TOTAL,2), 'Transport' => round($TranspoAllowance,2), 'Food' => round($MealAllowance,2), 'Internet' => round($InternetAllowance,2), 'newAllowance' => round($addTotalAllowance,2), 'totalAllowance' => $allowances, 'leavePay' => number_format($LeavewithPay,2), 'Totalearn' => $BasicTotalPay, 'Absentcount' => $TotalAbsent, 'Deductabsent' => $AbsentDeduction, 'SSScontribute' => $SssAmount, 'philcontribute' => $PhilhealthAmount, 'tincontribute' => $TinAmount, 'pagibigContribute' => $PagIbigAmount, 'othercontribute' => $addTotalGovern, 'totalcontribute' => $Governmentformat, 'latetotal' => $TotalLate, 'latedeductions' => number_format($LateTotalDeduction,2), 'Undertimehours' => $UndertimeHours, 'UTdeductions' => number_format($UTtotaldeduction,2), 'Lwopcount' => $TotalLWOP, 'DeductionLWOP' => number_format($LWOPDeduction,2), 'totalDeduction' => number_format($TotalDeduction,2), 'Totalnetpay' => $PayslipNetPay);
+        $printAllslipArray[] = array('cutoffId' => $cutOffID, 'Payrules' => $EmpPayRule, 'EmployeeId' => $EmployeeID, 'Frequent' => $Frequency, 'Monthcutoff' => $cutoffMonth, 'Startcutoff' => $str_date, 'Endcutoff' => $end_date, 'Numbercutoff' => $cutoffNumber, 'Workingdays' => $Totaldailyworks, 'Workinghours' => $Totalwork, 'Basicpayslip' => number_format($PayslipSalary,2), 'HoursOT' => $OTtime, 'PayOT' => number_format($time_OT_TOTAL,2), 'Transport' => round($TranspoAllowance,2), 'Food' => round($MealAllowance,2), 'Internet' => round($InternetAllowance,2), 'newAllowance' => round($addTotalAllowance,2), 'totalAllowance' => $allowances, 'leavePay' => number_format($LeavewithPay,2), 'Totalearn' => $BasicTotalPay, 'Absentcount' => $TotalAbsent, 'Deductabsent' => $AbsentDeduction, 'SSScontribute' => $SssAmount, 'philcontribute' => $PhilhealthAmount, 'tincontribute' => $TinAmount, 'pagibigContribute' => $PagIbigAmount, 'othercontribute' => $addTotalGovern, 'totalcontribute' => $Governmentformat, 'latetotal' => $TotalLate, 'latedeductions' => number_format($LateTotalDeduction,2), 'Undertimehours' => $UndertimeHours, 'UTdeductions' => number_format($UTtotaldeduction,2), 'Lwopcount' => $TotalLWOP, 'DeductionLWOP' => number_format($LWOPDeduction,2), 'totalDeduction' => number_format($TotalDeduction,2), 'Totalnetpay' => $PayslipNetPay, 'ThirteenPay' => $ThirteenMonthPay);
      }
      foreach ($printAllslipArray as $Employeeslip) {
         $CutoffId = $Employeeslip['cutoffId'];
@@ -901,6 +918,7 @@ if(isset($_POST['printAll'])){
         $LWOPdeductions = $Employeeslip['DeductionLWOP'];
         $DeductionTotal = $Employeeslip['totalDeduction'];
         $Netpayslip = $Employeeslip['Totalnetpay'];
+        $ThirteenmonthsPay = $Employeeslip['ThirteenPay'];
      }
    }
 ?>

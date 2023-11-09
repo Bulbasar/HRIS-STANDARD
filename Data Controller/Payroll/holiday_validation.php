@@ -12,77 +12,63 @@
     $date_after->modify('+1 day');
     $date_after = $date_after->format('Y-m-d');
     
-    if($row_company_settings['holiday_pay'] === 'Holiday Before'){
-
-
+    if($rowSettings['holiday_pay'] === 'Holiday Before'){  
         $day_of_BEFORE_ = date('l', strtotime($date_before)); //convert the each date to day
 
-        // PARA SA PAG CHECK NG SCHEDULE NG DAY BEFORE AND AFTER IF RESTDAY BA OR HINDI
-        if($day_of_BEFORE_ === 'Monday'){
             // -----------------------BREAK MONDAY START----------------------------//
-            if($row_Sched['mon_timein'] == NULL || $row_Sched['mon_timein'] == ''){
+                if($day_of_BEFORE_ === 'Monday'){
+                    if($row_Sched['mon_timein'] == NULL || $row_Sched['mon_timein'] == ''){
+                        //if restday ang before day
+                        $validation_eligible_holiday = 'YES';
+                    }else{
+                        //if HINDI restday ang before day
+                        $result_check_day = mysqli_query($conn, " SELECT
+                            *
+                        FROM 
+                            `attendances` 
+                        WHERE `empid` =  '$EmployeeID' AND `date` = '$date_before' AND (`status` = 'Present' OR `status` = 'On-Leave')");
 
-                //if restday ang before day
-                $validation_eligible_holiday = 'YES';
+                    
+                        if(mysqli_num_rows($result_check_day) > 0) {
+                            $row_check_day = mysqli_fetch_assoc($result_check_day);
 
-            }else{
+                            $validation_eligible_holiday = 'YES';
+                        }
 
-                //if HINDI restday ang before day
-                $result_check_day = mysqli_query($conn, " SELECT
-                    *
-                FROM 
-                    `attendances` 
-                WHERE `empid` =  '$EmployeeID' AND `date` = '$date_before' AND (`status` = 'Present' OR `status` = 'On-Leave')");
-
-            
-                if(mysqli_num_rows($result_check_day) > 0) {
-                    $row_check_day = mysqli_fetch_assoc($result_check_day);
-
-                    $validation_eligible_holiday = 'YES';
+                    }
                 }
-
-            }
-       }
-          
            // -----------------------BREAK MONDAY START----------------------------//
 
            // -----------------------BREAK Tuesday START----------------------------//
+                else if($day_of_BEFORE_ === 'Tuesday'){
+                    if($row_Sched['tues_timein'] == NULL || $row_Sched['tues_timein'] == ''){
+                                                            
+                        //if restday ang before day
+                        $validation_eligible_holiday = 'YES';
+                    }else{
 
-        else if($day_of_BEFORE_ === 'Tuesday'){
-            if($row_Sched['tues_timein'] == NULL || $row_Sched['tues_timein'] == ''){
-                                                       
-                 //if restday ang before day
-                $validation_eligible_holiday = 'YES';
+                        //if HINDI restday ang before day
+                        $result_check_day = mysqli_query($conn, " SELECT
+                            *
+                        FROM 
+                            `attendances` 
+                        WHERE `empid` =  '$EmployeeID' AND `date` = '$date_before' AND (`status` = 'Present' OR `status` = 'On-Leave')");
 
-            }else{
+                    
+                        if(mysqli_num_rows($result_check_day) > 0) {
+                            $row_check_day = mysqli_fetch_assoc($result_check_day);
 
-                //if HINDI restday ang before day
-                $result_check_day = mysqli_query($conn, " SELECT
-                    *
-                FROM 
-                    `attendances` 
-                WHERE `empid` =  '$EmployeeID' AND `date` = '$date_before' AND (`status` = 'Present' OR `status` = 'On-Leave')");
-
-            
-                if(mysqli_num_rows($result_check_day) > 0) {
-                    $row_check_day = mysqli_fetch_assoc($result_check_day);
-
-                    $validation_eligible_holiday = 'YES';
+                            $validation_eligible_holiday = 'YES';
+                        }
+                    }
                 }
-
-            }
-        }
-
-              
            // -----------------------BREAK Tuesday END----------------------------//
 
            // -----------------------BREAK WEDNESDAY START----------------------------//
            else if($day_of_BEFORE_ === 'Wednesday'){
                if($row_Sched['wed_timein'] == NULL || $row_Sched['wed_timein'] == ''){
-                  
                     //if restday ang before day
                     $validation_eligible_holiday = 'YES';
-
                }else {
 
                     //if HINDI restday ang before day
@@ -101,9 +87,6 @@
 
                }
            }
-                 
-
-                   
            // -----------------------BREAK WEDNESDAY END----------------------------//
 
            // -----------------------BREAK THURSDAY START----------------------------//
@@ -232,7 +215,7 @@
         
         
     } //if Holiday before END
-    else if($row_company_settings['holiday_pay'] === 'Holiday After'){
+    else if($rowSettings['holiday_pay'] === 'Holiday After'){
 
 
         $date_after_ = date('l', strtotime($date_after)); //convert the each date to day
@@ -445,7 +428,7 @@
 
 
     } // if Holiday After END
-    else if($row_company_settings['holiday_pay'] === 'Holiday Before and After'){
+    else if($rowSettings['holiday_pay'] === 'Holiday Before and After'){
 
                             
 //-------------------------------------------------------------------------- FOR DAY BEFORE HOLIDAY -------------------------------------------------------------------------
