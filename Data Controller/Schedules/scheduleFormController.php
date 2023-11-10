@@ -89,7 +89,7 @@
 
     mysqli_stmt_execute($stmt);
 
-    header("Location: ../../scheduleForm.php");
+    header("Location: ../../scheduleForm?inserted");
 
     // echo $saturday, "<br>";
     // echo $enable_grace_period , "<br>";

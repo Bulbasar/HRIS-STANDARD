@@ -27,7 +27,7 @@ mysqli_begin_transaction($conn);
 
 if (mysqli_stmt_execute($stmt_delete_schedule) && mysqli_stmt_execute($stmt_delete_employee_schedules)) {
     mysqli_commit($conn);
-    header("Location: ../../scheduleForm.php?msg=Record deleted successfully");
+    header("Location: ../../scheduleForm.php?deleted");
     exit();
 } else {
     mysqli_rollback($conn);

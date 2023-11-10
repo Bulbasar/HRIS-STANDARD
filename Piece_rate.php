@@ -443,11 +443,6 @@ if (isset($_POST["import"])) {
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
-
-
 <script>
         // Function to show a modal
         function showModal(modalId, message) {
@@ -513,6 +508,8 @@ if (isset($_POST["import"])) {
             });
         }
     </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
 

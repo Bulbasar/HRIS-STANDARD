@@ -20,7 +20,7 @@ if(isset($_POST['add_announcement'])) {
     $query_run = mysqli_query($conn, $query);
 
     if($query_run) {
-        header("Location: ../../Dashboard.php?msg=Successfully Added");
+        header("Location: ../../Dashboard.php?inserted");
     } else {
         echo "Failed: " . mysqli_error($conn);
     }

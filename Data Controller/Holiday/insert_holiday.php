@@ -8,23 +8,30 @@ if(isset($_POST['add_holiday'])){
     $holidayDate = mysqli_real_escape_string($conn, $_POST['date_holiday']);
     $typeofHoliday = mysqli_real_escape_string($conn, $_POST['type_holiday']);
 
+    $sql = "SELECT * FROM holiday_tb WHERE `date_holiday` = '$holidayDate' ";
+    $result = mysqli_query($conn, $sql);
 
-    $query = "INSERT INTO holiday_tb (`empid`, `holiday_title`, `date_holiday`, `holiday_type`)
-    VALUES ('$createBy', '$holiday_title', '$holidayDate', '$typeofHoliday')";
+    if (mysqli_num_rows($result) > 0) {
+        header("Location: ../../Dashboard?duplicate");
+        // echo "duplicate";
+    }else{
+        $query = "INSERT INTO holiday_tb (`empid`, `holiday_title`, `date_holiday`, `holiday_type`)
+        VALUES ('$createBy', '$holiday_title', '$holidayDate', '$typeofHoliday')";
 
-    $query_run = mysqli_query($conn, $query);
+        $query_run = mysqli_query($conn, $query);
 
-    if($query_run)
-    {
-        $sql = "INSERT INTO schedule_list (`title`, `description`, `start_datetime`, `end_datetime`)
-                VALUES ('$holiday_title', '$typeofHoliday', '$holidayDate', '$holidayDate' ) ";
+        if($query_run)
+        {
+            $sql = "INSERT INTO schedule_list (`title`, `description`, `start_datetime`, `end_datetime`)
+                    VALUES ('$holiday_title', '$typeofHoliday', '$holidayDate', '$holidayDate' ) ";
 
-        $sql_run = mysqli_query($conn, $sql);
-        header("Location: ../../Dashboard.php?Successfully Added");
-    }
-    else
-    {
-        echo "Failed: " . mysqli_error($conn);
+            $sql_run = mysqli_query($conn, $sql);
+            header("Location: ../../Dashboard.php?inserted");
+        }
+        else
+        {
+            echo "Failed: " . mysqli_error($conn);
+        }
     }
 }
 ?>

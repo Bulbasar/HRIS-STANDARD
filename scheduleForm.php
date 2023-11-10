@@ -139,8 +139,144 @@
         #schedule_list:hover{
         color:blue !important;
     }
+
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+        z-index: 999; /* Ensure overlay is on top */
+    }
+
+    .modals {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    z-index: 9999; /* Ensure modal is on top of the overlay */
+    height: 33%;
+    width: 25%;
+    border-radius: 0.5em;
+    animation: delayAndFadeIn 0.8s ease-in-out forwards; /* Delay and then fade in */
+}
+
+    
+
+    
+    /* Style for the close button */
+    .modals .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    @keyframes delayAndFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+    /* Bouncing animation for the icon */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Apply the bouncing animation to the icon */
+    .bouncing-icon {
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        /* 15% {
+            transform: rotate(180deg);
+        }
+        30%{
+            transform: rotate(280deg);
+        } */
+        70%{
+            transform: rotate(359deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Apply the rotation animation to the checkmark icon */
+    #insertedModal .rotating-icon {
+        animation: rotate 2.5s infinite; /* 0.5 seconds rotation + 3 seconds pause */
+    }
 </style>
 
+
+    <!-- Validations -->
+
+    <!-- Modal HTML for Duplicate Group Name -->
+    <div id="duplicateModal" class="modals">
+        <span class="close">&times;</span>
+        <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+            <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+            <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+            </div>
+            <h4 class="mt-3">Successfully Updated!</h4>
+        
+        </div>
+        <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+            <button class="btn border border-black btn-closes">OK</button>
+        </div>
+    </div>
+
+    <!-- Overlay div -->
+    <div class="overlay"></div>
+
+    <!-- Modal HTML for Successfully Inserted -->
+    <div id="insertedModal" class="modals">
+        <span class="close">&times;</span>
+        <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+            <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+            <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+            </div>
+            <h4 class="mt-3">Successfully Inserted!</h4>
+        
+        </div>
+        <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+            <button class="btn border border-black btn-closes">OK</button>
+        </div>
+    </div>
+
+    <!-- deleted -->
+    <div id="deleteModal" class="modals">
+        <span class="close" id="removeParamButton">&times;</span>
+        <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+        <div class="d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                <i class="fa-solid fa-trash bouncing-icon" style="font-size: 6em; color: red"></i>
+            </div>
+            <h4 class="mt-3">Successfully Deleted!</h4>
+            
+        </div>
+        <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+            <button class="btn border border-black btn-closes">OK</button>
+        </div>
+    </div>
 
 
 
@@ -491,6 +627,8 @@
             </div>
        </div>
        </form>
+
+
        
        
        <!-- <form action="" method="">                   
@@ -758,6 +896,7 @@ function validateTime() {
     }
 }
 </script>
+
 <!------------------------End Validation if lumagpas ng 12hrs ang value ng time------------------------------->    
 
 
@@ -781,7 +920,7 @@ function validateTime() {
 
 </script>
 
-<script>
+<!-- <script>
   function removeErrorMessage() {
     var errorMsg = document.getElementById("errorMsg");
     var parentElement = errorMsg.parentElement;
@@ -796,8 +935,7 @@ function validateTime() {
     // Update the URL without query parameters
     window.history.replaceState({}, document.title, url.pathname + params.toString());
   }
-</script>
-
+</script> -->
 
 
 
@@ -1005,6 +1143,7 @@ $(document).ready(function() {
 
 </script>
 
+
   
     
 <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
@@ -1020,8 +1159,10 @@ $(document).ready(function() {
     <script src="skydash/template.js"></script>
     <script src="skydash/settings.js"></script>
     <script src="skydash/todolist.js"></script>
-     <script src="main.js"></script>
+     <!-- <script src="main.js"></script> -->
     <script src="bootstrap js/data-table.js"></script>
+
+
 
 </body>
 </html>
