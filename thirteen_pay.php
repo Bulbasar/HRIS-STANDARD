@@ -74,6 +74,17 @@ if(!empty($_GET['status'])){
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css">
         <!-- skydash -->
 
     <link rel="stylesheet" href="skydash/feather.css">
@@ -109,8 +120,8 @@ if(!empty($_GET['status'])){
                             <h1 class="modal-title fs-5" id="staticBackdropLabel" style="font-family: Poppins, 'Source Sans Pro';">13th Month Payslip</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            <div class="body-clone">
+                        <div class="modal-body"  id="modal-payslip" style="height: 667px; background-color: white;">
+                            <div class="body-clone" >
                                 <div class="header-bodyof-modal">
                                     <div class="slash-id-empname">
                                         <table class="table table-bordered tabless">
@@ -169,21 +180,20 @@ if(!empty($_GET['status'])){
                                                     <p id="monthNameTag"></p>
                                                 </div>
                                                 <div class="basicpay-value">
-                                                    <p id=""></p>
-                                                    <p id=""></p>
-                                                    <p id=""></p>
+                                                    <p id="overall_pay"></p>
                                                 </div>
                                             </div>
                                             <div class="lefttable-footer">
                                                 <div class="footerleft">
                                                     <p>Total Earnings: </p>
+                                                    <p id="totalEarnings"></p>
                                                 </div>
                                                 <div class="footerright">
                                                     <p id=""></p>
                                                 </div>
                                             </div>
                                         </div> 
-                                        <div class="middle-maincontainers">
+                                        <!-- <div class="middle-maincontainers">
                                             <div class="midheads">
                                                 <p>MONTHS</p>
                                                 <p>LATE(S)</p>
@@ -220,7 +230,7 @@ if(!empty($_GET['status'])){
                                                     <p id=""></p>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="right-maincontainers">
                                             <div class="rightheads">
                                                 <p>13 MONTH PAY</p>
@@ -228,15 +238,15 @@ if(!empty($_GET['status'])){
                                             <div class="righttable-contents">
                                                 <div class="earn-deduct-tag">
                                                     <p>Total Earnings</p>
-                                                    <p>Total Deductions</p>
-                                                    <p>Total Net Pay</p>
+                                                    <!-- <p>Total Deductions</p> -->
+                                                    <!-- <p>Total Net Pay</p> -->
                                                     <p>13th Month Pay</p>
                                                 </div>
                                                 <div class="earn-deduct-value">
-                                                    <p id=""></p>
-                                                    <p id=""></p>
-                                                    <p id=""></p>
-                                                    <p id=""></p>
+                                                    <p id="earningmonths"></p>
+                                                    <!-- <p id=""></p>
+                                                    <p id=""></p> -->
+                                                    <p id="thirteenValue"></p>
                                                 </div>
                                             </div>
                                             <div class="rightfooter">
@@ -244,7 +254,7 @@ if(!empty($_GET['status'])){
                                                     <p>Thirteen Month</p>
                                                 </div>
                                                 <div class="thirteenvalue">
-                                                    <p id=""></p>
+                                                    <p id="totalthirteenMonth"></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -253,8 +263,8 @@ if(!empty($_GET['status'])){
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="Print13month">Print</button>
-                            <button type="button" class="btn btn-secondary" id="id_btn_close" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="Print13month" onclick="makePDF()">Print</button>
+                            <button type="button" class="btn btn-secondary" id="close-modal" data-bs-dismiss="modal">Close</button>
                         </div>
                         </div>
                     </div>
@@ -289,6 +299,9 @@ if(!empty($_GET['status'])){
                                             <th>End Date</th>
                                             <th style="display: none;">Status</th>
                                             <th style="display: none;">Month Hired</th>
+                                            <th style="display: none;">Working Month</th>
+                                            <th style="display: none;">OverAll Salary</th>
+                                            <th style="display: none;">Total Salary</th>
                                             <th>Thirteen Month Pay</th>
                                             <th>Action</th>
                                         </tr>
@@ -335,63 +348,83 @@ if(!empty($_GET['status'])){
                                                     $companyname = "";
                                                 }
 
-                                            //-------------------Path sa code ng calculation sa sched-------------------\\
-                                            include 'Data Controller/13Month/Sched-Calculation.php';
-                                            //-------------------Path sa code ng calculation sa sched-------------------\\
+                                                        $empschedQueries = mysqli_query($conn, "SELECT * FROM empschedule_tb WHERE `empid` = '$EmployeeID'");
+                                                        if($empschedQueries->num_rows > 0){
+                                                            $empschedRows = $empschedQueries->fetch_assoc();
+                                                            $schedulenames = $empschedRows['schedule_name'];
+
+                                                            $schedQueries = mysqli_query($conn, "SELECT * FROM `schedule_tb` WHERE `schedule_name` = '$schedulenames'");
+                                                            if($schedQueries->num_rows > 0){
+                                                                $row_Scheds = $schedQueries->fetch_assoc();
+                                                            }else{
+                                                                echo "No results found schedule.";
+                                                            }
+                                                        }else{
+                                                            echo "No results found.";
+                                                        }
+
+                                                //-------------------Path sa code ng deduction para sa late-------------------\\
+                                                include 'Data Controller/13Month/PayrollCompute/Schedule_basis.php';
+                                                //-------------------Path sa code ng deduction para sa late-------------------\\  
+
+                                                //-------------------Path sa code ng deduction para sa late-------------------\\
+                                                include 'Data Controller/13Month/PayrollCompute/Totalwork_late_ut.php';
+                                                //-------------------Path sa code ng deduction para sa late-------------------\\ 
+
+                                                //-------------------Path sa code ng deduction para sa late-------------------\\
+                                                include 'Data Controller/13Month/PayrollCompute/Late-Deduction.php';
+                                                //-------------------Path sa code ng deduction para sa late-------------------\\   
+                                                 
+                                                //-------------Computation sa pagdeduct ng undertime---------------------------\\
+                                                include 'Data Controller/13Month/PayrollCompute/UndertimeCompute.php';
+                                                //-------------------------End sa calculation para magdeduct sa undertime-------\\
                                                 
-                                            //-------------------Path sa code ng deduction para sa late-------------------\\
-                                            include 'Data Controller/13Month/Deduction_Late.php';
-                                            //-------------------Path sa code ng deduction para sa late-------------------\\
+                                                //-------------------Path sa code ng deduction para sa late-------------------\\
+                                                include 'Data Controller/13Month/PayrollCompute/Absent-LWOP-Present.php';
+                                                //-------------------Path sa code ng deduction para sa late-------------------\\
 
-                                            //-------------------Path sa code ng computation para sa OT-------------------\\
-                                            include 'Data Controller/13Month/OT-Computation.php';
-                                            //-------------------Path sa code ng computation para sa OT-------------------\\                                      
-                                                
-                                            //-------------------Path sa code ng deduction para sa UT-------------------\\
-                                            include 'Data Controller/13Month/UT-Computation.php';
-                                            //-------------------Path sa code ng deduction para sa UT-------------------\\
-                                            
-                                            //-------------------Path sa code ng total sa working hours at late-------------------\\
-                                            include 'Data Controller/13Month/Totalworkhours-late.php';
-                                            //-------------------Path sa code ng total sa working hours at late-------------------\\ 
+                                                $monthCount = 0;
+                                                $countMonthsQuery = "SELECT COUNT(DISTINCT MONTH(`date`)) as month_count FROM attendances WHERE `empid` = '$EmployeeID' AND `date` BETWEEN '$str_date' AND '$end_date'";
+                                                $resultCountMonths = mysqli_query($conn, $countMonthsQuery);
 
-                                            //-------------------Path sa code ng total LWOP, Absent at Present-------------------\\
-                                            include 'Data Controller/13Month/TotalLWOP-Absent-Present.php';
-                                            //-------------------Path sa code ng total LWOP, Absent at Present-------------------\\      
-                                            
-                                            $Deductions = $AbsentDeduction + $LateTotalDeduction + $UTtotaldeduction + $LWOPDeduction;
-                                            
-                                                if($EmpPayRule === 'Fixed Salary'){
-                                                    $Salary = $EmpSalary - $Deductions;
+                                                if ($resultCountMonths) {
+                                                    $row = mysqli_fetch_assoc($resultCountMonths);
+                                                    $monthCount = $row['month_count'];
 
-                                                    $Salaries = "";
-                                                } else if ($EmpPayRule === 'Daily Paid'){
-                                                    $CloneSalary = $EmpDrate * $Totaldailyworks;
-                                                    $Salary = $CloneSalary - $Deductions;
-
-                                                    $Salaries = $EmpDrate;
+                                                } else {
+                                                   $monthCount = 0;
                                                 }
-                                            
-                                                $ThirteenMonthPay = $Salary / 12;
+                                                
+                                                
+                                                $monthsalary = 0;
+                                                if($EmpPayRules === 'Fixed Salary'){
+                                                    $normalPay = $BasicSalaries;
 
-                                                // $gethired = "SELECT * FROM employee_tb WHERE `empid` = '$EmployeeID'";
-                                                // $resulthired = mysqli_query($conn, $gethired);
-                                            
-                                                // if(mysqli_num_rows($resulthired) > 0){
-                                                //     $hiredrow = $resulthired->fetch_assoc();
-                                                //     $Datehired = $hiredrow['empdate_hired'];
-                                                // }
-                                                // $months = array();
-                                                // $start = new DateTime($Datehired);
-                                                // $end = new DateTime($end_date);
-                                                // $interval = DateInterval::createFromDateString('1 month');
-                                                // $period = new DatePeriod($start, $interval, $end);
+                                                    $presentsalary = $normalPay * $monthCount;
+                                                    $deductionsalary = $TotalDeductionLate + $UTtotaldeduction;
+                                                    $absentdeduction = $AbsentDeduction + $LWOPDeduction;
+                                                    $totaldeduct = $deductionsalary + $absentdeduction;
 
-                                                // foreach ($period as $dt) {
-                                                //     $months[] = $dt->format('F');
-                                                // }
+                                                    $monthsalary = $presentsalary - $totaldeduct;
 
-                                                // $months_variable = implode($months);
+                                                    $thirteenmonth = $monthsalary / 12;
+                                                } else if($EmpPayRules === 'Daily Paid'){
+                                                    $normalPay = $DailyRates;
+
+                                                    $presentsalary = $normalPay * $TotalOnLeavePresent;
+                                                    $deductionsalary = $TotalDeductionLate + $UTtotaldeduction;
+                                                    $absentdeduction = $AbsentDeduction + $LWOPDeduction;
+
+                                                    $totaldeduct = $deductionsalary + $absentdeduction;
+                                                    
+                                                    $monthsalary = $presentsalary - $totaldeduct;
+                                                    $thirteenmonth = $monthsalary / 12;
+                                                }
+
+                                                    
+                                                //-------------------Path sa code ng calculation sa sched-------------------\\
+                                                include 'Data Controller/13Month/Sched-Calculation.php';
+                                                //-------------------Path sa code ng calculation sa sched-------------------\\
 
                                                 $months = array();
                                                 $start = new DateTime($str_date);
@@ -405,79 +438,11 @@ if(!empty($_GET['status'])){
 
                                                 $months_variable = implode($months);
 
-                                                // $getatt = "SELECT MIN(`date`) AS min_date, MAX(`date`) AS max_date FROM attendances WHERE `empid` = '$EmployeeID' AND `date` BETWEEN '$str_date' AND '$end_date'";
-                                                // $resultatt = mysqli_query($conn, $getatt);
+                                                //-------------------Path sa code ng computation na nagdidisplay sa payslip modal-------------------\\ dito lang dapat siya nakapwesto
+                                                include 'Data Controller/13Month/calculation_salary_modal.php';
+                                                //-------------------Path sa code ng computation na nagdidisplay sa payslip modal-------------------\\
 
-                                                // if(mysqli_num_rows($resultatt) > 0){
-                                                //     $rowatt = $resultatt->fetch_assoc();
-                                                //     $min_date = $rowatt['min_date'];
-                                                //     $max_date = $rowatt['max_date'];
-                                                // }
-
-                                                // $datearray = array();
-                                                // $start_date = new DateTime($min_date);
-                                                // $end_dates = new DateTime($max_date);
-                                                // $interval = new DateInterval('P1M');
-                                                // $daterange = new DatePeriod($start_date, $interval, $end_dates->modify('+1 month'));
-                                                
-                                                // foreach ($daterange as $date) {
-                                                //     $datearray[] = $date->format('Y-m-d');
-                                                // }    
-
-                                                // $date_variable = implode($datearray);
-
-                                                
-
-                                                $getatt = "SELECT MIN(`date`) AS min_date, MAX(`date`) AS max_date FROM attendances WHERE `empid` = '$EmployeeID' AND `date` BETWEEN '$str_date' AND '$end_date'";
-                                                    $resultatt = mysqli_query($conn, $getatt);
-
-                                                    if(mysqli_num_rows($resultatt) > 0){
-                                                        $rowatt = $resultatt->fetch_assoc();
-                                                        $min_date = $rowatt['min_date'];
-                                                        $max_date = $rowatt['max_date'];
-                                                    }
-
-                                                    $start_date = new DateTime($min_date);
-                                                    $end_dates = new DateTime($max_date);
-                                                    $end_dates->modify('+1 day');
-                                                    $interval = new DateInterval('P1D');
-                                                    $daterange = new DatePeriod($start_date, $interval, $end_dates);
-
-                                                    $monthly = array();
-                                                    $total_present_count = 0;
-                                                    foreach ($daterange as $date) {
-                                                        $month = $date->format('m');
-                                                        $monthly[$month][] = $date->format('Y-m-d');
-                                                    }
-
-                                                    $months_array = array();
-                                                    foreach ($monthly as $month => $dates) {
-                                                        $month_name = date('F', mktime(0, 0, 0, $month, 10));
-
-                                                        $count_query = "SELECT COUNT(*) as present_count FROM attendances WHERE `empid` = '$EmployeeID' AND `date` IN ('" . implode("','", $dates) . "') AND `status` = 'Present'";
-                                                        $result_count = mysqli_query($conn, $count_query);
-                                                        $count_row = $result_count->fetch_assoc();
-                                                        $present_count = $count_row['present_count'];
-
-                                                        $total_present_count += $present_count;
-
-                                                        $months_array[$month_name] = array(
-                                                            'dates' => $dates,
-                                                            'present_count' => $present_count
-                                                        );
-
-                                                        // echo "Month: " . $month_name . "<br>";
-                                                        // echo "Dates: " . implode(", ", $dates) . "<br>";
-                                                        // echo "Present Count: " . $present_count . "<br><br>";
-                                                    }
-
-                                                    // Echo total present count
-                                                    // echo "Total Present Count: " . $total_present_count . "<br>";
-
-
-                                                    
-
-                                                
+                                            
                                                 
                                         ?>      
 
@@ -496,8 +461,28 @@ if(!empty($_GET['status'])){
                                                     }
                                                     ?>
                                                 </ul>
-                                            </td>
-                                            <td style="font-weight: 400;"><?php echo number_format($ThirteenMonthPay,2)?></td>
+                                            </td><!--6-->
+                                            <td style="font-weight: 400; display: none;">
+                                                <ul style="list-style-type: none; padding: 0;">
+                                                    <?php 
+                                                        foreach ($months_array as $month_name => $data) {
+                                                            echo "<li>" . $month_name . "</li>";
+                                                        }
+                                                    ?>
+                                                </ul>
+                                            </td><!--7-->
+                                            <td style="font-weight: 400; display: none;">
+                                                <ul style="list-style-type: none; padding: 0;">
+                                                    <?php 
+                                                    foreach ($months_array as $month_name => $month_data) {
+                                                        $overall_salary = $month_data['overall_salary'];
+                                                        echo "<li>" . number_format($overall_salary,2) . "</li>";
+                                                        }
+                                                    ?>
+                                                </ul>
+                                            </td><!--8-->
+                                            <td style="font-weight: 400; display: none;"><?php echo number_format($monthsalary,2)?></td><!--9-->
+                                            <td style="font-weight: 400;"><?php echo number_format($thirteenmonth,2)?></td>
                                             <td>
                                                 <button type="button" class="btn btn-success printthirteen" data-bs-toggle="modal" data-bs-target="#thirteenPrint">Print</button>
                                             </td>
@@ -509,7 +494,7 @@ if(!empty($_GET['status'])){
                                     ?>
                                 </table>
                             </div>
-
+                            
 
 
 
@@ -552,7 +537,47 @@ if(!empty($_GET['status'])){
 </div>
                       
 
+<script type="text/javascript">
+    $("body").on("click", "#Print13month", function () {
+    var emp_fullname = document.getElementById("empnames");
+    var fullname = emp_fullname.textContent;
 
+    var currentDate = new Date();
+
+    // Get the current date and time in the Philippines (Manila) timezone
+    var options = {
+    timeZone: "Asia/Manila",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric"
+    };
+
+var currentDateTime = currentDate.toLocaleString("en-PH", options);
+        html2canvas($('#modal-payslip')[0], {
+            onrendered: function (canvas) {
+                var data = canvas.toDataURL();
+                var docDefinition = {
+                    content: [{
+                        image: data,
+                        width: 500
+                    }]
+                };
+                pdfMake.createPdf(docDefinition).download(fullname + "_" + currentDateTime  +".pdf");
+                pdfMake.createPdf(docDefinition).getBase64(function (pdfData) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+
+                    };
+                    document.getElementById('close-modal').style.display="";
+                    document.getElementById('Print13month').style.display="";
+                });
+            }
+        });
+    });
+</script>
 
 
 <script>
@@ -626,6 +651,10 @@ $(document).ready(function(){
         var EndDate = data[4];
         var Status = data[5];
         var MonthHired = data[6];
+        var MonthWork = data[7];
+        var TotalSalary = data[8];
+        var RealSalary = data[9];
+        var ThirteenMonthPay = data[10];
 
         $('#compName').text(CompanyName);
         $('#empids').text(EmployeeId);
@@ -639,12 +668,23 @@ $(document).ready(function(){
             $('#empstatus').css('color', 'black');
         }
         $('#empstatus').text(Status);
-                // Displaying months in the modal
-                var months_list = '';
-        $tr.find("td:eq(6) li").each(function(){
+        // Displaying months in the modal
+        var months_list = '';
+        $tr.find("td:eq(7) li").each(function(){
             months_list += $(this).text() + "<br/>";
         });
         $('#monthNameTag').html(months_list);
+        
+        var months_salary = '';
+        $tr.find("td:eq(8) li").each(function(){
+            months_salary += $(this).text() + "<br/>";
+        });
+        $('#overall_pay').html(months_salary);
+        $('#totalEarnings').text(RealSalary);
+        $('#earningmonths').text(RealSalary);
+        $('#thirteenValue').text((RealSalary) + " / 12 = " + ThirteenMonthPay);
+        $('#totalthirteenMonth').text(ThirteenMonthPay);
+        
     });
 });        
 </script>
@@ -740,27 +780,38 @@ $(document).ready(function() {
     </script>
 
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+<script src="path/to/mpdf/autoload.php"></script>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+
 <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap4.min.js"></script>
 
-    <script src="vendors/datatables.net/jquery.dataTables.js"></script>
-    <script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<!--skydash-->
+<script src="skydash/vendor.bundle.base.js"></script>
+<script src="skydash/off-canvas.js"></script>
+<script src="skydash/hoverable-collapse.js"></script>
+<script src="skydash/template.js"></script>
+<script src="skydash/settings.js"></script>
+<script src="skydash/todolist.js"></script>
+<script src="main.js"></script>
+<script src="bootstrap js/data-table.js"></script>
 
-           <!--skydash-->
-    <script src="skydash/vendor.bundle.base.js"></script>
-    <script src="skydash/off-canvas.js"></script>
-    <script src="skydash/hoverable-collapse.js"></script>
-    <script src="skydash/template.js"></script>
-    <script src="skydash/settings.js"></script>
-    <script src="skydash/todolist.js"></script>
-     <script src="main.js"></script>
-    <script src="bootstrap js/data-table.js"></script>
-
-
-    
-
-  
-    <script src="vendors/datatables.net/jquery.dataTables.js"></script>
-    <script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<script src="vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
 </body>
 </html>

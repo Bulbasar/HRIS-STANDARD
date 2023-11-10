@@ -266,7 +266,7 @@ background-color: white;
     flex: 1;
     display: flex;
     flex-direction: column;
-
+    background-color: #FFFFFF;
 }
 
 .header-bodyof-modal {
@@ -424,6 +424,15 @@ background-color: white;
     text-transform: uppercase;
     font-family: Poppins, 'Source Sans Pro';
     padding: 8px;
+}
+
+.footerleft{
+    display: flex;
+    flex-direction: row;
+}
+
+.footerleft p{
+    margin-right: 10px;
 }
 
 .middle-maincontainers{
