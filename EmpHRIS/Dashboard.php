@@ -491,9 +491,25 @@ include 'config.php';
                                                 if ($row) {
                                                     @$time_in = date('h:i A', strtotime($row['time_in'])); // Format time_in to AM/PM
                                                     @$time_out = date('h:i A', strtotime($row['time_out'])); // Format time_out to AM/PM
+                                                    @$status = $row['status'];
                                                     ?>
-                                                    <h1>Yesterday</h1>
-                                                    <h5><?php echo $time_in . " - " . $time_out; ?></h5>
+                                                    
+                                                    <?php 
+                                                        if($status == 'Restday'){ ?>
+                                                            <h1>Yesterday</h1>
+                                                            <h5>Restday</h5>
+                                                            
+                                                        <?php     
+                                                        }else{ ?>
+
+                                                            <h1>Yesterday</h1>
+                                                            <h5><?php echo $time_in . " - " . $time_out; ?></h5>
+
+                                                    <?php 
+                                                        }
+
+                                                    ?>
+                                                    
 
                                                     <?php
                                                 } else {
@@ -1225,7 +1241,7 @@ $(document).ready(function() {
 <script src="skydash/template.js"></script>
 <script src="skydash/settings.js"></script>
 <script src="skydash/todolist.js"></script>
-<script src="main.js"></script>
+<!-- <script src="main.js"></script> -->
 <script src="bootstrap js/data-table.js"></script>
     
 

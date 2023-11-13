@@ -1277,7 +1277,19 @@ if(mysqli_num_rows($result) <= 0) {
                                                             $fullname = $row_emp_tb['full_name'];
                                                             $time_in = $present_row['time_in'];
                                                             $time_out =  $present_row['time_out'];
-                                                            $late = $present_row['late'];                                                            
+                                                            $late = $present_row['late'];     
+
+                                                            if(empty($time_in) || $time_in == NULL){
+                                                                $time_in = '00:00:00';
+                                                            }
+                                                            
+                                                            if(empty($time_out) || $time_out == NULL){
+                                                                $time_out = '00:00:00';
+                                                            }
+                                                            
+                                                            if(empty($late) || $late == NULL){
+                                                                $late = '00:00:00';
+                                                            }                                                      
                                                             
                                                             // Generate the HTML table row
                                                             echo "<tr>
@@ -1954,7 +1966,7 @@ if(mysqli_num_rows($result) <= 0) {
                                 <h4 class="fs-4">Employee Request</h4>
                             </div>
                             <div class="request-button w-100" style="height: 13%">
-                                <div class="request-button-container border border-secondary rounded d-flex flex-row justify-content-between align-items-center pl-2 pr-2" style="height: 100%; background-color: #cececece; width: 85% ">
+                                <div class="request-button-container border border-secondary rounded d-flex flex-row justify-content-between align-items-center pl-2 pr-2" style="height: 100%; background-color: #cececece; width: 98.8% ">
                                     <div class="req-btn rounded d-flex flex-row align-items-center highlight p-2 justify-content-around" style="height: 80%; width: 22%; cursor: pointer;" id="request">
                                         <h5>All Request </h5>
                                         <div class="border d-flex flex-row align-items-center justify-content-center mb-2 rounded" style="height: 1.7em; width: 1.7em">

@@ -58,7 +58,7 @@ if (isset($_POST["import"])) {
               if (!$updateResult) {
                   echo "Error updating data: " . mysqli_error($conn);
               }else{
-                    header("Location: ../../Piece_rate?updated");
+                    header("Location: Piece_rate?updated");
               }
           } else {
               // If the unit type doesn't exist, insert a new record
@@ -68,7 +68,7 @@ if (isset($_POST["import"])) {
               if (!$insertResult) {
                   echo "Error inserting data: " . mysqli_error($conn);
               }else{
-                header("Location: ../../Piece_rate?inserted");
+                header("Location: Piece_rate?inserted");
               }
           }
       }

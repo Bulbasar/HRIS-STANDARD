@@ -104,7 +104,7 @@ session_start();
 </style>
 
 <!---------------------------------------- MAIN CONTAINER START ------------------------------------------->
-<div class="container mt-5"  >
+<div class="container mt-5"style="position: absolute; top: 10%; left: 16.5%"  >
                     <div class="card">
                         <div class="card-body" style="background-color: #fff; height: 48em;">
                             <h2 class="head_text">Generate Payroll</h2>

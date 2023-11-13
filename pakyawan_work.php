@@ -685,6 +685,26 @@ session_start();
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script>
+   var today = new Date();
+
+    // Set the max attribute to today's date
+    var maxDateFormatted = today.toISOString().split("T")[0];
+    document.getElementById("startDate").setAttribute("max", maxDateFormatted);
+    document.getElementById("start_date").setAttribute("max", maxDateFormatted);
+
+    // Calculate the date 18 years ago
+    var minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+
+    // Format the minDate as YYYY-MM-DD
+    var minDateFormatted = minDate.toISOString().split("T")[0];
+
+    // Set the min attribute of the input element
+    document.getElementById("startDate").setAttribute("min", minDateFormatted);
+    document.getElementById("start_date").setAttribute("min", minDateFormatted);
+
+</script>
+
 
     <script>
 document.getElementById("employeeDropdown").addEventListener("change", function() {
