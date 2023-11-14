@@ -1,7 +1,7 @@
 <?php
 if(isset($_POST['btn_delete_modal'])){
     include "../../config.php";
-    echo $cutOffID = $_POST['name_CutoffID'];
+     $cutOffID = $_POST['name_CutoffID'];
 
     $sql = "DELETE FROM `cutoff_tb` WHERE `col_ID` = '$cutOffID'";
     $result = mysqli_query($conn, $sql);
@@ -10,15 +10,15 @@ if(isset($_POST['btn_delete_modal'])){
         $result = mysqli_query($conn, $sql);
         if ($result) {
     
-            header ("Location: ../../cutoff.php?msg= Record deleted Successfully");
+            header ("Location: ../../cutoff.php?deleted");
         }
         else {
-            echo "Failed: " . mysqli_error($conn);
+            header ("Location: ../../cutoff.php?notdeleted");
         }
 
     }
     else {
-        echo "Failed: " . mysqli_error($conn);
+        header ("Location: ../../cutoff.php?notdeleted");
     }
 
 }

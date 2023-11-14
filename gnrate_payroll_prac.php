@@ -967,6 +967,15 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                         include 'Data Controller/Payroll/check_holiday_toDEduct.php'; //to check ilan ang date ng may holiday para ma minus sa salary at d magdoble ang salary
                                                         $row_holiday_to_deduct_holiday = $row_emp['drate'] * $num_days_holiday; //Dapat mabawasan ko sa mga date daily mga pinasok na holiday
 
+                                                        $select_holiday_not_timein = "SELECT COUNT(`date`) as num_holiday_not_timein FROM attendances WHERE `status` = 'Present' AND time_in = '00:00:00' AND time_out = '00:00:00' AND `empid` = $emp_ID AND `date` BETWEEN  '$str_date' AND  '$end_date'";
+                                                        $result_holiday_not_present = mysqli_query($conn, $select_holiday_not_timein);
+                                                        if(mysqli_num_rows($result_holiday_not_present) > 0){
+                                                            $row_holiday_not_present = mysqli_fetch_assoc($result_holiday_not_present);
+                                                            $num_holiday_not_timein = $row_emp['drate'] * $row_holiday_not_present['num_holiday_not_timein']; // for holiday paid pero d pumasok ang employee pero bayad
+                                                        }else{
+                                                            $num_holiday_not_timein = $row_emp['drate'] * 0;
+                                                        }
+                                                        
                                                         //-------------------------------Loan Request Query-----------------------------\\
                                                         include 'Data Controller/Payroll/PayrollCompute/Loandata.php'; 
                                                         //-------------------------------Loan Request Query-----------------------------\\        

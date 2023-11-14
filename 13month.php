@@ -58,43 +58,43 @@ if(!empty($_GET['status'])){
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php 
-      
-      include 'configHardware.php';
-      
-      
-      ?>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php 
+    
+    include 'configHardware.php';
+    
+    
+    ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
-    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css">
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css">
 
-        <!-- skydash -->
+    <!-- skydash -->
 
-    <link rel="stylesheet" href="skydash/feather.css">
-    <link rel="stylesheet" href="skydash/themify-icons.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css">
-    <link rel="stylesheet" href="skydash/vendor.bundle.base.css">
-    <link rel="stylesheet" href="skydash/style.css">
-    <script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/try.css">
-    <link rel="stylesheet" href="css/13month.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/dtRecordsResponsives.css">
-    <link rel="stylesheet" type="text/css" href="css/virtual-select.min.css">
-    <title>13 Month Pay</title>
+<link rel="stylesheet" href="skydash/feather.css">
+<link rel="stylesheet" href="skydash/themify-icons.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css">
+<link rel="stylesheet" href="skydash/vendor.bundle.base.css">
+<link rel="stylesheet" href="skydash/style.css">
+<script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="css/try.css">
+<link rel="stylesheet" href="css/13month.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/dtRecordsResponsives.css">
+<link rel="stylesheet" type="text/css" href="css/virtual-select.min.css">
+<title>13 Month Pay</title>
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Barlow&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-    </style>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Barlow&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+</style>
 </head>
 <body>
 <header>
@@ -269,8 +269,8 @@ if(!empty($_GET['status'])){
 
 
         <div class="main-panel mt-5" style="margin-left: 15%; position: absolute; top:0;">
-            <div class="content-wrapper mt-4" style="background-color: #f4f4f4">
-            <div class="card mt-3" style=" width: 1550px; height:790px; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
+           <div class="content-wrapper mt-4" style="background-color: #f4f4f4">
+               <div class="card mt-3" style=" width: 1550px; height:790px; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
                 <div class="card-body">
 
                                 <div class="row">
@@ -436,6 +436,19 @@ if(!empty($_GET['status'])){
                                 </div>
                             </div>
 
+                            <div id="nofound" class="modals">
+                                <span class="close">&times;</span>
+                                <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+                                    <div class="border border-danger d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                                        <i class="fa-solid fa-exclamation bouncing-icon" style="font-size: 6em; font-weight: 400; color: red"></i>
+                                    </div>
+                                    <h4 class="mt-3">No attendance found</h4>
+                                </div>
+                                <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+                                    <button class="btn border border-black btn-closes">Close</button>
+                                </div>
+                            </div>
+
 
                   </div>
                </div>
@@ -479,7 +492,7 @@ if(!empty($_GET['status'])){
 
     // Remove the parameter from the URL
     var urlParams = new URLSearchParams(window.location.search);
-    urlParams.delete(modalId === 'duplicateModal' ? 'error' : modalId === 'insertedModal' ? 'inserted' : modalId === 'deletecompletemodal' ? 'deleted' :  modalId === 'notdeletemodal' ? 'notdeleted' : modalId === 'existedModal' ? 'existed' : modalId === 'employeeinsertedModal' ? 'employee' : 'noattendance');
+    urlParams.delete(modalId === 'duplicateModal' ? 'error' : modalId === 'insertedModal' ? 'inserted' : modalId === 'deletecompletemodal' ? 'deleted' :  modalId === 'notdeletemodal' ? 'notdeleted' : modalId === 'existedModal' ? 'existed' : modalId === 'employeeinsertedModal' ? 'employee' :  modalId === 'noattendanceModal' ? 'noattendance' : 'notfound');
     var newUrl = window.location.pathname + '?' + urlParams.toString();
     window.history.replaceState({}, document.title, newUrl);
   }
@@ -507,6 +520,9 @@ if(!empty($_GET['status'])){
     }
     if (urlParams.has('noattendance')) {
       showModal('noattendanceModal', 'No Employee attendance!');
+    }
+    if (urlParams.has('notfound')) {
+      showModal('nofound', 'No Data Found!');
     }
   };
 

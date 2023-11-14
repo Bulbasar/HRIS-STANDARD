@@ -31,7 +31,7 @@
             $RunExist = mysqli_query($conn, $CheckExisting);
     
             if(mysqli_num_rows($RunExist) > 0){
-                header("Location: ../../cutoff.php?error=This employee has already been added to the cutoff");
+                header("Location: ../../cutoff.php?existed");
                 echo "wala nga";
                 exit();
             }
@@ -54,7 +54,7 @@
                 if ($hasPresentStatus) {
                     $employeesToAdd[] = $empID; // Store the selected employee ID
                 } else {
-                    header("Location: ../../cutoff.php?error=No 'Present' attendance found for employee on $strDate to $endDate");
+                    header("Location: ../../cutoff.php?noattendance");
                     exit();
                 }
 
@@ -73,14 +73,14 @@
             $query_run = mysqli_query($conn, $query);
     
             if ($query_run) {
-                header("Location: ../../cutoff.php?msg=Employees added for cutoff $startDate to $endDate successfully");
+                header("Location: ../../cutoff.php?employee");
                 exit();
             } else {
-                header("Location: ../../cutoff.php?error=Error adding employees to empcutoff_tb");
+                header("Location: ../../cutoff.php?notfound");
                 exit();
             }
         } else {
-            header("Location: ../../cutoff.php?error=No employees with attendance data found for the specified period");
+            header("Location: ../../cutoff.php?noattendance");
             exit();
         }
     }

@@ -29,10 +29,12 @@ if(isset($_POST['thirteen-submit'])){
                 if($PresentStatus){
                     $multiEmpid[] = $employeeId;
                 }
+            } else {
+                header("Location: ../../13month.php?notfound");
+                exit();
             }
         }
         
-
         if (!empty($multiEmpid)) {
             $cutchecking = "SELECT * FROM thirteencutoff_tb WHERE `month` = '$month' AND `year` = '$year' AND `start_date` = '$datestart' AND `end_date` = '$dateend'";
             $checkresult = mysqli_query($conn, $cutchecking);
@@ -65,6 +67,9 @@ if(isset($_POST['thirteen-submit'])){
                 header("Location: ../../13month.php?error");
                 exit();
             }
+        } else {
+            header("Location: ../../13month.php?notfound");
+            exit();
         }
     
 }

@@ -117,9 +117,9 @@ if(!empty($_GET['status'])){
 
                          <?php
                                 include 'config.php';
-                                if(isset($_POST['viewpayslip'])){
+                                if(isset($_POST['view_emp_thirteen'])){
                                 $cutoff_thirteen = $_POST['view_emp_thirteen'];
-                             
+                            
                                 $query_thirteen = "SELECT * FROM thirteencutoff_tb WHERE id = '$cutoff_thirteen'";
                                 $res_query = mysqli_query($conn, $query_thirteen);
                                 $thirteenRow = $res_query->fetch_assoc();
@@ -132,7 +132,7 @@ if(!empty($_GET['status'])){
                                 $getEmp = "SELECT * FROM empthirteen_tb WHERE `cut_id` = '$cutoff_thirteen'";
                                 $empresult = mysqli_query($conn, $getEmp);
                                 while($emprow = $empresult->fetch_assoc()){
-                                 $EmployeeID = $emprow['empid'];
+                                    $EmployeeID = $emprow['empid'];
                                 
                                 $payruleQuery = "SELECT 
                                     payrule_tb.id,
@@ -140,6 +140,7 @@ if(!empty($_GET['status'])){
                                     employee_tb.empid,
                                     employee_tb.payrules
                                 FROM employee_tb INNER JOIN payrule_tb ON employee_tb.payrules = payrule_tb.rule_name WHERE empid = '$EmployeeID'";
+                                
                                 $payruleResult = mysqli_query($conn, $payruleQuery);
                                 if($payruleResult){
                                     $payrow = $payruleResult->fetch_assoc();
@@ -156,40 +157,99 @@ if(!empty($_GET['status'])){
                                     $companyname = "";
                                 }
 
-                               //-------------------Path sa code ng calculation sa sched-------------------\\
-                               include 'Data Controller/13Month/Sched-Calculation.php';
-                               //-------------------Path sa code ng calculation sa sched-------------------\\
-                                
-                               //-------------------Path sa code ng deduction para sa late-------------------\\
-                               include 'Data Controller/13Month/Deduction_Late.php';
-                               //-------------------Path sa code ng deduction para sa late-------------------\\
+                                        $empschedQueries = mysqli_query($conn, "SELECT * FROM empschedule_tb WHERE `empid` = '$EmployeeID'");
+                                        if($empschedQueries->num_rows > 0){
+                                            $empschedRows = $empschedQueries->fetch_assoc();
+                                            $schedulenames = $empschedRows['schedule_name'];
 
-                               //-------------------Path sa code ng computation para sa OT-------------------\\
-                               include 'Data Controller/13Month/OT-Computation.php';
-                               //-------------------Path sa code ng computation para sa OT-------------------\\                                      
-                                
-                               //-------------------Path sa code ng deduction para sa UT-------------------\\
-                               include 'Data Controller/13Month/UT-Computation.php';
-                               //-------------------Path sa code ng deduction para sa UT-------------------\\
-                               
-                               //-------------------Path sa code ng total sa working hours at late-------------------\\
-                               include 'Data Controller/13Month/Totalworkhours-late.php';
-                               //-------------------Path sa code ng total sa working hours at late-------------------\\ 
+                                            $schedQueries = mysqli_query($conn, "SELECT * FROM `schedule_tb` WHERE `schedule_name` = '$schedulenames'");
+                                            if($schedQueries->num_rows > 0){
+                                                $row_Scheds = $schedQueries->fetch_assoc();
+                                            }else{
+                                                echo "No results found schedule.";
+                                            }
+                                        }else{
+                                            echo "No results found.";
+                                        }
 
-                               //-------------------Path sa code ng total LWOP, Absent at Present-------------------\\
-                               include 'Data Controller/13Month/TotalLWOP-Absent-Present.php';
-                               //-------------------Path sa code ng total LWOP, Absent at Present-------------------\\      
-                               
-                               $Deductions = $AbsentDeduction + $LateTotalDeduction + $UTtotaldeduction + $LWOPDeduction;
-                               
-                               if($EmpPayRule === 'Fixed Salary'){
-                                    $Salary = $EmpSalary - $Deductions;
-                                } else if ($EmpPayRule === 'Daily Paid'){
-                                    $CloneSalary = $EmpDrate * $Totaldailyworks;
-                                    $Salary = $CloneSalary - $Deductions;
+                                //-------------------Path sa code ng deduction para sa late-------------------\\
+                                include 'Data Controller/13Month/PayrollCompute/Schedule_basis.php';
+                                //-------------------Path sa code ng deduction para sa late-------------------\\  
+
+                                //-------------------Path sa code ng deduction para sa late-------------------\\
+                                include 'Data Controller/13Month/PayrollCompute/Totalwork_late_ut.php';
+                                //-------------------Path sa code ng deduction para sa late-------------------\\ 
+
+                                //-------------------Path sa code ng deduction para sa late-------------------\\
+                                include 'Data Controller/13Month/PayrollCompute/Late-Deduction.php';
+                                //-------------------Path sa code ng deduction para sa late-------------------\\   
+                                 
+                                //-------------Computation sa pagdeduct ng undertime---------------------------\\
+                                include 'Data Controller/13Month/PayrollCompute/UndertimeCompute.php';
+                                //-------------------------End sa calculation para magdeduct sa undertime-------\\
+                                
+                                //-------------------Path sa code ng deduction para sa late-------------------\\
+                                include 'Data Controller/13Month/PayrollCompute/Absent-LWOP-Present.php';
+                                //-------------------Path sa code ng deduction para sa late-------------------\\
+
+                                $monthCount = 0;
+                                $countMonthsQuery = "SELECT COUNT(DISTINCT MONTH(`date`)) as month_count FROM attendances WHERE `empid` = '$EmployeeID' AND `date` BETWEEN '$str_date' AND '$end_date'";
+                                $resultCountMonths = mysqli_query($conn, $countMonthsQuery);
+
+                                if ($resultCountMonths) {
+                                    $row = mysqli_fetch_assoc($resultCountMonths);
+                                    $monthCount = $row['month_count'];
+
+                                } else {
+                                   $monthCount = 0;
                                 }
-                            
-                                $ThirteenMonthPay = $Salary / 12;
+                                
+                                
+                                $monthsalary = 0;
+                                if($EmpPayRules === 'Fixed Salary'){
+                                    $normalPay = $BasicSalaries;
+
+                                    $presentsalary = $normalPay * $monthCount;
+                                    $deductionsalary = $TotalDeductionLate + $UTtotaldeduction;
+                                    $absentdeduction = $AbsentDeduction + $LWOPDeduction;
+                                    $totaldeduct = $deductionsalary + $absentdeduction;
+
+                                    $monthsalary = $presentsalary - $totaldeduct;
+
+                                    $thirteenmonth = $monthsalary / 12;
+                                } else if($EmpPayRules === 'Daily Paid'){
+                                    $normalPay = $DailyRates;
+
+                                    $presentsalary = $normalPay * $TotalOnLeavePresent;
+                                    $deductionsalary = $TotalDeductionLate + $UTtotaldeduction;
+                                    $absentdeduction = $AbsentDeduction + $LWOPDeduction;
+
+                                    $totaldeduct = $deductionsalary + $absentdeduction;
+                                    
+                                    $monthsalary = $presentsalary - $totaldeduct;
+                                    $thirteenmonth = $monthsalary / 12;
+                                }
+
+                                    
+                                //-------------------Path sa code ng calculation sa sched-------------------\\
+                                include 'Data Controller/13Month/Sched-Calculation.php';
+                                //-------------------Path sa code ng calculation sa sched-------------------\\
+
+                                $months = array();
+                                $start = new DateTime($str_date);
+                                $end = new DateTime($end_date);
+                                $interval = DateInterval::createFromDateString('1 month');
+                                $period = new DatePeriod($start, $interval, $end->modify('+1 month'));
+
+                                foreach ($period as $dt) {
+                                    $months[] = $dt->format('F');
+                                }
+
+                                $months_variable = implode($months);
+
+                                //-------------------Path sa code ng computation na nagdidisplay sa payslip modal-------------------\\ dito lang dapat siya nakapwesto
+                                include 'Data Controller/13Month/calculation_salary_modal.php';
+                                //-------------------Path sa code ng computation na nagdidisplay sa payslip modal-------------------\\
                             ?>
                                 <div class="card" style="background-color: inherit;">
                                     <div class="card-body" style="width: 60%;">
@@ -200,15 +260,15 @@ if(!empty($_GET['status'])){
                                                         <table class="table table-bordered tabless">
                                                             <tr>
                                                                 <th>COMPANY NAME</th>
-                                                                <td id="compName"></td>
+                                                                <td id="compName"><?php echo $companyname?></td>
                                                             </tr>
                                                             <tr>
                                                                 <th>EMPLOYEE ID</th>
-                                                                <td id="empids"></td>
+                                                                <td id="empids"><?php echo $EmployeeID?></td>
                                                             </tr>
                                                             <tr>
                                                                 <th>EMPLOYEE NAME</th>
-                                                                <td id="empnames"></td>
+                                                                <td id="empnames"><?php echo $Fullnames?></td>
                                                             </tr>
                                                         </table>
                                                     </div>  
@@ -217,7 +277,7 @@ if(!empty($_GET['status'])){
                                                         <table class="table table-bordered tablesss">
                                                             <tr>
                                                                 <th>PAY PERIOD</th>
-                                                                <td id="cutoffdate"></td>
+                                                                <td id="cutoffdate"><?php echo $str_date .' to '. $end_date?></td>
                                                             </tr>
                                                             <tr>
                                                                 <th>PAY OUT</th>
@@ -236,7 +296,7 @@ if(!empty($_GET['status'])){
                                                         <table class="table table-bordered tablessss">
                                                             <tr>
                                                                 <th>EMPLOYEE STATUS</th>
-                                                                <td id="empstatus"></td>
+                                                                <td id="empstatus" class="<?php echo $EmpStatuses === 'Active' ? 'active-status' : 'inactive-status'; ?>"><?php echo $EmpStatuses?></td>
                                                             </tr>
                                                         </table>
                                                     </div>
@@ -250,12 +310,27 @@ if(!empty($_GET['status'])){
                                                     </div>
                                                     <div class="lefttable-contents">
                                                         <div class="monthtagging">
-
+                                                            <p> 
+                                                            <ul style="list-style-type: none; padding: 0;">
+                                                                <?php 
+                                                                    foreach ($months_array as $month_name => $data) {
+                                                                        echo "<li>" . $month_name . "</li>";
+                                                                    }
+                                                                ?>
+                                                            </ul>
+                                                        </p>
                                                         </div>
                                                         <div class="basicpay-value">
-                                                            <p id=""></p>
-                                                            <p id=""></p>
-                                                            <p id=""></p>
+                                                            <p id="">
+                                                            <ul style="list-style-type: none; padding: 0;">
+                                                                <?php 
+                                                                foreach ($months_array as $month_name => $month_data) {
+                                                                    $overall_salary = $month_data['overall_salary'];
+                                                                    echo "<li>" . number_format($overall_salary,2) . "</li>";
+                                                                    }
+                                                                ?>
+                                                            </ul>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                     <div class="lefttable-footer">
@@ -268,7 +343,7 @@ if(!empty($_GET['status'])){
                                                     </div>
                                                 </div> 
 
-                                                <div class="middle-maincontainers">
+                                                <!-- <div class="middle-maincontainers">
                                                     <div class="midheads">
                                                         <p>MONTHS</p>
                                                         <p>LATE(S)</p>
@@ -305,7 +380,7 @@ if(!empty($_GET['status'])){
                                                             <p id=""></p>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                                 <div class="right-maincontainers">
                                                     <div class="rightheads">
