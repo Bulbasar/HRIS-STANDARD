@@ -926,7 +926,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                                 $totalOT_pay_holiday = 0;
                                                                 $totalOT_pay_holiday_restday = 0;
                                                                 $double_pay_holiday_restday = 0;
-
+                                                                $holidaypay = 0;
                                                                 foreach($attArray as $HolidayAttendance){
                                                                     $holidayArray = $HolidayAttendance['DateAttendance'];
 
@@ -967,7 +967,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                         include 'Data Controller/Payroll/check_holiday_toDEduct.php'; //to check ilan ang date ng may holiday para ma minus sa salary at d magdoble ang salary
                                                         $row_holiday_to_deduct_holiday = $row_emp['drate'] * $num_days_holiday; //Dapat mabawasan ko sa mga date daily mga pinasok na holiday
 
-                                                        $select_holiday_not_timein = "SELECT COUNT(`date`) as num_holiday_not_timein FROM attendances WHERE `status` = 'Present' AND time_in = '00:00:00' AND time_out = '00:00:00' AND `empid` = $emp_ID AND `date` BETWEEN  '$str_date' AND  '$end_date'";
+                                                        $select_holiday_not_timein = "SELECT COUNT(`date`) as num_holiday_not_timein FROM attendances WHERE `status` = 'Present' AND time_in = '00:00:00' AND time_out = '00:00:00' AND `empid` = $EmployeeID AND `date` BETWEEN  '$str_date' AND  '$end_date'";
                                                         $result_holiday_not_present = mysqli_query($conn, $select_holiday_not_timein);
                                                         if(mysqli_num_rows($result_holiday_not_present) > 0){
                                                             $row_holiday_not_present = mysqli_fetch_assoc($result_holiday_not_present);
@@ -976,6 +976,9 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                                             $num_holiday_not_timein = $row_emp['drate'] * 0;
                                                         }
                                                         
+                                                        $holidaypay = @$holiday_rate_with_dpay + $num_holiday_not_timein;
+                                                        $holidayformatPay = number_format($holidaypay,2);
+
                                                         //-------------------------------Loan Request Query-----------------------------\\
                                                         include 'Data Controller/Payroll/PayrollCompute/Loandata.php'; 
                                                         //-------------------------------Loan Request Query-----------------------------\\        
@@ -1005,7 +1008,7 @@ $newInternetLabel = isset($_SESSION['newInternetLabel']) ? $_SESSION['newInterne
                                             <td style="font-weight: 400; display: none;"><?php echo $Totaldailyworks ?></td> <!--10-->
                                             <td style="font-weight: 400; display: none;"><?php echo $OTtime ?></td> <!--11-->
                                             <td style="font-weight: 400; display: none;"><?php echo $time_OT_TOTAL ?></td> <!--12-->
-                                            <td style="font-weight: 400; display: none;"><?php  ?></td> <!--13-->
+                                            <td style="font-weight: 400; display: none;"><?php echo $holidayformatPay?></td> <!--13-->
                                             <td style="font-weight: 400; display: none;"><?php echo $LeavewithPay?></td> <!--14-->
                                             <td style="font-weight: 400; display: none;"><?php echo round($TranspoAllowance,2)?></td> <!--15-->
                                             <td style="font-weight: 400; display: none;"><?php echo round($MealAllowance,2)?></td> <!--16-->
@@ -1574,7 +1577,7 @@ $(document).ready(function(){
         var ActualWorkDays = data[10];
         var OThours = data[11];
         var OTpay = data[12];
-        var holidaypay //13
+        var holidaypay = data[13];
         var LeavePay = data[14];
         var TransportAllowance = data[15];
         var MealAllowance = data[16];
@@ -1659,7 +1662,7 @@ $(document).ready(function(){
         $('#hidden_totalallowance').val(TotalAllowance);
         $('#hidden_Leavecount').val(LeaveCount);
         $('#hidden_LeavePay').val(LeavePay);
-        // $('#hidden_holidayPay').val(holidaypay);
+        $('#hidden_holidayPay').val(holidaypay);
         $('#hidden_totalEarn').val(BasictotalPay);
 
         $('#hidden_absentcount').val(NumberAbsent);

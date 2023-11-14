@@ -23,6 +23,7 @@ foreach ($inputData as $Employeeslip) {
     $newAllowance = $Employeeslip['newAllowance'];
     $TotalAllowances = $Employeeslip['totalAllowance'];
     $LeavewPay = $Employeeslip['leavePay'];
+    $HolidayPays = $Employeeslip['holidayPaying'];
     $TotalEarnings = $Employeeslip['Totalearn'];
     $Absentnumber = $Employeeslip['Absentcount'];
     $Absentdeductions = $Employeeslip['Deductabsent'];
@@ -48,7 +49,7 @@ foreach ($inputData as $Employeeslip) {
     if(mysqli_num_rows($slipRun) > 0){
         $response[] = array("status" => "error", "message" => "There's already existing data");
     }else{
-        $insertQuery = "INSERT INTO payslip_report_tb(`cutoff_ID`, `pay_rule`, `empid`, `col_frequency`, `cutoff_month`, `cutoff_startdate`, `cutoff_enddate`, `cutoff_num`, `working_days`, `basic_hours`, `basic_amount_pay`, `overtime_hours`, `overtime_amount`, `transpo_allow`, `meal_allow`, `net_allowance`, `add_allow`, `allowances`, `number_leave`, `total_earnings`, `absence`, `absence_deduction`, `sss_contri`, `philhealth_contri`, `tin_contri`, `pagibig_contri`, `other_contri`, `totalGovern_tb`, `total_late`, `tardiness_deduct`, `ut_time`, `undertime_deduct`, `number_lwop`, `lwop_deduct`, `total_deduction`, `net_pay`) VALUES ('$CutoffId', '$PayRules', '$Empid', '$Frequent', '$Cutoffmonth', '$CutoffstartDate', '$CutoffendDate', '$Cutoffnumber', '$WorkingDays', '$Workinghours', '$Basicpayslip', '$OvertimeHours', '$OvertimePay', '$TransportAllowance', '$MealAllowance', '$Internetallowance', '$newAllowance', '$TotalAllowances', '$LeavewPay', '$TotalEarnings', '$Absentnumber', '$Absentdeductions', '$SSScontri', '$Philhealthcontri', '$Tincontri', '$Pagibigcontri', '$newGovern', '$TotalGovernment', '$Latecount', '$Latedeductions', '$Undertimehours', '$Undertimedeductions', '$LWOPnumber', '$LWOPdeductions', '$DeductionTotal', '$Netpayslip')";
+        $insertQuery = "INSERT INTO payslip_report_tb(`cutoff_ID`, `pay_rule`, `empid`, `col_frequency`, `cutoff_month`, `cutoff_startdate`, `cutoff_enddate`, `cutoff_num`, `working_days`, `basic_hours`, `basic_amount_pay`, `overtime_hours`, `overtime_amount`, `transpo_allow`, `meal_allow`, `net_allowance`, `add_allow`, `allowances`, `number_leave`, `holiday_pay`, `total_earnings`, `absence`, `absence_deduction`, `sss_contri`, `philhealth_contri`, `tin_contri`, `pagibig_contri`, `other_contri`, `totalGovern_tb`, `total_late`, `tardiness_deduct`, `ut_time`, `undertime_deduct`, `number_lwop`, `lwop_deduct`, `total_deduction`, `net_pay`) VALUES ('$CutoffId', '$PayRules', '$Empid', '$Frequent', '$Cutoffmonth', '$CutoffstartDate', '$CutoffendDate', '$Cutoffnumber', '$WorkingDays', '$Workinghours', '$Basicpayslip', '$OvertimeHours', '$OvertimePay', '$TransportAllowance', '$MealAllowance', '$Internetallowance', '$newAllowance', '$TotalAllowances', '$LeavewPay', '$HolidayPays', '$TotalEarnings', '$Absentnumber', '$Absentdeductions', '$SSScontri', '$Philhealthcontri', '$Tincontri', '$Pagibigcontri', '$newGovern', '$TotalGovernment', '$Latecount', '$Latedeductions', '$Undertimehours', '$Undertimedeductions', '$LWOPnumber', '$LWOPdeductions', '$DeductionTotal', '$Netpayslip')";
 
         $result = mysqli_query($conn, $insertQuery);
         
