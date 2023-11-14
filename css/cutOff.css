@@ -78,6 +78,7 @@ h3{
   color: black;
   border: none;
   font-size: medium;
+  text-decoration: none
 }
 .btnq:hover{
   text-decoration: underline;

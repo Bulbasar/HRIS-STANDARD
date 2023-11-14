@@ -194,12 +194,13 @@ background-color: white;
 }
 
 .box-contents{
-    border: 1px solid #DDDDDD;
+    /* border: 1px solid #DDDDDD; */
     border-radius: 6px;
     height: 100%;
     width: 100%; 
     padding: 20px;
     overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .cutoff-box-contents {
@@ -213,6 +214,7 @@ background-color: white;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -232,6 +234,7 @@ background-color: white;
     display: flex;
     justify-content: center;
     align-items: center; 
+
 }
 
 .rectangle-dateperiod{
@@ -542,4 +545,12 @@ background-color: white;
     text-transform: uppercase;
     font-family: Poppins, 'Source Sans Pro';
     padding: 8px;
+}
+
+.active-status {
+    color: green;
+}
+
+.inactive-status {
+    color: red;
 }

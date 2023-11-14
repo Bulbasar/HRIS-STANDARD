@@ -37,15 +37,10 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Cutoff</title>
     <?php 
-      
       include 'configHardware.php';
-      
-      
-      ?>
+    ?>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
@@ -57,101 +52,30 @@ session_start();
 <link rel="stylesheet" href="skydash/themify-icons.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css">
 <link rel="stylesheet" href="skydash/vendor.bundle.base.css">
-
 <link rel="stylesheet" href="skydash/style.css">
-
 <script src="https://kit.fontawesome.com/803701e46b.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="css/cutOff.css">
-    <link rel="stylesheet" href="css/gnrate_payroll.css">
-    <link rel="stylesheet" href="css/try.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <!-- <script type="text/javascript" src="js/multi-select-dd.js"></script> -->
-    <!-- para sa font ng net pay -->
-    <link rel="stylesheet" type="text/css" href="css/virtual-select.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Barlow&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-    </style>
-  
-
-
+<link rel="stylesheet" href="css/cutOff.css">
+<link rel="stylesheet" href="css/gnrate_payroll.css">
+<link rel="stylesheet" href="css/try.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/13month.css">
+<!-- <script type="text/javascript" src="js/multi-select-dd.js"></script> -->
+<!-- para sa font ng net pay -->
+<link rel="stylesheet" type="text/css" href="css/virtual-select.min.css">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Barlow&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+</style>  
 </head>
 <body>
-
 <header>
     <?php 
         include 'header.php';
     ?>
 </header>
-
-<style>
-    .multiselect-dropdown{
-        width: 400px !important;
-        margin-left: 20px !important;
-        padding: 10px !important;
-    }
-     .multiselect-dropdown-all-selector label{
-        background-color: white;
-     }
-    .multiselect-dropdown-all-selector{
-       
-        display: flex !important;
-        flex-direction: row !important;
-    }
-
-    .multiselect-dropdown-list div{
-   
-        display: flex !important;
-        flex-direction: row !important;
-    }
-
-    .multiselect-dropdown-list div label{
-        background-color: white;
-    }
-    .placeholder{
-        display: none !important;
-        cursor: default !important;
-        background-color: #fff !important;
-        color: #fff !important;
-        display:none !important;
-        
-    }
-
-    .multiselect-dropdown-list-wrapper span.placeholder{
-        display: none !important;
-        cursor: default !important;
-        background-color: #fff !important;
-        color: #fff !important;
-        display:none !important; 
-    }
-    .multiselect-dropdown{
-        height: 40px !important; 
-        width: 100% !important;
-        margin-left: 0 !important;
-        border: #CED4DA 1px solid !important;
-
-    }
-    
-    #multi_option{
-	        max-width: 100%;
-	        width: 100%;
-        }
-        #multi_options{
-	        max-width: 100%;
-	        width: 100%;
-        }
-
-        .dropdown{
-            background-color: inherit !important;
-            border: none !important;
-        }
-        #notificationDropdown:hover{
-            background-color: inherit !important;
-        }
-</style>
 <!-- Modal -->
 <div class="modal fade" id="modal_create" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
@@ -159,22 +83,10 @@ session_start();
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New Cutoff</h1>
 
-       
-
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-    <form action="Data Controller/Payroll/Save_cutOff.php" method="post">
-        <div class="modal-body">
-            
-            <!-- <div class="row mt-1">
-                    <div class="col-6"  style="border: 1px solid #D1D1D1; padding: 10px;">
-                        Company : 
-                    </div>
-                    <div class="col-6"  style="border: 1px solid #D1D1D1; padding: 10px;">
-                        Slastech Solutions INC.
-                    </div>
-            </div> END row1 -->
-            <!---------------- BREAK -------------->
+        <form action="Data Controller/Payroll/Save_cutOff.php" method="post">
+            <div class="modal-body">
 
             <div class="row" style=" border: 1px solid #D1D1D1; padding-top: 10px;">
                     <div class="col-6 mt-2">
@@ -185,9 +97,9 @@ session_start();
                             <select id="" required name="name_type" class='form-select form-select-m' aria-label='.form-select-sm example' style='cursor: pointer;'>
                                 <option selected value='Standard'>Standard</option>
                             </select>
-                        </div> <!-- Second mb-3 end-->
-                    </div> <!-- col-6 end-->
-            </div> <!--END row2 -->
+                        </div> 
+                    </div> 
+               </div> 
             <!---------------- BREAK -------------->
 
             <div class="row" style=" border-bottom: 1px solid #D1D1D1; border-right: 1px solid #D1D1D1; border-left: 1px solid #D1D1D1; padding-top: 10px;">
@@ -201,9 +113,9 @@ session_start();
                                 <option value='Semi-Month'>Semi-Month</option>
                                 <option value='Weekly'>Weekly</option>
                             </select>
-                        </div> <!-- Second mb-3 end-->
-                    </div> <!-- col-6 end-->
-            </div> <!--END row3 -->
+                        </div> 
+                    </div> 
+             </div> 
             <!---------------- BREAK -------------->
 
             <div class="row" style=" border-bottom: 1px solid #D1D1D1; border-right: 1px solid #D1D1D1; border-left: 1px solid #D1D1D1; padding-top: 10px;">
@@ -227,8 +139,8 @@ session_start();
                                 <option value='November'>November</option>
                                 <option value='December'>December</option>
                             </select>
-                        </div> <!-- Second mb-3 end-->
-                    </div> <!-- col-6 end-->
+                        </div> 
+                    </div> 
 
                     <div class="col-3 mt-3">
                         Year : 
@@ -239,9 +151,9 @@ session_start();
                                 <option disabled selected value=''>Pick a Year</option>
                                 <option value='2023'>2023</option>
                             </select>
-                        </div> <!-- Second mb-3 end-->
-                    </div> <!-- col-6 end-->
-            </div> <!--END row4 -->
+                        </div> 
+                    </div> 
+               </div> 
             <!---------------- BREAK -------------->
 
             <div class="row" style=" border-bottom: 1px solid #D1D1D1; border-right: 1px solid #D1D1D1; border-left: 1px solid #D1D1D1; padding-top: 10px;">
@@ -252,8 +164,8 @@ session_start();
                         <div class="input-group mb-3">
                             <input type="date" required name="name_strDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                         </div>
-                    </div> <!-- col-6 end-->
-            </div> <!--END row5 -->
+                    </div> 
+            </div> 
             <!---------------- BREAK -------------->
             <div class="row" style=" border-bottom: 1px solid #D1D1D1; border-right: 1px solid #D1D1D1; border-left: 1px solid #D1D1D1; padding-top: 10px;">
                     <div class="col-6 mt-2">
@@ -263,8 +175,8 @@ session_start();
                         <div class="input-group mb-3">
                             <input type="date" required  name="name_endDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                         </div>
-                    </div> <!-- col-6 end-->
-            </div> <!--END row6 -->
+                    </div>
+               </div> 
             <!---------------- BREAK -------------->
             <div class="row" style=" border-bottom: 1px solid #D1D1D1; border-right: 1px solid #D1D1D1; border-left: 1px solid #D1D1D1; padding-top: 10px;">
                     <div class="col-6 mt-2">
@@ -303,9 +215,9 @@ session_start();
                             <?php echo $option ?>
                         </select>
 
-                        </div>  <!--mb-3 end--->
-                    </div> <!-- col-6 end-->
-            </div> <!--END row3 -->
+                        </div>  
+                    </div> 
+               </div> 
             
              <!-- <p>Selected Department ID: <span id="selectedDepartment"><?php echo @$selectedDepartment ?></span></p> -->   
 
@@ -321,9 +233,9 @@ session_start();
                             </select>
                         </div>
 
-                        </div>  <!--mb-3 end--->
-                    </div> <!-- col-6 end-->
-            </div> <!--END row3 -->
+                        </div>
+                    </div>
+              </div> 
             <!---------------- BREAK -------------->
 
         </div> <!--END Modal-Body -->
@@ -332,206 +244,366 @@ session_start();
             <button type="submit" name="btn_save" id="btn_save" class="btn btn-primary">Save</button>
         </div>
     </form>
-    </div> <!--END Modal-Content -->
-  </div><!--END Modal-Dialog -->
-</div> <!--END Modal -->
-
-
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-body" style="background-color: #fff">
-
-        <h3 class="mt-2">Cutoff List</h3>
-        <button class="btn_Create mt-3" data-bs-toggle="modal" data-bs-target="#modal_create" style="margin-left: 15px;">
-            Create New
-        </button>
-            <!-- ------------------para sa message na sucessful START -------------------->
-            <?php
-
-            if (isset($_GET['msg'])) {
-                $msg = $_GET['msg'];
-                echo '<div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
-                '.$msg.'
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>';
-            }
-
-
-            ?>
-            <!-------------------- para sa message na sucessful ENd --------------------->
-
-
-            <!----------------------para sa message na error START --------------------->
-            <?php
-                if (isset($_GET['error'])) {
-                $error = $_GET['error'];
-                echo '<div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
-                '.$error.'
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>';
-            }
-
-            ?>
-            <!-------------------- para sa message na error ENd --------------------->
-
-        <ul class="nav nav-tabs mt-3">
-                    <li class="nav-item">
-                        <a class="" aria-current="page" data-bs-toggle="tab" href="#Standard" style="text-decoration: none; color: black;" > <h4>Standard</h4> </a>
-                    </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#Allowance">----</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#Loan">----</a>
-                    </li> -->
-                </ul>
-
-    <div class="tab-content">
-        <form action="gnrate_payroll_prac.php" method="post">
-        <div class="tab-pane" id="Standard">
-            <div class="scroll" style="max-height:500px; overflow: scroll;">
-                <?php 
-                include 'config.php';
-                // Fetch data from the MySQL table
-                $sql = "SELECT * FROM cutoff_tb WHERE col_type = 'Standard'";
-                $result = mysqli_query($conn, $sql);
-                // Display data in div elements
-                if (mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        echo '<div class="stndrd_div">';
-                            echo '<div class="head">';
-                                echo '<h3 class="ml-3 mt-4">'. $row["col_month"] .'</h3>';
-                                echo '<h3 class="ml-3 mt-4">'. $row["col_year"] .'</h3>';
-                                echo '<p class="tag">Preview</p>';
-                            echo '</div>';
-                            echo '<p class="type ml-3 mt-3">'. $row["col_type"] .'</p>';
-                            echo '<div class="div">';
-                                echo '<div class="head">';
-                                    echo '<p class="c1 ml-3 mt-4">Cutoff No. :</p>';
-                                    echo '<p class="c1 ml-2 mt-4">'. $row["col_cutOffNum"] .'</p>';
-                                echo '</div>';
-                                echo '<div class="head">';
-                                    echo '<p class="c1 ml-3">Period :</p>';
-                                    echo '<p class="c1 ml-2">'. $row["col_startDate"] . ' to '.'</p>';
-                                    echo '<p class="c1 ml-2">'. $row["col_endDate"] .'</p>';
-                                echo '</div>';
-                                echo '<div class="head">';
-                                    echo '<p class="c1 ml-3">Frequency :</p>';
-                                    echo '<p class="c1 ml-2">'. $row["col_frequency"] .'</p>';
-                                echo '</div>';
-                            echo '</div>';
-                            echo '<div class="foot">';
-                                echo '<button type="submit" name="name_btnview" value="'. $row["col_ID"] .'" class="btnq">[ View ]</button>';
-                                echo '<button type="button" class="btnq btn-delete" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-id="' . $row["col_ID"] . '">[ Delete ]</button>';
-                                echo '<button type="button" class="btnq btn-addEmp" data-bs-toggle="modal" data-bs-target="#modal_addEMp" data-id1="' . $row["col_ID"] . '">[ Add Employee ]</button>';
-                            echo '</div>';
-                        echo '</div>';
-                    }
-                } else {
-                    // No data found
-                }
-                // Close connection
-                mysqli_close($conn);  
-                ?>
-            </div>
-        </div>
-</form>
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form action="actions/Payroll/delete.php" method="post">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="name_CutoffID" id="modal-input">
-                    Are you sure you want to delete this cutoff?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" name="btn_delete_modal"  class="btn btn-primary">Confirm</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="modal_addEMp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Employee</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-     
-            <div class="mb-3">
-                <h4>Department: </h4>
-                <?php
-                            include 'config.php';
-
-                            $sqls = "SELECT * FROM dept_tb WHERE col_ID != 1";
-
-                            $results = mysqli_query($conn, $sqls);
-
-                            $option = "";
-                            while ($rows = mysqli_fetch_assoc($results)) {
-                                $option .= "<option value='" . $rows['col_ID'] . "'>" . $rows['col_deptname'] . "</option> ";
-                            }
-                        ?>
-                        <select name="department" id="departmentDropdowns" class="form-select">
-                            <option value selected disabled>Select Department</option>
-                            <option value='All'>All</option>
-                            <?php echo $option ?>
-                        </select>
-            </div>
-                <!-- <p>Selected Department ID: <span id="selectedDepartment"><?php echo @$selectedDepartment ?></span></p> -->   
-
-            <div class="mb-3">
-                <h4>Select Employee: </h4>
-                <form action="actions/Payroll/addEmp.php" method="post">
-                <input type="hidden" name="name_AddEMp_CutoffID" id="ID_AddEMp_CutoffID">
-                <div id="employeeDropdowns">
-                            <select class="approver-dd dd-hide" name="name_empId[]" id="multi_options" multiple placeholder="Select Employee" data-silent-initial-value-set="false" style="display:flex; width: 380px;">
-                            </select>
-                        </div>
-                 
-            </div>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" name="btn_addEmp_modal" class="btn btn-primary">Add</button>
-      </div>
-      </form>
-    </div>
+    </div> 
   </div>
-</div>
+</div> 
 
-                    <!-- <div class="tab-pane" id= "Allowance">
-                        Allowance
-                    </div>
-                    <div class="tab-pane" id= "Loan">
-                            Loan
-                    </div> -->
+
+        <div class="main-panel mt-5" style="margin-left: 15%; position: absolute; top:0;">
+           <div class="content-wrapper mt-4" style="background-color: #f4f4f4">
+               <div class="card mt-3" style=" width: 1550px; height:790px; box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);">
+                <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h2 style="font-size: 30px; font-family: Poppins, 'Source Sans Pro';">Cutoff List</h2>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <button type="button" class="btn-cutoff" data-bs-toggle="modal" data-bs-target="#modal_create">
+                                            Create Cut Off
+                                        </button>
+                                    </div>
+                                </div>
+           
+
+    
+                                <div class="main-box-containers">
+                                    <div class="box-contents">
+                                        <form action="gnrate_payroll_prac.php" method="POST">
+                                            <?php 
+                                                include 'config.php';
+                                                $sql = "SELECT * FROM cutoff_tb WHERE col_type = 'Standard'";
+                                                $result = mysqli_query($conn, $sql);
+
+                                                if(mysqli_num_rows($result) > 0) {
+                                                    $counter = 0;
+                                                    echo '<div class="row" style="justify-content: space-evenly">';
+                                                    while($row = mysqli_fetch_assoc($result)) {
+                                                        $counter++;
+                                                        ?>
+                                                        <div class="cutoff-box-contents">
+                                                            <div class="month-and-button">
+                                                                <div class="tagmonth">
+                                                                    <?php echo $row['col_month'] .' '. $row['col_year'] .' ('. $row['col_frequency'].')'?>
+                                                                </div>
+                                                                <div class="threedots">
+                                                                     <i class="fa-solid fa-ellipsis dropdown-icon" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                                                <button type="submit" name="name_btnview" value="<?php echo $row['col_ID']?>" class="dropdown-item">View</button>
+                                                                                <button type="button" class="dropdown-item btn-delete" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-id="<?php echo $row['col_ID']?>">Delete</button>
+                                                                                <button type="button" class="dropdown-item btn-addEmp" data-bs-toggle="modal" data-bs-target="#modal_addEMp" data-id1="<?php echo $row['col_ID']?>">Add Employee</button>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="box-for-dateperiod">
+                                                                <div class="rectangle-dateperiod">
+                                                                        <div class="calendar-dateperiod">
+                                                                            <i class="fa-regular fa-calendar" style="color: #0d0d0d;"></i>
+                                                                            Date Period
+                                                                        </div>
+                                                                        <div class="startdate-enddate">
+                                                                            <?php echo $row['col_startDate'] .' to '. $row['col_endDate']?>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                        if($counter % 2 == 0 && $counter != mysqli_num_rows($result)) {
+                                                            echo '</div><div class="row" style="justify-content: space-evenly">'; // Isara ang naunang row at buksan ang bagong row
+                                                        }
+                                                    }
+                                                    echo '</div>';
+                                                }
+                                            ?>
+                                        </form>
+                                    </div>
+                                </div>
+
+
+
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="modal_addEMp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Employee</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                         <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <h4>Department: </h4>
+                                                    <?php
+                                                                include 'config.php';
+
+                                                                $sqls = "SELECT * FROM dept_tb WHERE col_ID != 1";
+
+                                                                $results = mysqli_query($conn, $sqls);
+
+                                                                $option = "";
+                                                                while ($rows = mysqli_fetch_assoc($results)) {
+                                                                    $option .= "<option value='" . $rows['col_ID'] . "'>" . $rows['col_deptname'] . "</option> ";
+                                                                }
+                                                            ?>
+                                                            <select name="department" id="departmentDropdowns" class="form-select">
+                                                                <option value selected disabled>Select Department</option>
+                                                                <option value='All'>All</option>
+                                                                <?php echo $option ?>
+                                                            </select>
+                                                </div>
+                                                    <!-- <p>Selected Department ID: <span id="selectedDepartment"><?php echo @$selectedDepartment ?></span></p> -->   
+
+                                                <div class="mb-3">
+                                                    <h4>Select Employee: </h4>
+                                                    <form action="actions/Payroll/addEmp.php" method="post">
+                                                    <input type="hidden" name="name_AddEMp_CutoffID" id="ID_AddEMp_CutoffID">
+                                                    <div id="employeeDropdowns">
+                                                        <select class="approver-dd dd-hide" name="name_empId[]" id="multi_options" multiple placeholder="Select Employee" data-silent-initial-value-set="false" style="display:flex; width: 380px;">
+                                                        </select>
+                                                    </div>
+                                                    
+                                                </div>
+                                            
+                                            </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" name="btn_addEmp_modal" class="btn btn-primary">Add</button>
+                                        </div>
+                                    </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <form action="actions/Payroll/delete.php" method="post">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="name_CutoffID" id="modal-input">
+                                                Are you sure you want to delete this cutoff?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" name="btn_delete_modal"  class="btn btn-primary">Confirm</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+
+
+                            <div id="duplicateModal" class="modals">
+                                <span class="close">&times;</span>
+                                <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+                                    <div class="border border-danger d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                                        <i class="fa-solid fa-exclamation bouncing-icon" style="font-size: 6em; font-weight: 400; color: red"></i>
+                                    </div>
+                                    <h4 class="mt-3">Cutoff is already existed!</h4>
+                                </div>
+                                <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+                                    <button class="btn border border-black btn-closes">Close</button>
+                                </div>
+                            </div>
+
+                            <div id="insertedModal" class="modals">
+                                <span class="close">&times;</span>
+                                <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+                                    <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                                    <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+                                    </div>
+                                    <h4 class="mt-3">Cutoff is created successfully!</h4>
+                                </div>
+                                <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+                                    <button class="btn border border-black btn-closes">Close</button>
+                                </div>
+                            </div>
+
+                            <div id="deletecompletemodal" class="modals">
+                                <span class="close">&times;</span>
+                                <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+                                    <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                                    <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+                                    </div>
+                                    <h4 class="mt-3">Cutoff is deleted successfully!</h4>
+                                </div>
+                                <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+                                    <button class="btn border border-black btn-closes">Close</button>
+                                </div>
+                            </div>
+
+                            <div id="notdeletemodal" class="modals">
+                                <span class="close">&times;</span>
+                                <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+                                    <div class="border border-danger d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                                        <i class="fa-solid fa-exclamation bouncing-icon" style="font-size: 6em; font-weight: 400; color: red"></i>
+                                    </div>
+                                    <h4 class="mt-3">cutoff not delete</h4>
+                                </div>
+                                <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+                                    <button class="btn border border-black btn-closes">Close</button>
+                                </div>
+                            </div>
+
+                            <div id="existedModal" class="modals">
+                                <span class="close">&times;</span>
+                                <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+                                    <div class="border border-danger d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                                        <i class="fa-solid fa-exclamation bouncing-icon" style="font-size: 6em; font-weight: 400; color: red"></i>
+                                    </div>
+                                    <h4 class="mt-3">The employee is already existed on cutoff</h4>
+                                </div>
+                                <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+                                    <button class="btn border border-black btn-closes">Close</button>
+                                </div>
+                            </div>
+
+                            <!-- Overlay div -->
+                            <div class="overlay"></div>
+
+                            <div id="employeeinsertedModal" class="modals">
+                                <span class="close">&times;</span>
+                                <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+                                    <div class="border border-success d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                                    <i class="fa-solid fa-check bouncing-icon" style="font-size: 6em; color: green"></i>
+                                    </div>
+                                    <h4 class="mt-3">Employee added on cutoff successfully</h4>
+                                </div>
+                                <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+                                    <button class="btn border border-black btn-closes">Close</button>
+                                </div>
+                            </div>
+
+                            <div id="noattendanceModal" class="modals">
+                                <span class="close">&times;</span>
+                                <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+                                    <div class="border border-danger d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                                        <i class="fa-solid fa-exclamation bouncing-icon" style="font-size: 6em; font-weight: 400; color: red"></i>
+                                    </div>
+                                    <h4 class="mt-3">No attendance found for employee on the cutoff</h4>
+                                </div>
+                                <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+                                    <button class="btn border border-black btn-closes">Close</button>
+                                </div>
+                            </div>
+
+                            <div id="nofound" class="modals">
+                                <span class="close">&times;</span>
+                                <div class="mt-4 d-flex justify-content-center align-items-center flex-column" style="height: 70%">
+                                    <div class="border border-danger d-flex justify-content-center align-items-center bouncing-icon" style="height: 9em; width: 9em; border-radius: 50%;">
+                                        <i class="fa-solid fa-exclamation bouncing-icon" style="font-size: 6em; font-weight: 400; color: red"></i>
+                                    </div>
+                                    <h4 class="mt-3">Error on creating a cutoff</h4>
+                                </div>
+                                <div class="btn-footer w-100 d-flex justify-content-end mt-3">
+                                    <button class="btn border border-black btn-closes">Close</button>
+                                </div>
+                            </div>
 
                     
 
                     
-                </div>
-                
-        </div>  <!-- End Card-Body -->
-    </div> <!-- End Card -->
- </div> <!-- End Container -->
+                </div> 
+            </div> 
+        </div> 
+    </div> 
 
+<!-- Para sa pag kuha sa ID ng cuttoff para maka delete at add ng employee sa cutofff -->
+<script>
+    $(document).ready(function() {
+  $('.btn-delete').click(function() {
+      var id = $(this).data('id');
+      $('#modal-input').val(id);
+  });
+});
+
+$(document).ready(function() {
+  $('.btn-addEmp').click(function() {
+      var id = $(this).data('id1');
+      $('#ID_AddEMp_CutoffID').val(id);
+  });
+});
+</script>
+
+<script>
+  // Function to show a modal
+  function showModal(modalId, message) {
+    var modal = document.getElementById(modalId);
+    var overlay = document.querySelector('.overlay');
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+  }
+
+  // Function to hide a modal
+  function closeModal(modalId) {
+    var modal = document.getElementById(modalId);
+    var overlay = document.querySelector('.overlay');
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
+
+    // Remove the parameter from the URL
+    var urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete(modalId === 'duplicateModal' ? 'error' : modalId === 'insertedModal' ? 'inserted' : modalId === 'deletecompletemodal' ? 'deleted' :  modalId === 'notdeletemodal' ? 'notdeleted' : modalId === 'existedModal' ? 'existed' : modalId === 'employeeinsertedModal' ? 'employee' :  modalId === 'noattendanceModal' ? 'noattendance' : 'notfound');
+    var newUrl = window.location.pathname + '?' + urlParams.toString();
+    window.history.replaceState({}, document.title, newUrl);
+  }
+
+  // Check if the URL contains a parameter and show the modal accordingly
+  window.onload = function () {
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('error')) {
+      showModal('duplicateModal', 'Duplicate Group Name!');
+    }
+    if (urlParams.has('inserted')) {
+      showModal('insertedModal', 'Successfully Inserted!');
+    }
+    if (urlParams.has('deleted')) {
+      showModal('deletecompletemodal', 'Successfully Deleted!');
+    }
+    if (urlParams.has('notdeleted')) {
+      showModal('notdeletemodal', 'Error Deleted!');
+    }
+    if (urlParams.has('existed')) {
+      showModal('existedModal', 'Error Existing!');
+    }
+    if (urlParams.has('employee')) {
+      showModal('employeeinsertedModal', 'Success Employee!');
+    }
+    if (urlParams.has('noattendance')) {
+      showModal('noattendanceModal', 'No Employee attendance!');
+    }
+    if (urlParams.has('notfound')) {
+      showModal('nofound', 'No Data Found!');
+    }
+  };
+
+  // Close the modals when the user clicks the close button
+  var closeBtns = document.querySelectorAll('.close');
+  if (closeBtns) {
+    closeBtns.forEach(function (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        var modalId = this.closest('.modals').id;
+        closeModal(modalId);
+      });
+    });
+  }
+  var closes = document.querySelectorAll('.btn-closes');
+  if (closes) {
+    closes.forEach(function (closes) {
+      closes.addEventListener('click', function () {
+        var modalId = this.closest('.modals').id;
+        closeModal(modalId);
+      });
+    });
+  }
+</script>
 
  <script>
       $(document).ready(function() {
@@ -721,40 +793,30 @@ $(document).ready(function() {
 </script>
 
 
-<!-- Para sa pag kuha sa ID ng cuttoff para maka delete at add ng employee sa cutofff -->
-<script>
-    $(document).ready(function() {
-  $('.btn-delete').click(function() {
-      var id = $(this).data('id');
-      $('#modal-input').val(id);
-  });
-});
 
-$(document).ready(function() {
-  $('.btn-addEmp').click(function() {
-      var id = $(this).data('id1');
-      $('#ID_AddEMp_CutoffID').val(id);
-  });
-});
-</script>
-<!-- Para sa pag kuha sa ID ng cuttoff para maka delete at add ng employee sa cutofff  END--> 
   
-    
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+
 <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap4.min.js"></script>
+    
+<!--skydash-->
+<script src="skydash/vendor.bundle.base.js"></script>
+<script src="skydash/off-canvas.js"></script>
+<script src="skydash/hoverable-collapse.js"></script>
+<script src="skydash/template.js"></script>
+<script src="skydash/settings.js"></script>
+<script src="skydash/todolist.js"></script>
+<script src="main.js"></script>
+<script src="bootstrap js/data-table.js"></script>   
 
-    <script src="vendors/datatables.net/jquery.dataTables.js"></script>
-    <script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-
-           <!--skydash-->
-    <script src="skydash/vendor.bundle.base.js"></script>
-    <script src="skydash/off-canvas.js"></script>
-    <script src="skydash/hoverable-collapse.js"></script>
-    <script src="skydash/template.js"></script>
-    <script src="skydash/settings.js"></script>
-    <script src="skydash/todolist.js"></script>
-     <script src="main.js"></script>
-    <script src="bootstrap js/data-table.js"></script>
+<script src="vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
 </body>
 <script src="js/cutoff.js"></script>
 </html>

@@ -49,19 +49,19 @@ if (isset($_POST['btn_save'])) {
                                 $queryrun = mysqli_query($conn, $query);
                             }
 
-                            header("Location: ../../cutoff.php?msg=Cutoff for $strDate to $endDate is successfully created");
+                            header("Location: ../../cutoff.php?inserted");
                             exit();
                         }
                     } else {
-                        echo "Failed: " . mysqli_error($conn);
+                        header("Location: ../../cutoff.php?notfound");
                         exit();
                     }
                 } else {
-                    header("Location: ../../cutoff.php?msg=You cannot create a cutoff for $strDate to $endDate that already exists");
+                    header("Location: ../../cutoff.php?existed");
                     exit();
                 }
             } else {
-                header("Location: ../../cutoff.php?error=No attendance data found for selected employees");
+                header("Location: ../../cutoff.php?noattendance");
                 exit();
             }
         }
