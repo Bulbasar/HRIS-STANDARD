@@ -111,6 +111,7 @@ foreach ($monthly as $month => $dates) {
 
             $overall_salary = $total_present_salary - $total_deductions;
         }
+
         $months_array[$month_name] = array(
             'dates' => $dates,
             'present_count' => $present_count,

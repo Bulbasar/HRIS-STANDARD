@@ -15,22 +15,19 @@
 
     $LateTotalDeduction = 0;
 
-        $attendanceSQL = "SELECT * FROM attendances WHERE empid = '$EmployeeID' AND `date` IN ('" . implode("','", $dates) . "')";
-        $result = mysqli_query($conn, $attendanceSQL);
+    $attendanceSQL = "SELECT * FROM attendances WHERE empid = '$EmployeeID' AND `date` IN ('" . implode("','", $dates) . "')";
+    $result = mysqli_query($conn, $attendanceSQL);
 
         if ($result->num_rows > 0) {
-            $datesArray = array(); // Array to store the dates
 
             while ($rowatt = $result->fetch_assoc()) {
                 $_late = $rowatt["late"];
                 $Date = $rowatt["date"];
-                $datesArray[] = array('late' => $_late, 'date' => $Date);
-            }
+            
 
-            foreach ($datesArray as $date_att) {
-                $day_of_week = date('l', strtotime($date_att['date']));
+                $day_of_weeks = date('l', strtotime($Date));
 
-                if ($day_of_week === 'Monday') {
+                if ($day_of_weeks === 'Monday') {
                     if ($MOn_total_work === '00:00:00') {
                         $MONDAY_TO_DEDUCT_LATE = 0;
                     } else {
@@ -40,9 +37,9 @@
                         @$mon_hour_rate = $mon_emp_dailyRate / $Mon_total_work_hours;
                         $MON_minute_rate = $mon_hour_rate / 60;
 
-                        if($date_att['late'] !== null){
+                        if($_late !== null){
 
-                            $mon_timeString = $date_att['late'];
+                            $mon_timeString = $_late;
                             $mon_time = DateTime::createFromFormat('H:i:s', $mon_timeString);
             
                             $mon_lateH = $mon_time->format('H');
@@ -57,7 +54,7 @@
                             $MONDAY_TO_DEDUCT_LATE = 0;
                         }
                     }
-                }else if($day_of_week === 'Tuesday'){
+                }else if($day_of_weeks === 'Tuesday'){
                     if($Tue_total_work === '00:00:00'){
                         $Tue_TO_DEDUCT_LATE = 0;
                     }else{
@@ -67,19 +64,19 @@
                             @$tue_hour_rate =  $tue_emp_dailyRate / $tue_total_work_hours;
                             $tue_minute_rate = $tue_hour_rate / 60; 
 
-                        if($date_att['late'] !== null){
-                                $tue_timeString = $date_att['late'];
+                        if($_late !== null){
+                                $tue_timeString = $_late;
 
-                                $tue_time = DateTime::createFromFormat('H:i:s', $tue_timeString);// Convert time string to DateTime object
+                                $tue_time = DateTime::createFromFormat('H:i:s', $tue_timeString);
 
                                 //For latee
-                                $tue_lateH = $tue_time->format('H');// Extract minutes from DateTime object
-                                $tue_lateM = $tue_time->format('i');// Extract minutes from DateTime object
+                                $tue_lateH = $tue_time->format('H');
+                                $tue_lateM = $tue_time->format('i');
                                 $tue_totalMinutes = intval($tue_lateM);
                                 $tue_totalhours = intval($tue_lateH);
 
-                                @$tue_LATE_hours += $tue_totalhours * $tue_hour_rate;//minutes to deduct
-                                @$tue_LATE_minutes += $tue_totalMinutes * $tue_minute_rate;//minutes to deduct
+                                @$tue_LATE_hours += $tue_totalhours * $tue_hour_rate;
+                                @$tue_LATE_minutes += $tue_totalMinutes * $tue_minute_rate;
                                 @$Tue_TO_DEDUCT_LATE =  @$tue_LATE_hours +  @$tue_LATE_minutes;
                         } else {
                             $Tue_TO_DEDUCT_LATE = 0;
@@ -87,7 +84,7 @@
                     }
                 }//Tuesday
 
-                else if($day_of_week === 'Wednesday'){
+                else if($day_of_weeks === 'Wednesday'){
                     if($wed_total_work === '00:00:00'){
                         $WED_TO_DEDUCT_LATE = 0;
                     }else{
@@ -97,10 +94,10 @@
                         @$weds_hour_rate =  $weds_emp_dailyRate / $weds_total_work_hours;
                         $weds_minute_rate = $weds_hour_rate / 60;
                         
-                        if($date_att['late'] !== null){
-                            $weds_timeString = $date_att['late'];
+                        if($_late !== null){
+                            $weds_timeString = $_late;
 
-                            $weds_time = DateTime::createFromFormat('H:i:s', $weds_timeString);// Convert time string to DateTime object
+                            $weds_time = DateTime::createFromFormat('H:i:s', $weds_timeString);
 
                             //For latee
                             $weds_lateH = $weds_time->format('H');
@@ -108,8 +105,8 @@
                             $weds_totalMinutes = intval($weds_lateM);
                             $weds_totalhours = intval($weds_lateH);
 
-                            @$weds_TO_DEDUCT_LATE_hours += $weds_totalhours * $weds_hour_rate;//minutes to deduct
-                            @$weds_TO_DEDUCT_LATE_minutes += $weds_totalMinutes * $weds_minute_rate;//minutes to deduct
+                            @$weds_TO_DEDUCT_LATE_hours += $weds_totalhours * $weds_hour_rate;
+                            @$weds_TO_DEDUCT_LATE_minutes += $weds_totalMinutes * $weds_minute_rate;
                             @$WED_TO_DEDUCT_LATE =  @$weds_TO_DEDUCT_LATE_hours +  @$weds_TO_DEDUCT_LATE_minutes;
                         } else {
                             $WED_TO_DEDUCT_LATE = 0;
@@ -117,7 +114,7 @@
                     }
                 }//Wednesday
 
-                else if($day_of_week === 'Thursday'){
+                else if($day_of_weeks === 'Thursday'){
                     if($thurs_total_work === '00:00:00'){
                         $Thurs_TO_DEDUCT_LATE = 0;
                     }else{
@@ -127,8 +124,8 @@
                         @$thurs_hour_rate =  $thurs_emp_dailyRate / $thurs_total_work_hours;
                         $thurs_minute_rate = $thurs_hour_rate / 60; 
                         
-                        if($date_att['late'] !== null){
-                            $thurs_timeString = $date_att['late'];
+                        if($_late !== null){
+                            $thurs_timeString = $_late;
 
                             $thurs_time = DateTime::createFromFormat('H:i:s', $thurs_timeString);
 
@@ -138,8 +135,8 @@
                             $thurs_totalMinutes = intval($thurs_lateM);
                             $thurs_totalhours = intval($thurs_lateH);
 
-                            @$thurs_TO_DEDUCT_LATE_hours += $thurs_totalhours * $thurs_hour_rate;//minutes to deduct
-                            @$thurs_TO_DEDUCT_LATE_minutes += $thurs_totalMinutes * $thurs_minute_rate;//minutes to deduct
+                            @$thurs_TO_DEDUCT_LATE_hours += $thurs_totalhours * $thurs_hour_rate;
+                            @$thurs_TO_DEDUCT_LATE_minutes += $thurs_totalMinutes * $thurs_minute_rate;
                             @$Thurs_TO_DEDUCT_LATE =  @$thurs_TO_DEDUCT_LATE_hours +  @$thurs_TO_DEDUCT_LATE_minutes;
                         } else {
                             $Thurs_TO_DEDUCT_LATE = 0;
@@ -147,7 +144,7 @@
                     }
                 }//Thursday
 
-                else if ($day_of_week === 'Friday') {
+                else if ($day_of_weeks === 'Friday') {
                     if ($fri_total_work === '00:00:00') {
                         $Fri_TO_DEDUCT_LATE = 0;
                     } else {
@@ -157,10 +154,10 @@
                         @$fri_hour_rate =  $fri_emp_dailyRate / $fri_total_work_hours;
                         $fri_minute_rate = $fri_hour_rate / 60;
                 
-                        if ($date_att['late'] !== null) {
-                            $fri_timeString = $date_att['late'];
+                        if ($_late !== null) {
+                            $fri_timeString = $_late;
                 
-                            $fri_time = DateTime::createFromFormat('H:i:s', $fri_timeString); // Convert time string
+                            $fri_time = DateTime::createFromFormat('H:i:s', $fri_timeString); 
                 
                             // For latee
                             $fri_lateH = $fri_time->format('H');
@@ -178,7 +175,7 @@
                 }//Friday
                 
                 
-                else if($day_of_week === 'Saturday'){
+                else if($day_of_weeks === 'Saturday'){
                     if($sat_total_work === '00:00:00'){
                         $SAT_TO_DEDUCT_LATE = 0;
                     }else{
@@ -188,10 +185,10 @@
                         @$sat_hour_rate =  $sat_emp_dailyRate / $sat_total_work_hours;
                         $sat_minute_rate = $sat_hour_rate / 60; 
 
-                        if ($date_att['late'] !== null) {
-                            $sat_timeString = $date_att['late'];
+                        if ($_late !== null) {
+                            $sat_timeString = $_late;
 
-                            $sat_time = DateTime::createFromFormat('H:i:s', $sat_timeString);// Convert time string to DateTime object
+                            $sat_time = DateTime::createFromFormat('H:i:s', $sat_timeString);
                             //For latee
                             $sat_lateH = $sat_time->format('H');
                             $sat_lateM = $sat_time->format('i');
@@ -207,7 +204,7 @@
                     }
                 }//Saturday
 
-                else if($day_of_week === 'Sunday'){
+                else if($day_of_weeks === 'Sunday'){
                     if($sun_total_work === '00:00:00'){
                         $Sun_TO_DEDUCT_LATE = 0;
                     }else{                                                  
@@ -217,10 +214,10 @@
                         @$sun_hour_rate =  $sun_emp_dailyRate / $sun_total_work_hours;
                         $sun_minute_rate = $sun_hour_rate / 60; 
 
-                        if ($date_att['late'] !== null) {
-                            $sun_timeString = $date_att['late'];
+                        if ($_late !== null) {
+                            $sun_timeString = $_late;
 
-                            $sun_time = DateTime::createFromFormat('H:i:s', $sun_timeString);// Convert time string to DateTime object
+                            $sun_time = DateTime::createFromFormat('H:i:s', $sun_timeString);
 
                             //For latee
                             $sun_lateH = $sun_time->format('H');

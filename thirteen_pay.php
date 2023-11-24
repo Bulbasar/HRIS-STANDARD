@@ -400,12 +400,12 @@ if(!empty($_GET['status'])){
                                                 if($EmpPayRules === 'Fixed Salary'){
                                                     $normalPay = $BasicSalaries;
 
-                                                    $presentsalary = $normalPay * $monthCount;
-                                                    $deductionsalary = $TotalDeductionLate + $UTtotaldeduction;
-                                                    $absentdeduction = $AbsentDeduction + $LWOPDeduction;
+                                                    $presentsalary = $normalPay * $monthCount; //number of months multiply sa fixed salary
+                                                    $deductionsalary = $TotalDeductionLate + $UTtotaldeduction; //add the Total deduction sa late at undertime
+                                                    $absentdeduction = $AbsentDeduction + $LWOPDeduction; //add the absent deduction at LWOP
                                                     $totaldeduct = $deductionsalary + $absentdeduction;
 
-                                                    $monthsalary = $presentsalary - $totaldeduct;
+                                                    $monthsalary = $presentsalary - $totaldeduct; //per month salary
 
                                                     $thirteenmonth = $monthsalary / 12;
                                                 } else if($EmpPayRules === 'Daily Paid'){
@@ -414,14 +414,13 @@ if(!empty($_GET['status'])){
                                                     $presentsalary = $normalPay * $TotalOnLeavePresent;
                                                     $deductionsalary = $TotalDeductionLate + $UTtotaldeduction;
                                                     $absentdeduction = $AbsentDeduction + $LWOPDeduction;
-
                                                     $totaldeduct = $deductionsalary + $absentdeduction;
                                                     
                                                     $monthsalary = $presentsalary - $totaldeduct;
+
                                                     $thirteenmonth = $monthsalary / 12;
                                                 }
-
-                                                    
+                                                
                                                 //-------------------Path sa code ng calculation sa sched-------------------\\
                                                 include 'Data Controller/13Month/Sched-Calculation.php';
                                                 //-------------------Path sa code ng calculation sa sched-------------------\\
@@ -482,7 +481,7 @@ if(!empty($_GET['status'])){
                                                 </ul>
                                             </td><!--8-->
                                             <td style="font-weight: 400; display: none;"><?php echo number_format($monthsalary,2)?></td><!--9-->
-                                            <td style="font-weight: 400;"><?php echo number_format($thirteenmonth,2)?></td>
+                                            <td style="font-weight: 400;"><?php echo number_format($thirteenmonth,2)?></td><!--10-->
                                             <td>
                                                 <button type="button" class="btn btn-success printthirteen" data-bs-toggle="modal" data-bs-target="#thirteenPrint">Print</button>
                                             </td>
