@@ -11,8 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if (mysqli_num_rows($DtrRun) > 0) {
     $dtrRow = mysqli_fetch_assoc($DtrRun);
-
     echo json_encode($dtrRow);
+  } else {
+    echo json_encode(['error' => 'No data found']); // Return a JSON error message
   }
+  
 }
 ?>

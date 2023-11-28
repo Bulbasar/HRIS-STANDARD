@@ -83,22 +83,17 @@ include 'config.php';
 
               <div class="mb-3">
                   <label for="disabledSelect" class="form-label">Type</label>
-                  <input type="text" name="select_type" id="type_select" class="form-control" required>
-                  <select name="select_type" id="disabledSelect" class="form-select" required>
-                      <option value="" disabled="" selected="">Type</option>
-                      <option value="IN">IN</option>
-                      <option value="OUT">OUT</option>
-                  </select>
+                  <input type="text" name="select_type" id="type_select" class="form-control" required readonly>
               </div>
 
-              <div class="mb-3">
+              <!-- <div class="mb-3">
                   <label for="floatingTextarea2" class="form-label">Reason</label>
                   <textarea name="text_reason" class="form-control" placeholder="Leave a reason here" id="floatingTextarea2" style="height: 100px" required></textarea>
               </div>
               
               <div class="input-group mb-3">
                       <input type="file" name="file_upload" class="form-control" id="inputGroupFile02">
-                </div>
+                </div> -->
             </div> <!--Modal body div close tag-->
             <div class="modal-footer">
               <button type="submit" name="add_data" class="btn btn-primary">Add</button>
@@ -149,16 +144,6 @@ include 'config.php';
                   <label for="disabledSelect" class="form-label">Status</label>
                   <input type="text" class="form-control" name="view_status_name" id="view_status_id" readonly>
               </div>
-
-              <div class="mb-3">
-                  <label for="floatingTextarea2" class="form-label">Reason</label>
-                  <textarea name="view_text_reason" class="form-control" placeholder="Leave a reason here" id="view_floatingTextarea2" style="height: 100px" readonly></textarea>
-              </div>
-              
-              <!-- <div class="mb-3">
-                  <label for="floatingTextarea2" class="form-label">File attachment</label>
-                   <input type="text" name="view_file_upload" class="form-control" id="view_inputGroupFile02">
-              </div> -->
             </div> <!--Modal body div close tag-->
     </div>
   </div>
@@ -176,8 +161,8 @@ include 'config.php';
       <form action="actions/DTR Employee/dtr_cancel.php" method="post">
       <div class="modal-body">
            <h4>You want to cancel your DTR Correction?</h4>
-           <input type="text" name="dtr_ID" id="id_DTR">
-           <input type="text" name="dtr_empid" id="empid_dtr">
+           <input type="hidden" name="dtr_ID" id="id_DTR">
+           <input type="hidden" name="dtr_empid" id="empid_dtr">
       </div>
       <div class="modal-footer">
         <button type="submit" name="cancel_data" class="btn btn-primary">Yes</button>
@@ -275,6 +260,7 @@ include 'config.php';
                                 <th>Time out</th>
                                 <th>Remarks</th>
                                 <th>Correction</th>
+                                <th>Status</th>
                                 <th>Action</th> 
                             </tr>
                           </thead>
@@ -328,13 +314,45 @@ include 'config.php';
                                       <td style="font-weight: 400; <?php if($row['time_out'] === '00:00:00') echo 'color:red;' ?>"><?php echo $row['time_out']?></td>
                                       <td style="font-weight: 400; <?php if($remarks === '<span style="color:red;">NO TIME IN</span>' || $remarks === '<span style="color:red;">NO TIME OUT</span>') echo 'color:red;' ?>"><?php echo $remarks?></td>
                                       <td style="font-weight: 400;">
-                                            <?php if (!empty($dtrStatus)): ?>
+                                          <?php if (!empty($dtrStatus) && $dtrStatus === 'Cancelled'): ?>
+                                              <button class="btn btn-outline-primary viewdtr" data-bs-toggle="modal" data-bs-target="#file_dtr_btn" title="Edit">File DTR</button>
+                                          <?php elseif (!empty($dtrStatus) && in_array($dtrStatus, ['Approved', 'Rejected', 'Pending'])): ?>
                                               <button class="btn btn-outline-success viewfiledtr" data-bs-toggle="modal" data-bs-target="#view_file_dtr" title="View Details">View DTR</button>
-                                            <?php else: ?>
-                                                <button class="btn btn-outline-primary viewdtr" data-bs-toggle="modal" data-bs-target="#file_dtr_btn" title="Edit">File DTR</button>
-                                            <?php endif; ?>
+                                          <?php else: ?>
+                                              <button class="btn btn-outline-primary viewdtr" data-bs-toggle="modal" data-bs-target="#file_dtr_btn" title="Edit">File DTR</button>
+                                          <?php endif; ?>
                                       </td>
-                                      <td style="font-weight: 400;"></td>
+                                      <td style="font-weight: 400;">
+                                          <?php if (!empty($dtrStatus) && in_array($dtrStatus, ['Pending', 'Approved', 'Rejected', 'Cancelled'])): ?>
+                                              <?php
+                                              $color = '';
+                                              switch ($dtrStatus) {
+                                                  case 'Pending':
+                                                      $color = 'orange';
+                                                      break;
+                                                  case 'Approved':
+                                                      $color = 'green';
+                                                      break;
+                                                  case 'Rejected':
+                                                      $color = 'red';
+                                                      break;
+                                                  case 'Cancelled':
+                                                      $color = 'gray';
+                                                      break;
+                                                  }
+                                              ?>
+                                              <p style="color: <?php echo $color; ?>"><?php echo $dtrStatus; ?></p>
+                                          <?php else: ?>
+                                              <p>No request</p>
+                                          <?php endif; ?>
+                                      </td>
+                                      <td style="font-weight: 400;">
+                                            <?php if (!empty($dtrStatus) && !in_array($dtrStatus, ['Approved', 'Rejected', 'Cancelled'])): ?>
+                                                <button class="btn btn-outline-danger cancelbtn" data-bs-toggle="modal" data-bs-target="#cancelmodal" type="button">Cancel</button>
+                                            <?php else: ?>
+                                                <button class="btn btn-outline-danger cancelbtn" type="button" disabled style="display: none;">Cancel</button>
+                                            <?php endif; ?>
+                                        </td>
                                   </tr>
                               <?php
                                     }
@@ -394,16 +412,16 @@ include 'config.php';
           return $(this).text();
         }).get();
 
-        // Fetch additional data from emp_dtr_tb table
         var empid = data[1];
-        var date = data[4];
+        var date = data[2];
 
         $.ajax({
           url: 'fetch_dtr_data.php',
           method: 'POST',
           data: { empid: empid, date: date },
           success: function(response) {
-            var dtrData = JSON.parse(response);
+            console.log(response); // Log the response
+  var dtrData = JSON.parse(response);
 
             $('#dtr_view_id').val(dtrData.id);
             $('#view_empid').val(dtrData.empid);
@@ -444,7 +462,7 @@ include 'config.php';
 
         // Fetch additional data from emp_dtr_tb table
         var empid = data[1];
-        var date = data[4];
+        var date = data[2];
 
         $.ajax({
           url: 'fetch_dtr_data.php',

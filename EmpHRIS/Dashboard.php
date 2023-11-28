@@ -226,16 +226,16 @@ include 'config.php';
                     <?php 
                             $employeeid = $_SESSION['empid'];
                             include 'config.php';
-                            date_default_timezone_set('Asia/Manila'); // set the timezone to Manila
+                            date_default_timezone_set('Asia/Manila'); 
 
-                            $today = new DateTime(); // create a new DateTime object for today
-                            $today->modify('this week'); // navigate to the beginning of the week
+                            $today = new DateTime(); 
+                            $today->modify('this week'); 
 
-                            $week_dates = array(); // create an empty array to store the week dates
+                            $week_dates = array(); 
 
                             for ($i = 0; $i < 7; $i++) {
-                                $week_dates[] = $today->format('Y-m-d'); // add the current date to the array
-                                $today->modify('+1 day'); // navigate to the next day
+                                $week_dates[] = $today->format('Y-m-d'); 
+                                $today->modify('+1 day'); 
                             }
                             
                             $query = "SELECT empschedule_tb.id, employee_tb.empid, empschedule_tb.sched_from, empschedule_tb.sched_to, empschedule_tb.schedule_name, 
@@ -261,32 +261,32 @@ include 'config.php';
                                     $day_of_week = date('D');
                                     switch ($day_of_week) {
                                         case 'Mon':
-                                            $time_in =  date('h:i A', strtotime($row['mon_timein']));
-                                            $time_out = date('h:i A', strtotime($row['mon_timeout']));
+                                            $time_in = $row['mon_timein'] ? date('h:i A', strtotime($row['mon_timein'])) : '';
+                                            $time_out = $row['mon_timeout'] ? date('h:i A', strtotime($row['mon_timeout'])) : '';
                                             break;
                                         case 'Tue':
-                                            $time_in =  date('h:i A', strtotime($row['tues_timein']));
-                                            $time_out = date('h:i A', strtotime($row['tues_timeout']));
+                                            $time_in =  $row['tues_timein'] ? date('h:i A', strtotime($row['tues_timein'])) : '';
+                                            $time_out = $row['tues_timeout'] ? date('h:i A', strtotime($row['tues_timeout'])) : '';
                                             break;
                                         case 'Wed':
-                                            $time_in =  date('h:i A', strtotime($row['wed_timein']));
-                                            $time_out = date('h:i A', strtotime($row['wed_timeout']));
+                                            $time_in =  $row['wed_timein'] ? date('h:i A', strtotime($row['wed_timein'])) : '';
+                                            $time_out = $row['wed_timeout'] ? date('h:i A', strtotime($row['wed_timeout'])) : '';
                                             break;
                                         case 'Thu':
-                                            $time_in =  date('h:i A', strtotime($row['thurs_timein']));
-                                            $time_out = date('h:i A', strtotime($row['thurs_timeout']));
+                                            $time_in =  $row['thurs_timein'] ? date('h:i A', strtotime($row['thurs_timein'])) : '';
+                                            $time_out = $row['thurs_timeout'] ? date('h:i A', strtotime($row['thurs_timeout'])) : '';
                                             break;
                                         case 'Fri':
-                                            $time_in =  date('h:i A', strtotime($row['fri_timein']));
-                                            $time_out = date('h:i A', strtotime($row['fri_timeout']));
+                                            $time_in =  $row['fri_timein'] ? date('h:i A', strtotime($row['fri_timein'])) : '';
+                                            $time_out = $row['fri_timeout'] ? date('h:i A', strtotime($row['fri_timeout'])) : '';
                                             break;
                                         case 'Sat':
-                                            $time_in =  date('h:i A', strtotime($row['sat_timein']));
-                                            $time_out = date('h:i A', strtotime($row['sat_timeout']));
+                                            $time_in =  $row['sat_timein'] ? date('h:i A', strtotime($row['sat_timein'])) : '';
+                                            $time_out = $row['sat_timeout'] ? date('h:i A', strtotime($row['sat_timeout'])) : '';
                                             break;
                                         case 'Sun':
-                                            $time_in =  date('h:i A', strtotime($row['sun_timein']));
-                                            $time_out = date('h:i A', strtotime($row['sun_timeout']));
+                                            $time_in =  $row['sun_timein'] ? date('h:i A', strtotime($row['sun_timein'])) : '';
+                                            $time_out = $row['sun_timeout'] ? date('h:i A', strtotime($row['sun_timeout'])) : '';
                                             break;
                                     }
                                     echo "<div style='text-align: right; margin-top: -22px; color: black;'> <strong>Schedule Time: </strong>" . $time_in . "-" . $time_out . "</div>";
@@ -576,7 +576,14 @@ include 'config.php';
                                                                 }
                                                         ?>
                                                             <h1>Tomorrow</h1>
-                                                            <h5><?php echo date("h:i A", strtotime($time_in)) . " - " . date("h:i A", strtotime($time_out));?></h5>
+                                                            <?php
+                                                            if ($time_in !== null && $time_out !== null) {
+                                                                echo "<h5>" . date("h:i A", strtotime($time_in)) . " - " . date("h:i A", strtotime($time_out)) . "</h5>";
+                                                            } else {
+                                                                echo "<h5>No Schedule</h5>";
+                                                            }
+                                                            ?>
+
                                                         <?php
                                                         } else {
                                                             echo "<h1>No Schedule</h1>";

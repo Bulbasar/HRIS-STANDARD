@@ -470,5 +470,4 @@ if($employeeQueries->num_rows > 0){
 } else {
     echo "No data found";
 }    
-
 ?>

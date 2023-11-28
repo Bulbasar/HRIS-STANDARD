@@ -73,10 +73,13 @@ if(!empty($_GET['status'])){
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script> -->
         <!-- skydash -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
 
     <link rel="stylesheet" href="skydash/feather.css">
     <link rel="stylesheet" href="skydash/themify-icons.css">
@@ -101,6 +104,24 @@ if(!empty($_GET['status'])){
 </head>
 <body>
 
+<div class="modal fade" id="Modalslip" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmation</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Print all payslip?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="YesPrint" class="btn btn-primary">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
                             <div class="row">
                                 <div class="col-6">
@@ -108,7 +129,7 @@ if(!empty($_GET['status'])){
                                 </div>
                                 <div class="col-6 mt-1 text-end">
                                 
-                                <button type="button" class="btn btn-success"  data-bs-toggle="modal" data-bs-target="#Modalslip" >
+                                <button type="button" class="btn btn-success"  data-bs-toggle="modal" data-bs-target="#Modalslip">
                                     Print All
                                 </button>
                                 <button class="btn btn-primary"><a href="13month.php" style="text-decoration: none; color: white;">Back</a></button>
@@ -253,7 +274,7 @@ if(!empty($_GET['status'])){
                             ?>
                                 <div class="card" style="background-color: inherit;">
                                     <div class="card-body" style="width: 60%;">
-                                        <div class="body-clone">
+                                        <div class="body-clone" id="payslipbody-clone">
 
                                             <div class="header-bodyof-modal">
                                                     <div class="slash-id-empname">
@@ -306,15 +327,18 @@ if(!empty($_GET['status'])){
                                                 <div class="left-maincontainers">
                                                     <div class="leftheads">
                                                         <p>MONTHS COVERED</p>
-                                                        <p>BASIC PAY</p>
+                                                        <!-- <p>BASIC PAY</p> -->
                                                     </div>
                                                     <div class="lefttable-contents">
                                                         <div class="monthtagging">
                                                             <p> 
                                                             <ul style="list-style-type: none; padding: 0;">
                                                                 <?php 
-                                                                    foreach ($months_array as $month_name => $data) {
-                                                                        echo "<li>" . $month_name . "</li>";
+                                                                    // foreach ($months_array as $month_name => $data) {
+                                                                    //     echo "<li>" . $month_name . "</li>";
+                                                                    // }
+                                                                    foreach ($monthly as $month => $data) {
+                                                                        echo "<li>" . $data['month_name'] . "</li>";
                                                                     }
                                                                 ?>
                                                             </ul>
@@ -324,10 +348,10 @@ if(!empty($_GET['status'])){
                                                             <p id="">
                                                             <ul style="list-style-type: none; padding: 0;">
                                                                 <?php 
-                                                                foreach ($months_array as $month_name => $month_data) {
-                                                                    $overall_salary = $month_data['overall_salary'];
-                                                                    echo "<li>" . number_format($overall_salary,2) . "</li>";
-                                                                    }
+                                                                // foreach ($months_array as $month_name => $month_data) {
+                                                                //     $overall_salary = $month_data['overall_salary'];
+                                                                //     echo "<li>" . number_format($overall_salary,2) . "</li>";
+                                                                //     }
                                                                 ?>
                                                             </ul>
                                                             </p>
@@ -336,6 +360,7 @@ if(!empty($_GET['status'])){
                                                     <div class="lefttable-footer">
                                                         <div class="footerleft">
                                                             <p>Total Earnings: </p>
+                                                            <p><?php echo number_format($monthsalary,2)?></p>
                                                         </div>
                                                         <div class="footerright">
                                                             <p id=""></p>
@@ -388,16 +413,15 @@ if(!empty($_GET['status'])){
                                                     </div>
                                                     <div class="righttable-contents">
                                                         <div class="earn-deduct-tag">
-                                                            <p>Total Earnings</p>
-                                                            <p>Total Deductions</p>
-                                                            <p>Total Net Pay</p>
+                                                            <!-- <p>Total Net Pay</p> -->
                                                             <p>13th Month Pay</p>
                                                         </div>
                                                         <div class="earn-deduct-value">
-                                                            <p id=""></p>
-                                                            <p id=""></p>
-                                                            <p id=""></p>
-                                                            <p id=""></p>
+                                                            <!-- <p id=""><?php echo number_format($monthsalary,2)?></p> -->
+                                                            <p id="">
+                                                                <?php echo number_format($monthsalary, 2) . ' / 12 = ' . number_format($thirteenmonth, 2);?>
+                                                            </p>
+
                                                         </div>
                                                     </div>
                                                     <div class="rightfooter">
@@ -405,7 +429,7 @@ if(!empty($_GET['status'])){
                                                             <p>Thirteen Month</p>
                                                         </div>
                                                         <div class="thirteenvalue">
-                                                            <p id=""></p>
+                                                            <p id=""><?php echo number_format($thirteenmonth,2)?></p>
                                                         </div>
                                                     </div>
                                                 </div> 
@@ -424,14 +448,178 @@ if(!empty($_GET['status'])){
 
 
 
+                <script type="text/javascript">
+    $("body").on("click", "#YesPrint", function () {
+        var currentDate = new Date();
+        var options = {
+            timeZone: "Asia/Manila",
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric"
+        };
+        var currentDateTime = currentDate.toLocaleString("en-PH", options);
+
+        // Initialize an array to store payslip promises
+        var payslipPromises = [];
+
+        // Loop through each payslip container
+        $('.body-clone').each(function (index) {
+            var payslipClone = $(this);
+
+            // Create a promise for each payslip
+            var payslipPromise = new Promise(function (resolve) {
+                html2canvas(payslipClone[0], {
+                    onrendered: function (canvas) {
+                        var data = canvas.toDataURL();
+                        resolve({
+                            image: data,
+                            width: 500,
+                            pageBreak: 'after'  // Add a page break after each payslip
+                        });
+                    }
+                });
+            });
+
+            // Add the promise to the array
+            payslipPromises.push(payslipPromise);
+        });
+
+        // Wait for all promises to resolve
+        Promise.all(payslipPromises).then(function (payslips) {
+            // Create the PDF document
+            var docDefinition = {
+                content: payslips
+            };
+
+            // Create the PDF once
+            var pdfDoc = pdfMake.createPdf(docDefinition);
+
+            // Download the PDF
+            pdfDoc.download("ThirteenMonth_" + currentDateTime + ".pdf");
+
+            // Optionally, you can also get the base64 data
+            pdfDoc.getBase64(function (pdfData) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    // Handle the base64 data as needed
+                };
+            });
+        });
+    });
+</script>
 
 
 
+<!-- <script type="text/javascript">
+    $("body").on("click", "#YesPrint", function () {
+        var currentDate = new Date();
+        var options = {
+            timeZone: "Asia/Manila",
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric"
+        };
+        var currentDateTime = currentDate.toLocaleString("en-PH", options);
+
+        // Initialize an array to store payslip promises
+        var payslipPromises = [];
+
+        // Loop through each payslip container
+        $('.body-clone').each(function (index) {
+            var payslipClone = $(this);
+
+            // Create a promise for each payslip
+            var payslipPromise = new Promise(function (resolve) {
+                html2canvas(payslipClone[0], {
+                    onrendered: function (canvas) {
+                        var data = canvas.toDataURL();
+                        resolve({
+                            image: data,
+                            width: 500
+                        });
+                    }
+                });
+            });
+
+            // Add the promise to the array
+            payslipPromises.push(payslipPromise);
+        });
+
+        // Wait for all promises to resolve
+        Promise.all(payslipPromises).then(function (payslips) {
+            // Create the PDF document
+            var docDefinition = {
+                content: payslips
+            };
+
+            // Create the PDF once
+            var pdfDoc = pdfMake.createPdf(docDefinition);
+
+            // Download the PDF
+            pdfDoc.download("ThirteenMonth_" + currentDateTime + ".pdf");
+
+            // Optionally, you can also get the base64 data
+            pdfDoc.getBase64(function (pdfData) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    // Handle the base64 data as needed
+                };
+            });
+        });
+    });
+</script> -->
 
                       
 
 
 
+<!-- <script type="text/javascript">
+    $("body").on("click", "#YesPrint", function () {
+        var currentDate = new Date();
+        var options = {
+            timeZone: "Asia/Manila",
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric"
+        };
+        var currentDateTime = currentDate.toLocaleString("en-PH", options);
+
+        html2canvas($('#payslipbody-clone')[0], {
+            onrendered: function (canvas) {
+                var data = canvas.toDataURL();
+                var docDefinition = {
+                    content: [{
+                        image: data,
+                        width: 500
+                    }]
+                };
+
+                // Create the PDF once
+                var pdfDoc = pdfMake.createPdf(docDefinition);
+
+                // Download the PDF
+                pdfDoc.download("ThirteenMonth_" + currentDateTime + ".pdf");
+
+                // Optionally, you can also get the base64 data
+                pdfDoc.getBase64(function (pdfData) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        // Handle the base64 data as needed
+                    };
+                });
+            }
+        });
+    });
+</script> -->
 
 
 

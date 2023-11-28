@@ -25,11 +25,17 @@
             $escaped_contents = "";
         }
         
-        $sql = "SELECT * FROM emp_dtr_tb WHERE `empid` = '$employee_id' AND `date` = '$date_dtr' AND `type` = '$type'";
+        $sql = "SELECT * FROM emp_dtr_tb WHERE `empid` = '$employee_id' AND `date` = '$date_dtr' AND `type` = '$type' AND `status` = 'Cancelled'";
         $result = mysqli_query($conn, $sql);
 
         if(mysqli_num_rows($result) > 0) {
-            header("Location: ../../dtr_emp.php?error=Same date is not Allow");
+            $updatequery = "UPDATE `emp_dtr_tb` SET `time`='$time', `status`='Pending' WHERE `empid` = '$employee_id' AND `date` = '$date_dtr' AND `type` = '$type' AND `status` = 'Cancelled'";
+            $queryRes = mysqli_query($conn, $updatequery);
+            if($queryRes){
+                header("Location: ../../dtr_emp.php?msg=Successfully Added");
+            } else {
+                header("Location: ../../dtr_emp.php?error=Invalid");
+            }
         }else{
             $query = "INSERT INTO emp_dtr_tb (`empid`,`date`,`time`,`type`,`reason`,`file_attach`,`status`)
             VALUES ('$employee_id','$date_dtr','$time','$type','$reason','$escaped_contents','Pending')";

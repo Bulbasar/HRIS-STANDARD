@@ -173,7 +173,7 @@ if(!empty($_GET['status'])){
                                         <div class="left-maincontainers">
                                             <div class="leftheads">
                                                 <p>MONTHS COVERED</p>
-                                                <p>BASIC PAY</p>
+                                                <!-- <p>BASIC PAY</p> -->
                                             </div>
                                             <div class="lefttable-contents">
                                                 <div class="monthtagging">
@@ -237,13 +237,13 @@ if(!empty($_GET['status'])){
                                             </div>
                                             <div class="righttable-contents">
                                                 <div class="earn-deduct-tag">
-                                                    <p>Total Earnings</p>
+                                                    <!-- <p>Total Earnings</p> -->
                                                     <!-- <p>Total Deductions</p> -->
                                                     <!-- <p>Total Net Pay</p> -->
                                                     <p>13th Month Pay</p>
                                                 </div>
                                                 <div class="earn-deduct-value">
-                                                    <p id="earningmonths"></p>
+                                                    <!-- <p id="earningmonths"></p> -->
                                                     <!-- <p id=""></p>
                                                     <p id=""></p> -->
                                                     <p id="thirteenValue"></p>
@@ -303,6 +303,7 @@ if(!empty($_GET['status'])){
                                             <th style="display: none;">OverAll Salary</th>
                                             <th style="display: none;">Total Salary</th>
                                             <th>Thirteen Month Pay</th>
+                                            <th style="display: none;">Try month</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -440,9 +441,28 @@ if(!empty($_GET['status'])){
                                                 //-------------------Path sa code ng computation na nagdidisplay sa payslip modal-------------------\\ dito lang dapat siya nakapwesto
                                                 include 'Data Controller/13Month/calculation_salary_modal.php';
                                                 //-------------------Path sa code ng computation na nagdidisplay sa payslip modal-------------------\\
+                                                // $getatt = "SELECT * FROM attendances WHERE `empid` = '$EmployeeID' AND `date` BETWEEN '$str_date' AND '$end_date'";
+                                                // $resultatt = mysqli_query($conn, $getatt);
 
-                                            
+                                                // $monthly = array(); // Initialize an array to store dates organized by month
+
+                                                // while ($rowatt = mysqli_fetch_assoc($resultatt)) {
+                                                //     $date = $rowatt['date'];
+                                                //     $month = date('m', strtotime($date));
+                                                //     $month_name = date('F', strtotime($date));
+
+                                                //     // Check if the month already exists in the array
+                                                //     if (!isset($monthly[$month])) {
+                                                //         $monthly[$month] = array('month_name' => $month_name, 'dates' => array());
+                                                //     }
+
+                                                //     $monthly[$month]['dates'][] = $date;
+                                                // }
                                                 
+                                               
+                                               
+
+
                                         ?>      
 
                                         <tr>
@@ -482,6 +502,15 @@ if(!empty($_GET['status'])){
                                             </td><!--8-->
                                             <td style="font-weight: 400; display: none;"><?php echo number_format($monthsalary,2)?></td><!--9-->
                                             <td style="font-weight: 400;"><?php echo number_format($thirteenmonth,2)?></td><!--10-->
+                                            <td style="font-weight: 400; display: none;">
+                                                <ul style="list-style-type: none; padding: 0;">
+                                                    <?php 
+                                                    foreach ($monthly as $month => $data) {
+                                                        echo "<li>" . $data['month_name'] . "</li>";
+                                                    }
+                                                    ?>
+                                                </ul>
+                                            </td><!--11-->
                                             <td>
                                                 <button type="button" class="btn btn-success printthirteen" data-bs-toggle="modal" data-bs-target="#thirteenPrint">Print</button>
                                             </td>
@@ -654,6 +683,7 @@ $(document).ready(function(){
         var TotalSalary = data[8];
         var RealSalary = data[9];
         var ThirteenMonthPay = data[10];
+        var MonthNames = data[11];
 
         $('#compName').text(CompanyName);
         $('#empids').text(EmployeeId);
@@ -669,7 +699,7 @@ $(document).ready(function(){
         $('#empstatus').text(Status);
         // Displaying months in the modal
         var months_list = '';
-        $tr.find("td:eq(7) li").each(function(){
+        $tr.find("td:eq(11) li").each(function(){
             months_list += $(this).text() + "<br/>";
         });
         $('#monthNameTag').html(months_list);
