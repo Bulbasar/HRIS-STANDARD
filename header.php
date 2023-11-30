@@ -51,23 +51,28 @@
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row custom-navbar" id="upper-nav"> <!-- UPPER NAV MOTHER -->
                 <?php
                       include 'config.php';
+
                       $query = "SELECT * FROM settings_company_tb";
                       $query_run = mysqli_query($conn, $query);
-
-                      if (mysqli_num_rows($query_run) > 0){
-                        $company_row = mysqli_fetch_assoc($query_run);
-                        $inserted_photo = $company_row['cmpny_logo'];
-                        $image_data = base64_encode($inserted_photo); // Convert blob to base64
-                        
-                        $image_type = 'image/jpeg'; // Default image type
-                        // Determine the image type based on the blob data
-                        if (substr($image_data, 0, 4) === "\x89PNG") {
-                          $image_type = 'image/png';
-                        } elseif (substr($image_data, 0, 2) === "\xFF\xD8") {
-                          $image_type = 'image/jpeg';
-                        } elseif (substr($image_data, 0, 4) === "RIFF" && substr($image_data, 8, 4) === "WEBP") {
-                          $image_type = 'image/webp';
-                        }
+                      
+                      if (mysqli_num_rows($query_run) > 0) {
+                          $company_row = mysqli_fetch_assoc($query_run);
+                          $inserted_photo = $company_row['cmpny_logo'];
+                      
+                          // Check if $inserted_photo is not null before encoding
+                          if ($inserted_photo !== null) {
+                              $image_data = base64_encode($inserted_photo); // Convert blob to base64
+                      
+                              $image_type = 'image/jpeg'; // Default image type
+                              // Determine the image type based on the blob data
+                              if (substr($image_data, 0, 4) === "\x89PNG") {
+                                  $image_type = 'image/png';
+                              } elseif (substr($image_data, 0, 2) === "\xFF\xD8") {
+                                  $image_type = 'image/jpeg';
+                              } elseif (substr($image_data, 0, 4) === "RIFF" && substr($image_data, 8, 4) === "WEBP") {
+                                  $image_type = 'image/webp';
+                              }
+                          }
                       }
                     ?>
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start" id="logo-upper-nav" >

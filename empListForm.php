@@ -847,7 +847,7 @@
                                 </div>
                                 <div class="emp-Access-email">
                                         <label for="email">Company Email</label><br>
-                                        <input pattern="[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}"  type="text" name="comp_email" id="form-emails" placeholder="Email Address" title="Must be a valid email."  value="<?php echo $row_setting['email_domain']?>" class="form-control" style='height: 3.1em' readonly>
+                                        <input pattern="[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}"  type="text" name="comp_email" id="form-emails" placeholder="Email Address" title="Must be a valid email."  value="<?php echo $row_setting['email_domain']?>" class="form-control" style='height: 3.1em'>
                                 </div>
                                 <div class="">
                                     <label for="password">Password</label><br>
